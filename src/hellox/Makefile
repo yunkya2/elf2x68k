@@ -16,10 +16,10 @@ $(TARGET): $(TARGET:.x=.elf1) $(TARGET:.x=.elf2)
 	$(ELF2X68K) -o $@ $^
 
 $(TARGET:.x=.elf1): hellox.o
-	$(CC) $(LDFLAGS1) -o $@ $<
+	$(LD) $(LDFLAGS1) -o $@ $<
 
 $(TARGET:.x=.elf2): hellox.o
-	$(CC) $(LDFLAGS2) -o $@ $<
+	$(LD) $(LDFLAGS2) -o $@ $<
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $^

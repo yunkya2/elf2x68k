@@ -15,7 +15,7 @@ $(TARGET): $(TARGET:.sys=.elf)
 	$(ELF2X68K) -o $@ $^
 
 $(TARGET:.sys=.elf): hellosys.o
-	$(CC) $(LDFLAGS) -o $@ $<
+	$(LD) $(LDFLAGS) -o $@ $<
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $^
