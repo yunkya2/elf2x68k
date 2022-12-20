@@ -1,6 +1,6 @@
 TARGET = hellox.x
 
-ARCH = m68k-linux-gnu-
+ARCH = m68k-elf-
 CC = $(ARCH)gcc
 AS = $(ARCH)as
 LD = $(ARCH)gcc
@@ -16,13 +16,13 @@ $(TARGET): $(TARGET:.x=.elf1) $(TARGET:.x=.elf2)
 	$(ELF2X68K) -o $@ $^
 
 $(TARGET:.x=.elf1): hellox.o
-	$(LD) $(LDFLAGS1) -o $@ $<
+	$(LD) $(LDFLAGS1) -o $@ $^
 
 $(TARGET:.x=.elf2): hellox.o
-	$(LD) $(LDFLAGS2) -o $@ $<
+	$(LD) $(LDFLAGS2) -o $@ $^
 
 %.o: %.c
-	$(CC) $(CFLAGS) -c $^
+	$(CC) $(CFLAGS) -c $<
 
 clean:
 	-rm -f *.o *.elf* $(TARGET)

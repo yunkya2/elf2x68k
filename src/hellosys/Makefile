@@ -1,6 +1,6 @@
 TARGET = hellosys.sys
 
-ARCH = m68k-linux-gnu-
+ARCH = m68k-elf-
 CC = $(ARCH)gcc
 AS = $(ARCH)as
 LD = $(ARCH)gcc
@@ -15,10 +15,10 @@ $(TARGET): $(TARGET:.sys=.elf)
 	$(ELF2X68K) -o $@ $^
 
 $(TARGET:.sys=.elf): hellosys.o
-	$(LD) $(LDFLAGS) -o $@ $<
+	$(LD) $(LDFLAGS) -o $@ $^
 
 %.o: %.c
-	$(CC) $(CFLAGS) -c $^
+	$(CC) $(CFLAGS) -c $<
 
 clean:
 	-rm -f *.o *.elf* $(TARGET)
