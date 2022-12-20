@@ -91,7 +91,9 @@ def genx68krel(header, diff, body1, body2):
         (w1,) = unpack(">L", body1[i:i + 4])
         (w2,) = unpack(">L", body2[i:i + 4])
         if w1 != w2:
-            assert (w2 - w1) == diff
+            if w2 - w1 != diff:
+                assert (w1 >> 16) == (w2 >> 16);
+                continue
             body[i:i + 4] = pack(">L", w1 - header.base)
             offdiff = i - prevoffset
             prevoffset = i
