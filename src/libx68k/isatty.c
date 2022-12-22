@@ -1,20 +1,13 @@
 /*
- * Stub version of isatty.
+ * isatty()
  */
 
-#include "config.h"
-#include <_ansi.h>
-#include <_syslist.h>
+#include <unistd.h>
 #include <errno.h>
 #undef errno
 extern int errno;
-#include "warning.h"
 
-int
-_isatty (int file)
+int isatty(int fd)
 {
-  errno = ENOSYS;
-  return 0;
+  return fd < 5;
 }
-
-stub_warning(_isatty)
