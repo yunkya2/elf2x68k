@@ -196,6 +196,7 @@ if __name__ == '__main__':
     parser.add_argument('file1', help='Input ELF file')
     parser.add_argument('file2', help='Input ELF file 2', nargs='?')
     parser.add_argument('-o', '--output', help='Output X68k exec file')
+    parser.add_argument('-s', '--strip', help='Strip symbol table', action='store_true')
     args = parser.parse_args()
 
     if args.output:
@@ -212,6 +213,10 @@ if __name__ == '__main__':
         (header, body) = genx68krel(header1, header2.base - header1.base, body1, body2)
     else:
         (header, body) = (header1, body1)
+
+    if args.strip:
+        sym1 = b''
+        header.symsz = 0
 
     with open(outfile, 'wb') as f:
         f.write(header.encode() + body + sym1)

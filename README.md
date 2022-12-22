@@ -17,7 +17,7 @@ xdev68kに含まれるm68k-elf-gccをツールチェインに使用します。
 
 ## 実行方法
 ```
-usage: elf2x68k.py [-h] [-o OUTPUT] file1 [file2]
+usage: elf2x68k.py [-h] [-o OUTPUT] [-s] file1 [file2]
 ```
 
 * file1, file2で指定したELFファイルを元にX形式に変換します。
@@ -28,6 +28,7 @@ usage: elf2x68k.py [-h] [-o OUTPUT] file1 [file2]
   * 詳細は src/hellosys/Makefile を参照
 * file1, file2が指定されている場合は、2つのELFファイルの差分を利用することで再配置情報を生成し、変換後のX形式ファイルに付加します。これによりHuman68kから実行可能なファイルになります。正しく再配置情報を生成するためには、2つのファイルはロード先アドレス以外の内容がすべて等しいELFファイルである必要があります。
   * 詳細は src/hellox/Makefile を参照
+* 変換元のELFファイルにシンボル情報がある場合は、X形式ファイルにもその情報が付加されます。 `-s` オプションが指定されている場合はシンボル情報を削除します。
 
 ## サンプル
 
