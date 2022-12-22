@@ -7,6 +7,8 @@
 #undef errno
 extern int errno;
 
+#define ioctl_a1(num,a1)    __asm__ volatile ("movel %1,%%a1; movel %0,%%d0; trap #15" :: "i"(num), "a"(a1) : "%%d0", "%%a1")
+
 int open(const char *file, int flags, ...)
 {
   int res;
@@ -24,7 +26,7 @@ int open(const char *file, int flags, ...)
                       ".hword 0xff3d\n"
                       "addql #6,%%sp\n"
                       "movel %%d0, %0"
-                      : "=d"(res) : "d"(flags), "a"(file) : "%%d0");
+                      : "=d"(res) : "d"(flags & 3), "a"(file) : "%%d0");
   }
 
   return res;
