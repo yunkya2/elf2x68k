@@ -1,7 +1,7 @@
 %rename link_gcc_c_sequence                nosys_link_gcc_c_sequence
 
 *nosys_libgloss:
-../libx68k/libx68k.a
+-lx68k
 
 *nosys_libc:
 %{!specs=nano.specs:-lc} %{specs=nano.specs:-lc_nano}

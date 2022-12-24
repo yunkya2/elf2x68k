@@ -1,0 +1,50 @@
+#!/bin/bash
+
+set -e -o pipefail
+
+infile=""
+outfile="a.out"
+xbaseopt=""
+xstripopt=""
+elfbase="0x6800"
+
+objs=""
+param=("$@")
+j=0
+for ((i=0; i<${#param[@]}; i++)); do
+  case ${param[$i]} in
+    -o )
+      i=$((i+1));
+      outfile=${param[$i]}
+      ;;
+    -Ttext=*)
+      elfbase=${param[$i]#-Ttext=}
+      xbaseopt="-b ${elfbase}"
+      ;;
+    -s | -S | --strip* )
+      xstripopt="-s"
+      ;;
+    -*)
+      newparam[j]="${param[$i]}"
+      j=$((j+1))
+      ;;
+    * )
+      newparam[j]="${param[$i]}"
+      infile="${infile} ${param[$i]}"
+      j=$((j+1))
+      ;;
+  esac
+done
+
+elfbase1=`printf "0x%x" $((elfbase))`
+elfbase2=`printf "0x%x" $((elfbase+0x1000))`
+
+if [ "${infile}" ]; then
+  LDFLAGS="-z max-page-size=2 -static -lx68k -T x68k.ld"
+fi
+
+#set -x
+
+m68k-elf-ld.bfd -Ttext=${elfbase1} -o "${outfile}.elf" ${newparam[@]} ${LDFLAGS}
+m68k-elf-ld.bfd -Ttext=${elfbase2} -o "${outfile}.elf.2" ${newparam[@]} ${LDFLAGS}
+elf2x68k.py -o "${outfile}" ${xbaseopt} ${xstripopt} "${outfile}.elf" "${outfile}.elf.2"
