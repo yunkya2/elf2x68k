@@ -1,20 +1,17 @@
 TARGET = hellosys.sys
 
-ARCH = m68k-elf-
-CC = $(ARCH)gcc
-AS = $(ARCH)as
-LD = $(ARCH)gcc
+CROSS = m68k-elf-
+CC = $(CROSS)gcc
+AS = $(CROSS)as
+LD = $(CROSS)gcc
 ELF2X68K = ../elf2x68k.py
 
 CFLAGS = -m68000
-LDFLAGS = -Wl,-Ttext=0x6800 -Wl,-z,max-page-size=2 -nostdlib -static
+LDFLAGS = -nostdlib -static -Ttext=0x6800 -s
 
 all: $(TARGET)
 
-$(TARGET): $(TARGET:.sys=.elf)
-	$(ELF2X68K) -o $@ $^
-
-$(TARGET:.sys=.elf): hellosys.o
+$(TARGET): hellosys.o
 	$(LD) $(LDFLAGS) -o $@ $^
 
 %.o: %.c
