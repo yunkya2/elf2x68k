@@ -68,6 +68,15 @@ class X68kHeader:
                                 self.textsz, self.datasz, self.bsssz, self.relsz, self.symsz) + \
                            b'\0' * 32
 
+class X68kSymbol:
+    def __init__(self, type, value, name):
+        (self.type, self.value, self.name) = (type, value, name)
+
+    def encode(self, base = 0):
+        enname = self.name.encode()
+        return pack(">HL", self.type, self.value + base) + \
+               enname + b'\0' * (2 - (len(enname) & 1))
+
 # Convert ELF to X68k execute file (fixed load address)
 
 def elf2x68k(fh):
@@ -133,7 +142,7 @@ def elf2x68k(fh):
             curaddr = sh.addr + sh.size
 
     # Create symbol table for X68k
-    symtbl = b''
+    symtbl = []
     for sym in symlist:
         if sym.bind != 1:               # STB_GLOBAL
             continue
@@ -149,9 +158,7 @@ def elf2x68k(fh):
                 symtype = 0x0203
 
             if symtype:
-                symtbl += pack(">HL", symtype, sym.value - baseaddr)
-                symtbl += sym.name.encode() + \
-                          b'\0' * (2 - (len(sym.name.encode()) & 1))
+                symtbl.append(X68kSymbol(symtype, sym.value - baseaddr, sym.name))
 
     return (X68kHeader(baseaddr, eh.entry,
                        len(contents[0]), len(contents[1]), len(contents[2]), 0, len(symtbl)),
@@ -159,7 +166,7 @@ def elf2x68k(fh):
 
 # Generate X68k relocation data
 
-def genx68krel(header, diff, body1, body2):
+def genx68krel(header, diff, xbase, body1, body2):
     body = bytearray(body1)
     reldata = b''
     prevoffset = 0
@@ -175,7 +182,7 @@ def genx68krel(header, diff, body1, body2):
             if w2 - w1 != diff:
                 assert (w1 >> 16) == (w2 >> 16);
                 continue
-            body[i:i + 4] = pack(">L", w1 - header.base)
+            body[i:i + 4] = pack(">L", w1 - header.base + xbase)
             offdiff = i - prevoffset
             prevoffset = i
             if offdiff < 0x10000:
@@ -184,8 +191,8 @@ def genx68krel(header, diff, body1, body2):
                 reldata += pack(">HL", 1, offdiff)
             skip = True
 
-    header.entry -= header.base
-    header.base = 0
+    header.entry = header.entry - header.base + xbase
+    header.base = xbase
     header.relsz = len(reldata)
 
     return (header, body + reldata)
@@ -196,8 +203,11 @@ if __name__ == '__main__':
     parser.add_argument('file1', help='Input ELF file')
     parser.add_argument('file2', help='Input ELF file 2', nargs='?')
     parser.add_argument('-o', '--output', help='Output X68k exec file')
+    parser.add_argument('-b', '--base', help='Set base address', type=lambda x: int(x, 0))
     parser.add_argument('-s', '--strip', help='Strip symbol table', action='store_true')
     args = parser.parse_args()
+
+    base = args.base if args.base else 0
 
     if args.output:
         outfile = args.output
@@ -210,13 +220,16 @@ if __name__ == '__main__':
     if args.file2:
         with open(args.file2, 'rb') as f:
             (header2, body2, sym2) = elf2x68k(f)
-        (header, body) = genx68krel(header1, header2.base - header1.base, body1, body2)
+        (header, body) = genx68krel(header1, header2.base - header1.base, base, body1, body2)
     else:
+        assert base == 0 or base == header1.base
         (header, body) = (header1, body1)
 
-    if args.strip:
-        sym1 = b''
-        header.symsz = 0
+    symtbl = b''
+    if not args.strip:
+        for s in sym1:
+            symtbl += s.encode(base)
+    header.symsz = len(symtbl)
 
     with open(outfile, 'wb') as f:
-        f.write(header.encode() + body + sym1)
+        f.write(header.encode() + body + symtbl)
