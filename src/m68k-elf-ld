@@ -40,7 +40,7 @@ elfbase1=`printf "0x%x" $((elfbase))`
 elfbase2=`printf "0x%x" $((elfbase+0x1000))`
 
 if [ "${infile}" ]; then
-  LDFLAGS="-z max-page-size=2 -static -lx68k -T x68k.ld"
+  LDFLAGS="-z max-page-size=2 -static -lx68k -ldos -liocs -T x68k.ld"
 fi
 
 #set -x
