@@ -2,13 +2,12 @@
  * _exit()
  */
 
+#include <x68k/dos.h>
 #include <unistd.h>
 
 void _exit(int status)
 {
-    __asm__ volatile ("movew %0, -(%%sp)\n"
-                      ".hword 0xff4c\n"
-                      : : "d"(status) : "%%d0");
+  _dos_exit2(status);
 
   while (1)
     ;
