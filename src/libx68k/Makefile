@@ -17,7 +17,10 @@ OBJS = chown.o close.o environ.o errno.o execve.o fork.o fstat.o \
 
 OBJS += crt0.o
 
-all: $(TARGET)
+all: $(TARGET) libiocs.a
+
+libiocs.a:
+	make -C libiocs all
 
 $(TARGET): $(OBJS)
 	$(AR) $(ARFLAGS) $@ $^
@@ -27,4 +30,5 @@ $(TARGET): $(OBJS)
 	$(CC) $(CFLAGS) -c $<
 
 clean:
+	make -C libiocs clean
 	-rm -f *.o $(TARGET)

@@ -1,0 +1,18 @@
+| int _iocs_b_consol (int, int, int, int);
+.text
+.even
+.global _iocs_b_consol
+.type _iocs_b_consol,@function
+_iocs_b_consol:
+	move.l	%d2, %sp@-
+	movem.l	%sp@(8), %d1-%d2
+	swap	%d1
+	move.w	%d2, %d1
+	move.w	%sp@(18), %d2
+	swap	%d2
+	move.w	%sp@(22), %d2
+	moveq	#0x2e, %d0
+	trap	#15
+	move.l	%d2, %d0
+	move.l	%sp@+, %d2
+	rts

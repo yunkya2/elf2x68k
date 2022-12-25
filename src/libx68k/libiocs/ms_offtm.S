@@ -1,0 +1,12 @@
+| int _iocs_ms_offtm (int, int);
+.text
+.even
+.global _iocs_ms_offtm
+.type _iocs_ms_offtm,@function
+_iocs_ms_offtm:
+	move.l	%d2, %sp@-
+	movem.l	%sp@(8),%d1/%d2
+	moveq	#0x78, %d0
+	trap	#15
+	move.l	%sp@+, %d2
+	rts
