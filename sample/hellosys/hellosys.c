@@ -2,9 +2,7 @@
  *  hellosys - a simple bootable system sample without C libraries
  */
 
-#define ioctl(num)          __asm__ volatile ("movel %0,%%d0; trap #15" :: "i"(num) : "%%d0")
-#define ioctl_d1(num,d1)    __asm__ volatile ("movel %1,%%d1; movel %0,%%d0; trap #15" :: "i"(num), "d"(d1) : "%%d0", "%%d1")
-#define ioctl_a1(num,a1)    __asm__ volatile ("movel %1,%%a1; movel %0,%%d0; trap #15" :: "i"(num), "a"(a1) : "%%d0", "%%a1")
+#include <x68k/iocs.h>
 
 const char *msg[] = {
   "Hello, world\r\n",
@@ -15,21 +13,20 @@ const char *msg[] = {
 void _start()
 {
   int i;
+  static struct iocs_lineptr param = {0, 0, 255, 255, 0xff00, 0xffff};
 
-  static short param[] = {0, 0, 255, 255, 0xff00, 0xffff};
-
-  ioctl_d1(0x10, 0xe);
-  ioctl(0x90);
+  _iocs_crtmod(0xe);
+  _iocs_g_clr_on();
 
   for (i = 0; i < 3; i++) {
-    ioctl_a1(0x21, msg[i]);
+    _iocs_b_print(msg[i]);
   }
 
   for (i = 0; i < 256; i++) {
-    param[0] = i;
-    param[2] = 255 - i;
-    param[4] = i | (i << 8);
-    ioctl_a1(0xb8, param);
+    param.x1 = i;
+    param.x2 = 255 - i;
+    param.color = i | (i << 8);
+    _iocs_line(&param);
   }
 
   while (1)
