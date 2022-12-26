@@ -2,20 +2,20 @@ TARGET = libx68k.a
 
 CROSS = m68k-elf-
 CC = $(CROSS)gcc
-AS = $(CROSS)as
+AS = $(CROSS)gcc
 LD = $(CROSS)gcc
 AR = $(CROSS)ar
 RANLIB = $(CROSS)ranlib
 
-CFLAGS = -m68000
+CFLAGS = -m68000 -I.
+ASFLAGS = -m68000 -I.
 
 # object files needed
-OBJS = chown.o close.o environ.o errno.o execve.o fork.o fstat.o \
+OBJS += chown.o close.o environ.o errno.o execve.o fork.o fstat.o \
 	getpid.o gettod.o isatty.o kill.o link.o lseek.o open.o \
 	read.o readlink.o sbrk.o stat.o symlink.o times.o unlink.o \
 	wait.o write.o _exit.o
-
-OBJS += crt0.o
+OBJS += crt0.o crt1.o
 
 all: $(TARGET) libiocs.a libdos.a
 
@@ -31,6 +31,9 @@ $(TARGET): $(OBJS)
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $<
+
+%.o: %.S
+	$(AS) $(ASFLAGS) -c $<
 
 clean:
 	make -C libiocs clean

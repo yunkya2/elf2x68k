@@ -45,6 +45,6 @@ fi
 
 #set -x
 
-m68k-elf-ld.bfd -Ttext=${elfbase1} -o "${outfile}.elf" ${newparam[@]} ${LDFLAGS}
-m68k-elf-ld.bfd -Ttext=${elfbase2} -o "${outfile}.elf.2" ${newparam[@]} ${LDFLAGS}
+m68k-elf-ld.bfd -Ttext=${elfbase1} -lx68k -o "${outfile}.elf" ${newparam[@]} ${LDFLAGS}
+m68k-elf-ld.bfd -Ttext=${elfbase2} -lx68k -o "${outfile}.elf.2" ${newparam[@]} ${LDFLAGS}
 elf2x68k.py -o "${outfile}" ${xbaseopt} ${xstripopt} "${outfile}.elf" "${outfile}.elf.2"

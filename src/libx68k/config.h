@@ -1,3 +1,11 @@
+/* Set a default stack size */
+#define STACK_SIZE      32768
+
+/* Allocate at least some space for heap */
+#define HEAP_SIZE       65536
+
+#undef SUPPORT_HUPAIR
+
 /* config.h.  Generated from config.h.in by configure.  */
 /* config.h.in.  Generated automatically from configure.in by autoheader.  */
 
