@@ -9,10 +9,10 @@ if [ ! -e ${M68K_TOOLCHAIN} ]; then
 	exit 1
 fi
 
-rm -f ${M68K_TOOLCHAIN}/bin/m68k-elf-ld
-rm -f ${M68K_TOOLCHAIN}/m68k-elf/bin/ld
-ln ${M68K_TOOLCHAIN}/bin/m68k-elf-ld.bfd ${M68K_TOOLCHAIN}/bin/m68k-elf-ld
-ln ${M68K_TOOLCHAIN}/m68k-elf/bin/ld.bfd ${M68K_TOOLCHAIN}/m68k-elf/bin/ld
+rm -f ${M68K_TOOLCHAIN}/bin/m68k-elf-ld.x
+rm -f ${M68K_TOOLCHAIN}/m68k-elf/bin/ld.x
+#ln ${M68K_TOOLCHAIN}/bin/m68k-elf-ld.bfd ${M68K_TOOLCHAIN}/bin/m68k-elf-ld
+#ln ${M68K_TOOLCHAIN}/m68k-elf/bin/ld.bfd ${M68K_TOOLCHAIN}/m68k-elf/bin/ld
 
 rm -f ${M68K_TOOLCHAIN}/bin/elf2x68k.py
 rm -f ${M68K_TOOLCHAIN}/m68k-elf/lib/x68k.ld

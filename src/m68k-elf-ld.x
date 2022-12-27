@@ -36,15 +36,15 @@ for ((i=0; i<${#param[@]}; i++)); do
   esac
 done
 
+#for ((i=0; i<${#newparam[@]}; i++)); do
+#	echo $i ${newparam[$i]}
+#done
+
 elfbase1=`printf "0x%x" $((elfbase))`
 elfbase2=`printf "0x%x" $((elfbase+0x1000))`
 
-if [ "${infile}" ]; then
-  LDFLAGS="-z max-page-size=2 -static -lx68k -ldos -liocs -T x68k.ld"
-fi
-
 #set -x
 
-m68k-elf-ld.bfd -Ttext=${elfbase1} -lx68k -o "${outfile}.elf" ${newparam[@]} ${LDFLAGS}
-m68k-elf-ld.bfd -Ttext=${elfbase2} -lx68k -o "${outfile}.elf.2" ${newparam[@]} ${LDFLAGS}
+m68k-elf-ld.bfd -Ttext=${elfbase1} -o "${outfile}.elf" ${newparam[@]}
+m68k-elf-ld.bfd -Ttext=${elfbase2} -o "${outfile}.elf.2" ${newparam[@]}
 elf2x68k.py -o "${outfile}" ${xbaseopt} ${xstripopt} "${outfile}.elf" "${outfile}.elf.2"
