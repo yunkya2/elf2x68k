@@ -6,7 +6,7 @@ AS = $(CROSS)as
 LD = $(CROSS)gcc
 
 CFLAGS = -m68000
-LDFLAGS = -nostdlib -static
+LDFLAGS = -specs=x68k.specs
 
 all: $(TARGET)
 
