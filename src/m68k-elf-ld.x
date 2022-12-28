@@ -2,7 +2,6 @@
 
 set -e -o pipefail
 
-infile=""
 outfile="a.out"
 xbaseopt=""
 xstripopt=""
@@ -24,13 +23,8 @@ for ((i=0; i<${#param[@]}; i++)); do
     -s | -S | --strip* )
       xstripopt="-s"
       ;;
-    -*)
-      newparam[j]="${param[$i]}"
-      j=$((j+1))
-      ;;
     * )
       newparam[j]="${param[$i]}"
-      infile="${infile} ${param[$i]}"
       j=$((j+1))
       ;;
   esac

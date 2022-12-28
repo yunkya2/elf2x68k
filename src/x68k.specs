@@ -1,5 +1,3 @@
-%rename link_gcc_c_sequence                x68k_link_gcc_c_sequence
-
 *linker:
 ld.x
 

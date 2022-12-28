@@ -10,12 +10,13 @@ if [ ! -e ${M68K_TOOLCHAIN} ]; then
 fi
 
 cp src/m68k-elf-ld.x ${M68K_TOOLCHAIN}/bin/m68k-elf-ld.x
-rm ${M68K_TOOLCHAIN}/m68k-elf/bin/ld.x
+rm -f ${M68K_TOOLCHAIN}/m68k-elf/bin/ld.x
 ln ${M68K_TOOLCHAIN}/bin/m68k-elf-ld.x ${M68K_TOOLCHAIN}/m68k-elf/bin/ld.x
 
 cp src/elf2x68k.py ${M68K_TOOLCHAIN}/bin
 cp src/x68k.ld ${M68K_TOOLCHAIN}/m68k-elf/lib
 cp src/x68k.specs ${M68K_TOOLCHAIN}/m68k-elf/lib
+cp src/x68k.specs ${M68K_TOOLCHAIN}/lib/gcc/m68k-elf/specs
 
 (cd src/libx68k;make)
 cp src/libx68k/libx68k.a ${M68K_TOOLCHAIN}/m68k-elf/lib
