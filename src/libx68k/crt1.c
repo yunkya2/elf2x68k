@@ -117,6 +117,9 @@ setup_arguments (void)
   __argv[count] = 0;
 }
 
+void __INIT_SECTION__(void);
+void __FINI_SECTION__(void);
+
 void
 __crt1_startup (void *mcb)
 {
@@ -125,7 +128,9 @@ __crt1_startup (void *mcb)
   setup_environ ();
   setup_arguments ();
 
-//  __main (); 
+  atexit(__FINI_SECTION__);
+  __INIT_SECTION__();
+
   errno = 0;
   exit (main (__argc, __argv, environ));
 }
