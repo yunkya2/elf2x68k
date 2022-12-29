@@ -16,6 +16,7 @@ OBJS += chown.o close.o errno.o execve.o fork.o fstat.o \
 	read.o readlink.o sbrk.o stat.o symlink.o times.o unlink.o \
 	wait.o write.o _exit.o
 OBJS += crt0.o crt1.o
+OBJS += _sflags.o fds.o
 
 all: $(TARGET) libiocs.a libdos.a
 

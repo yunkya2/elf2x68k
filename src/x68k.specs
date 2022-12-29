@@ -2,7 +2,7 @@
 ld.x
 
 *link:
--z max-page-size=2 -T x68k.ld
+-z max-page-size=2 -T x68k.ld --wrap __sflags
 
 *startfile:
 crtbegin.o%s
