@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
+#include <sys/unistd.h>
 #include <x68k/dos.h>
 #include <x68k/iocs.h>
 
@@ -17,7 +18,6 @@ extern void __main (void);
 /* Internal */
 int 	__argc;
 char **	__argv;
-char **	environ;
 struct iocs_time	__ontime;
 
  void
