@@ -7,8 +7,8 @@ LD = $(CROSS)gcc
 ELF2X68K = ../elf2x68k.py
 
 CFLAGS = -m68000
-LDFLAGS = -nostdlib -Ttext=0x6800 -s
-LIBS = -liocs
+LDFLAGS = -Ttext=0x6800 -s -specs=x68knodos.specs
+LIBS =
 
 all: $(TARGET)
 

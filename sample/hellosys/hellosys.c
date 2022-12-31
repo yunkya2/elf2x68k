@@ -1,16 +1,17 @@
 /*
- *  hellosys - a simple bootable system sample without C libraries
+ *  hellosys - a simple bootable system sample without Human68k
  */
 
 #include <x68k/iocs.h>
+#include <stdio.h>
 
 const char *msg[] = {
-  "Hello, world\r\n",
-  "X68000 test\r\n",
-  "Test program\r\n",
+  "Hello, world",
+  "X68000 test",
+  "Test program",
 };
 
-void _start()
+int main()
 {
   int i;
   static struct iocs_lineptr param = {0, 0, 255, 255, 0xff00, 0xffff};
@@ -19,7 +20,7 @@ void _start()
   _iocs_g_clr_on();
 
   for (i = 0; i < 3; i++) {
-    _iocs_b_print(msg[i]);
+    printf("msg %d: %s\n", i, msg[i]); 
   }
 
   for (i = 0; i < 256; i++) {
@@ -28,7 +29,4 @@ void _start()
     param.color = i | (i << 8);
     _iocs_line(&param);
   }
-
-  while (1)
-    ;
 }
