@@ -5,7 +5,7 @@ ld.x
 -z max-page-size=2 -T x68k.ld --wrap __sflags
 
 *startfile:
-crtbegin.o%s
+x68kcrt0.o%s crtbegin.o%s
 
 *endfile:
 crtend.o%s
