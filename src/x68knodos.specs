@@ -1,0 +1,17 @@
+*linker:
+ld.x
+
+*link:
+-z max-page-size=2 -T x68k.ld
+
+*startfile:
+x68kcrt0nodos.o%s crtbegin.o%s
+
+*endfile:
+crtend.o%s
+
+*x68k_libgloss:
+-lnosys -liocs
+
+*link_gcc_c_sequence:
+--start-group %G %L %(x68k_libgloss) --end-group

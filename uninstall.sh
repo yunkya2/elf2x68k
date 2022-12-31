@@ -19,6 +19,7 @@ rm -f ${M68K_TOOLCHAIN}/lib/gcc/m68k-elf/specs
 rm -f ${M68K_TOOLCHAIN}/m68k-elf/lib/libx68k.a
 rm -f ${M68K_TOOLCHAIN}/m68k-elf/lib/libiocs.a
 rm -f ${M68K_TOOLCHAIN}/m68k-elf/lib/libdos.a
+rm -f ${M68K_TOOLCHAIN}/m68k-elf/lib/x68crt0*.o
 rm -rf ${M68K_TOOLCHAIN}/m68k-elf/include/x68k
 
 echo "Uninstalled elf2x68k script from m68k-elf-gcc toolchain."
