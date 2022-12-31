@@ -49,11 +49,8 @@ clear_bss:
 	move.l	%a0, _MCB		| MCB
 	lea.l	%a0@(0x100), %a5
 	move.l	%a5, _PSTA		| TEXT Start
-	move.l	%a0@(0x34), %d0
-	move.l	%d0, _PEND		| TEXT End
-	move.l	%d0, _DSTA		| DATA Start
 	move.l	%a0@(0x30), %d0
-	move.l	%d0, _DEND		| DATA End
+	move.l	%d0, _PEND		| TEXT End
 	move.l	%d0, _BSTA		| BSS Start
 	move.l	%a1, _BEND		| BSS End
 
@@ -102,8 +99,6 @@ clear_bss:
 
 	.comm	_PSTA, 4
 	.comm	_PEND, 4
-	.comm	_DSTA, 4
-	.comm	_DEND, 4
 	.comm	_BSTA, 4
 	.comm	_BEND, 4
 	.comm	_SSTA, 4

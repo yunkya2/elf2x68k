@@ -1,8 +1,12 @@
 /* Set a default stack size */
+#ifndef STACK_SIZE
 #define STACK_SIZE      32768
+#endif
 
 /* Allocate at least some space for heap */
+#ifndef HEAP_SIZE
 #define HEAP_SIZE       65536
+#endif
 
 #undef SUPPORT_HUPAIR
 
