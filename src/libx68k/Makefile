@@ -1,4 +1,4 @@
-TARGET = libx68k.a
+TARGET = libx68k.a libx68knodos.a
 
 CROSS = m68k-elf-
 CC = $(CROSS)gcc
@@ -17,6 +17,8 @@ OBJS += chown.o close.o errno.o execve.o fork.o fstat.o \
 	wait.o write.o _exit.o
 OBJS += crt1.o _sflags.o fds.o
 
+OBJS_NODOS += write-nodos.o
+
 CRT0OBJS += crt0.o crt0nodos.o
 
 all: $(TARGET) $(CRT0OBJS) libiocs.a libdos.a
@@ -27,7 +29,11 @@ libiocs.a:
 libdos.a:
 	make -C libdos all
 
-$(TARGET): $(OBJS)
+libx68k.a: $(OBJS)
+	$(AR) $(ARFLAGS) $@ $^
+	$(RANLIB) $@
+
+libx68knodos.a: $(OBJS_NODOS)
 	$(AR) $(ARFLAGS) $@ $^
 	$(RANLIB) $@
 

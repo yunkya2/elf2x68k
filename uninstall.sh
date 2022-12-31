@@ -17,6 +17,7 @@ rm -f ${M68K_TOOLCHAIN}/m68k-elf/lib/x68k.ld
 rm -f ${M68K_TOOLCHAIN}/m68k-elf/lib/x68k.specs
 rm -f ${M68K_TOOLCHAIN}/lib/gcc/m68k-elf/specs
 rm -f ${M68K_TOOLCHAIN}/m68k-elf/lib/libx68k.a
+rm -f ${M68K_TOOLCHAIN}/m68k-elf/lib/libx68knodos.a
 rm -f ${M68K_TOOLCHAIN}/m68k-elf/lib/libiocs.a
 rm -f ${M68K_TOOLCHAIN}/m68k-elf/lib/libdos.a
 rm -f ${M68K_TOOLCHAIN}/m68k-elf/lib/x68crt0*.o
