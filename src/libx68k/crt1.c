@@ -19,6 +19,7 @@ extern void __main (void);
 int 	__argc;
 char **	__argv;
 struct iocs_time	__ontime;
+uint32_t _vernum;
 
  void
 setup_environ (void)
@@ -124,6 +125,7 @@ void
 __crt1_startup (void *mcb)
 {
   __ontime = _iocs_ontime ();
+  _vernum = _dos_vernum ();
 
   setup_environ ();
   setup_arguments ();
