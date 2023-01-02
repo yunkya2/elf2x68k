@@ -9,7 +9,6 @@
 #include <errno.h>
 #undef errno
 extern int errno;
-#include "warning.h"
 
 clock_t
 _times (struct tms *buf)
@@ -17,5 +16,3 @@ _times (struct tms *buf)
   errno = ENOSYS;
   return -1;
 }
-
-stub_warning(_times)

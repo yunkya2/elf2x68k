@@ -9,7 +9,6 @@
 #include <sys/types.h>
 #undef errno
 extern int errno;
-#include "warning.h"
 
 int
 _chown (const char *path,
@@ -19,5 +18,3 @@ _chown (const char *path,
   errno = ENOSYS;
   return -1;
 }
-
-stub_warning(_chown)

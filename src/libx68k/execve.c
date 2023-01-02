@@ -8,7 +8,6 @@
 #include <errno.h>
 #undef errno
 extern int errno;
-#include "warning.h"
 
 int
 _execve (char  *name,
@@ -18,5 +17,3 @@ _execve (char  *name,
   errno = ENOSYS;
   return -1;
 }
-
-stub_warning(_execve)

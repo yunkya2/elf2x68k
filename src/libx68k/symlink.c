@@ -8,7 +8,6 @@
 #include <errno.h>
 #undef errno
 extern int errno;
-#include "warning.h"
 
 int
 _symlink (const char *path1,
@@ -17,5 +16,3 @@ _symlink (const char *path1,
   errno = ENOSYS;
   return -1;
 }
-
-stub_warning(_symlink)

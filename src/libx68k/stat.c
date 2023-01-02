@@ -10,7 +10,6 @@
 #include <errno.h>
 #undef errno
 extern int errno;
-#include "warning.h"
 
 int
 _stat (const char  *file,
@@ -19,5 +18,3 @@ _stat (const char  *file,
   errno = ENOSYS;
   return -1;
 }
-
-stub_warning(_stat)

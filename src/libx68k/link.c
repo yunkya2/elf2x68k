@@ -8,7 +8,6 @@
 #include <errno.h>
 #undef errno
 extern int errno;
-#include "warning.h"
 
 int
 _link (char *existing,
@@ -17,5 +16,3 @@ _link (char *existing,
   errno = ENOSYS;
   return -1;
 }
-
-stub_warning(_link)

@@ -8,7 +8,6 @@
 #include <errno.h>
 #undef errno
 extern int errno;
-#include "warning.h"
 
 int
 _kill (int pid,
@@ -17,5 +16,3 @@ _kill (int pid,
   errno = ENOSYS;
   return -1;
 }
-
-stub_warning(_kill)
