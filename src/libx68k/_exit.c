@@ -4,11 +4,12 @@
 
 #include <x68k/dos.h>
 #include <unistd.h>
+#include "fds.h"
 
 void _exit(int status)
 {
-  _dos_exit2(status);
+  /* Close opened file */
+  __fd_exit_clean ();
 
-  while (1)
-    ;
+  _dos_exit2(status);
 }

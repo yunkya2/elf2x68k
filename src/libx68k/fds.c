@@ -1,3 +1,4 @@
+#include <x68k/dos.h>
 #include <stdlib.h>
 #include <string.h>
 #include <limits.h>
@@ -32,7 +33,10 @@ __fd_assign (int fd, const char *filename, unsigned int flags)
 int
 __fd_remove (int fd)
 {
-  fdent *fdptr = &__fd_list[fd];
+  fdent *fdptr;
+
+  if ((fd < 0) || (fd >= OPEN_MAX))
+    return -1;
 
   fdptr = &__fd_list[fd];
 
@@ -52,6 +56,7 @@ __fd_exit_clean (void)
   int i;
 
   for (i = 5; i < OPEN_MAX; i++)
-    close (i);
-}
+    __fd_remove (i);
 
+  _dos_allclose();
+}
