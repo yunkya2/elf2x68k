@@ -9,6 +9,8 @@
 extern int errno;
 #include "fds.h"
 
+int __doserr2errno(int error);
+
 int open(const char *file, int flags, ...)
 {
   int fd;
@@ -22,7 +24,13 @@ int open(const char *file, int flags, ...)
   if ((fd >= 0) && (__fd_assign (fd, file, flags) < 0))
   {
     _dos_close(fd);
+    errno = EINVAL;
     return -1;
+  }
+
+  if (fd < 0) {
+    errno = __doserr2errno(-fd);
+    fd = -1;
   }
 
   return fd;

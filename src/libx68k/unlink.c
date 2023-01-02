@@ -8,7 +8,18 @@
 #undef errno
 extern int errno;
 
+int __doserr2errno(int error);
+
 int unlink (const char *pathname)
 {
-  return _dos_delete(pathname);
+  int res;
+
+  res = _dos_delete(pathname);
+
+  if (res < 0) {
+    errno = __doserr2errno(-res);
+    res = -1;
+  }
+
+  return res;
 }

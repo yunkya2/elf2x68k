@@ -8,7 +8,18 @@
 #undef errno
 extern int errno;
 
+int __doserr2errno(int error);
+
 off_t lseek(int fd, off_t offset, int whence)
 {
-  return _dos_seek(fd, offset, whence);
+  int res;
+
+  res = _dos_seek(fd, offset, whence);
+
+  if (res < 0) {
+    errno = __doserr2errno(-res);
+    res = -1;
+  }
+
+  return (off_t)res;
 }

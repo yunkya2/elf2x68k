@@ -9,6 +9,8 @@
 extern int errno;
 #include "fds.h"
 
+int __doserr2errno(int error);
+
 ssize_t read(int fd, void *buf, size_t count)
 {
   int res;
@@ -40,6 +42,11 @@ ssize_t read(int fd, void *buf, size_t count)
       }
       res = q - (char *)buf;
     }
+  }
+
+  if (res < 0) {
+    errno = __doserr2errno(-res);
+    res = -1;
   }
 
   return res;
