@@ -8,8 +8,6 @@
 #include <sys/time.h>
 #include <time.h>
 #include <errno.h>
-#undef errno
-extern int errno;
 
 int gettimeofday(struct timeval *tv, void *tz)
 {

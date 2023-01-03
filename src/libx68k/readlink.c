@@ -7,8 +7,6 @@
 #include <_syslist.h>
 #include <errno.h>
 #include <sys/types.h>
-#undef errno
-extern int errno;
 
 int
 _readlink (const char *path,

@@ -5,8 +5,6 @@
 #include <x68k/dos.h>
 #include <unistd.h>
 #include <errno.h>
-#undef errno
-extern int errno;
 
 int __doserr2errno(int error);
 

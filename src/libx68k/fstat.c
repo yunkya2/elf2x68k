@@ -10,8 +10,6 @@
 #include <string.h>
 #include <time.h>
 #include <errno.h>
-#undef errno
-extern int errno;
 
 int fstat(int fd, struct stat *st)
 {
