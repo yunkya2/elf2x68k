@@ -38,12 +38,11 @@ _start:
 
 _start_1:
 	move.l	%a0@(0x30), %a5
-	move.l	%a1, %d0
-	sub.l	%a5, %d0
 
 clear_bss:
 	clr.l	%a5@+
-	dbra	%d0, clear_bss
+	cmpa.l	%a5, %a1		| BSS End
+	bgt.s	clear_bss
 
 | Save crt0 arguments
 	move.l	%a0, _MCB		| MCB
@@ -82,8 +81,8 @@ clear_bss:
 	move.l	%a1, %sp@-		| incr
 	move.l	%a5, %sp@-		| ptr
 	.short	0xFF4A			| setblock
+	addq.l	#8, %sp
 
-	pea	%a0@			| MCB
 	jmp	__crt1_startup		| Human initialization
 
 	|

@@ -12,8 +12,6 @@ extern struct dos_psp *_PSP;
 
 /* User main */
 extern int main (int, char **, char **);
-/* for ctors */
-extern void __main (void);
 
 /* Internal */
 int 	__argc;
@@ -21,7 +19,7 @@ char **	__argv;
 struct iocs_time	__ontime;
 uint32_t _vernum;
 
- void
+static void
 setup_environ (void)
 {
   int env_size = *(int *) _ENV0;
@@ -122,7 +120,7 @@ void __INIT_SECTION__(void);
 void __FINI_SECTION__(void);
 
 void
-__crt1_startup (void *mcb)
+__crt1_startup (void)
 {
   __ontime = _iocs_ontime ();
   _vernum = _dos_vernum ();
