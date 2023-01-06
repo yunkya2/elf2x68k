@@ -4,16 +4,14 @@ CROSS = m68k-elf-
 CC = $(CROSS)gcc
 AS = $(CROSS)as
 LD = $(CROSS)gcc
-ELF2X68K = ../elf2x68k.py
 
-CFLAGS = -m68000
+CFLAGS = -m68000 -O2
 LDFLAGS = -Ttext=0x6800 -s -specs=x68knodos.specs
-LIBS =
 
 all: $(TARGET)
 
 $(TARGET): hellosys.o
-	$(LD) $(LDFLAGS) -o $@ $^ $(LIBS)
+	$(LD) $(LDFLAGS) -o $@ $^
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $<

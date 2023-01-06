@@ -1,20 +1,20 @@
-TARGET = hellostdc.x
+TARGET = hello.x
 
 CROSS = m68k-elf-
 CC = $(CROSS)gcc
 AS = $(CROSS)as
 LD = $(CROSS)gcc
 
-CFLAGS = -m68000
+CFLAGS = -m68000 -O2
 LDFLAGS =
 
 all: $(TARGET)
 
-$(TARGET): hellostdc.o
+$(TARGET): hello.o
 	$(LD) $(LDFLAGS) -o $@ $^
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $<
 
 clean:
-	-rm -f *.o *.elf* $(TARGET) testfile
+	-rm -f *.o *.elf* $(TARGET)
