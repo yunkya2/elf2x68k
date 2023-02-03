@@ -33,7 +33,7 @@ LIB_SOURCES = allclose.S bindno.S breakck.S c_cls_al.S c_cls_ed.S c_cls_st.S \
 	makeassign.S maketmp.S malloc.S malloc0.S malloc2.S memcpy.S mfree.S \
 	mkdir.S move.S nameck.S namests.S newfile.S nfiles.S open.S \
 	open_pr.S os_patch.S pathchk.S print.S prnout.S prnsns.S pspset.S \
-	putchar.S rassign.S read.S retshell.S rmdir.S s_malloc.S s_malloc0.S \
+	putchar.S rassign.S read.S rename.S retshell.S rmdir.S s_malloc.S s_malloc0.S \
 	s_mfree.S s_process.S seek.S send_pr.S setblock.S setdate.S setenv.S \
 	setpdb.S settim2.S settime.S sleep_pr.S super.S super_jsr.S \
 	suspend_pr.S time_pr.S unlock.S verify.S verifyg.S vernum.S \

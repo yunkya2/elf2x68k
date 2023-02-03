@@ -481,6 +481,7 @@ extern void	_dos_pspset (struct dos_psp *);
 extern void	_dos_putchar (int);
 extern int	_dos_rassign (const char *);
 extern int	_dos_read (int, char *, int);
+extern int	_dos_rename (const char *, const char *);
 extern void	_dos_retshell (void) __attribute__((__noreturn__));
 extern int	_dos_rmdir (const char *);
 extern void *	_dos_s_malloc (int, int);
