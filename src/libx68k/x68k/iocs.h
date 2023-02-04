@@ -63,7 +63,7 @@ struct iocs_paintptr {
   iocs_color_t	color;
   void		*buf_start;
   void		*buf_end;
-} __attribute__((__packed__));
+} __attribute__((packed,aligned(2)));
 
 struct iocs_pointptr {
   short	x;
@@ -95,7 +95,7 @@ struct iocs_symbolptr {
   iocs_color_t		color;
   unsigned char	font_type;
   unsigned char	angle;
-} __attribute__((__packed__));
+} __attribute__((packed,aligned(2)));
 
 struct iocs_regs {
   int	d0;
@@ -122,13 +122,13 @@ struct iocs_time {
 struct iocs_chain {
   void		*addr;
   unsigned short	len;
-} __attribute__((__packed__));
+} __attribute__((packed,aligned(2)));
 
 struct iocs_chain2 {
   void			*addr;
   unsigned short	len;
   const struct iocs_chain2 *next;
-} __attribute__((__packed__));
+} __attribute__((packed,aligned(2)));
 
 struct iocs_clipxy {
   short	xs;

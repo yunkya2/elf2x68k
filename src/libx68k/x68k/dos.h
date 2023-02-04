@@ -118,7 +118,7 @@ union dos_fcb {
 		char		nouse_3;
 		char		name2[10];
 		char		nouse_4[38];
-	} __attribute__((__packed__)) chr;
+	} __attribute__((packed,aligned(2))) chr;
 	struct {
 		unsigned char	dupcnt;
 		unsigned	mode	: 1;
@@ -145,7 +145,7 @@ union dos_fcb {
 		unsigned short	fatno;
 		unsigned long	size;
 		char		nouse_4[28];
-	} __attribute__((__packed__)) blk;
+	} __attribute__((packed,aligned(2))) blk;
 };
 
 struct dos_indos {
@@ -235,7 +235,7 @@ struct dos_dpbptr {
 	struct dos_dpbptr *next;
 	unsigned short	dirfat;
 	char		dirbuf[64];
-} __attribute__((__packed__));
+} __attribute__((packed,aligned(2)));
 
 struct dos_filbuf {
 	unsigned char	searchatr;
@@ -250,7 +250,7 @@ struct dos_filbuf {
 	unsigned short	date;
 	unsigned int	filelen;
 	char		name[23];
-} __attribute__((__packed__));
+} __attribute__((packed,aligned(2)));
 
 struct dos_exfilbuf {
 	unsigned char	searchatr;
@@ -268,7 +268,7 @@ struct dos_exfilbuf {
 	char		drive[2];
 	char		path[65];
 	char		unused[21];
-} __attribute__((__packed__));
+} __attribute__((packed,aligned(2)));
 
 struct dos_dregs {
 	int	d0;
@@ -313,7 +313,7 @@ struct dos_prcptr {
 	struct dos_prcctrl *buf_ptr;
 	unsigned char	name[16];
 	long		wait_time;
-} __attribute__((__packed__));
+} __attribute__((packed,aligned(2)));
 
 __BEGIN_DECLS
 
