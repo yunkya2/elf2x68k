@@ -89,7 +89,7 @@ struct iocs_putptr {
 struct iocs_symbolptr {
   short		x1;
   short		y1;
-  unsigned char	*string_address;
+  const unsigned char	*string_address;
   unsigned char	mag_x;
   unsigned char	mag_y;
   iocs_color_t		color;
