@@ -424,7 +424,7 @@ extern int	_iocs_tpalet2 (int, int);
 extern void	_iocs_tvctrl (int);
 extern void	_iocs_txbox (const struct iocs_tboxptr *);
 extern void	_iocs_txfill (const struct iocs_txfillptr *);
-extern void	_iocs_txline (struct iocs_tlineptr); /* 1.3 & iocs.x */
+extern void	_iocs_txline (const struct iocs_tlineptr *); /* 1.3 & iocs.x */
 extern void	_iocs_txrascpy (int, int, int);
 extern void	_iocs_txrev (const struct iocs_trevptr *);
 extern void	_iocs_txxline (const struct iocs_xlineptr *);

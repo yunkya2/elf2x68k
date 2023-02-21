@@ -1,4 +1,4 @@
-| void _iocs_txline (struct _iocs_tlineptr); /* 1.3, iocs.x */
+| void _iocs_txline (const struct _iocs_tlineptr *); /* 1.3, iocs.x */
 .text
 .even
 .global _iocs_txline
