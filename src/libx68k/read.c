@@ -24,21 +24,28 @@ ssize_t read(int fd, void *buf, size_t count)
   if (!isatty(fd) && __fd_flags(fd) & O_BINARY) {
     res = _dos_read(fd, buf, count);
   } else {
-    res = _dos_read(fd, buf, count);
-    if (res > 0) {
-      char *p;
-      char *q;
+    char *p = buf;
+    int r;
+    res = 0;
+    while (count > 0) {
+      r = _dos_read(fd, p, count);
+      if (r == 0) {
+        break;
+      } else if (r < 0) {
+        res = r;
+        break;
+      }
+      char *q = p;
       char ch;
 
-      p = buf;
-      q = buf;
-      while (res-- > 0) {
-        ch = *p++;
+      while (r-- > 0) {
+        ch = *q++;
         if (ch != '\r') {
-          *q++ = ch;
+          *p++ = ch;
+          res++;
+          count--;
         }
       }
-      res = q - (char *)buf;
     }
   }
 
