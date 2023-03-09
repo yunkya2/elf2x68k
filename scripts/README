@@ -1,0 +1,37 @@
+- common.sh
+- binutils.sh
+- download.sh
+- gcc-stage1.sh
+- gcc-stage2.sh
+- newlib.sh
+
+上記のスクリプトは xdev68k の build_m68k-toolchain.sh
+  https://github.com/yosshin4004/xdev68k/blob/main/build_m68k-toolchain.sh
+を元に以下の変更を行ったものです。
+
+  - binutils, gcc, newlib のバージョンを現時点での最新版に更新した
+     - binutils 2.40
+     - gcc 12.2.0
+     - newlib 4.3.0-20230120
+  - binutils, gcc, newlib の各ビルドを別々のスクリプトに分割した
+  - ビルドに必要なファイルのダウンロードを事前に一括して行うようにした
+
+各ファイルのライセンスは、元ファイル build_m68k-toolchain.sh のライセンス条件に従います
+
+#------------------------------------------------------------------------------
+#
+#	Copyright (C) 2022 Yosshin(@yosshin4004)
+#
+#	Licensed under the Apache License, Version 2.0 (the "License");
+#	you may not use this file except in compliance with the License.
+#	You may obtain a copy of the License at
+#
+#	    http://www.apache.org/licenses/LICENSE-2.0
+#
+#	Unless required by applicable law or agreed to in writing, software
+#	distributed under the License is distributed on an "AS IS" BASIS,
+#	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#	See the License for the specific language governing permissions and
+#	limitations under the License.
+#
+#------------------------------------------------------------------------------
