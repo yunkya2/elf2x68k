@@ -39,6 +39,6 @@ elfbase2=`printf "0x%x" $((elfbase+0x1000))`
 
 #set -x
 
-m68k-elf-ld.bfd -Ttext=${elfbase1} -o "${outfile}.elf" ${newparam[@]}
-m68k-elf-ld.bfd -Ttext=${elfbase2} -o "${outfile}.elf.2" ${newparam[@]}
+m68k-xelf-ld.bfd -Ttext=${elfbase1} -o "${outfile}.elf" ${newparam[@]}
+m68k-xelf-ld.bfd -Ttext=${elfbase2} -o "${outfile}.elf.2" ${newparam[@]}
 elf2x68k.py -o "${outfile}" ${xbaseopt} ${xstripopt} "${outfile}.elf" "${outfile}.elf.2"
