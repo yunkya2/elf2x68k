@@ -1,13 +1,6 @@
 TARGET = libiocs.a
 
-CROSS = m68k-elf-
-CC = $(CROSS)gcc
-AS = $(CROSS)as
-LD = $(CROSS)gcc
-AR = $(CROSS)ar
-RANLIB = $(CROSS)ranlib
-
-CFLAGS = -m68000
+include ../Common.mk
 
 LIB_SOURCES = abortjob.S abortrst.S adpcmain.S adpcmaot.S adpcminp.S \
 	adpcmlin.S adpcmlot.S adpcmmod.S adpcmout.S adpcmsns.S akconv.S \

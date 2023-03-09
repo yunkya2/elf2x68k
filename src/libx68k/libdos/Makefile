@@ -1,13 +1,6 @@
 TARGET = libdos.a
 
-CROSS = m68k-elf-
-CC = $(CROSS)gcc
-AS = $(CROSS)as
-LD = $(CROSS)gcc
-AR = $(CROSS)ar
-RANLIB = $(CROSS)ranlib
-
-CFLAGS = -m68000
+include ../Common.mk
 
 LIB_SOURCES = allclose.S bindno.S breakck.S c_cls_al.S c_cls_ed.S c_cls_st.S \
 	c_color.S c_curoff.S c_curon.S c_del.S c_down.S c_down_s.S c_era_al.S \

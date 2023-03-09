@@ -1,14 +1,6 @@
 TARGET = libx68k.a libx68knodos.a
 
-CROSS = m68k-elf-
-CC = $(CROSS)gcc
-AS = $(CROSS)gcc
-LD = $(CROSS)gcc
-AR = $(CROSS)ar
-RANLIB = $(CROSS)ranlib
-
-CFLAGS = -m68000 -I.
-ASFLAGS = -m68000 -I.
+include Common.mk
 
 # object files needed
 OBJS += chown.o close.o execve.o fork.o fstat.o \
