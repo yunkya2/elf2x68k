@@ -4,3 +4,6 @@
 *.elf*
 *.sys
 .vscode
+build_gcc/
+download/
+m68k-xelf/
