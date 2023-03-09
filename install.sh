@@ -30,4 +30,7 @@ cp src/libx68k/crt0nodos.o ${M68K_TOOLCHAIN}/m68k-elf/lib/x68kcrt0nodos.o
 mkdir -p ${M68K_TOOLCHAIN}/m68k-elf/include/x68k
 cp -r src/libx68k/x68k ${M68K_TOOLCHAIN}/m68k-elf/include
 
+mkdir -p ${M68K_TOOLCHAIN}/m68k-elf/sys-include/sys
+cp src/_default_fcntl.h ${M68K_TOOLCHAIN}/m68k-elf/sys-include/sys
+
 echo "Installed elf2x68k script into m68k-elf-gcc toolchain."
