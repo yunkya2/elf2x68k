@@ -1,6 +1,6 @@
 TARGET = hellosys.sys
 
-CROSS = m68k-elf-
+CROSS = m68k-xelf-
 CC = $(CROSS)gcc
 AS = $(CROSS)as
 LD = $(CROSS)gcc
