@@ -48,6 +48,9 @@ cd ${DOWNLOAD_DIR}
 mkdir -p ${BUILD_DIR}/${GCC_DIR}_stage1
 tar xvf ${GCC_ARCHIVE} -C ${SRC_DIR}
 
+# 事前にダウンロードしておいたライブラリをコピー
+cp {gmp,mpfr,mpc,isl}-* ${SRC_DIR}/${GCC_DIR}
+
 #
 #	新しい mingw 環境では以下のようなエラーとなる。
 #		../../../src/gcc-10.2.0/gcc/system.h:743:30: error: expected identifier before string constant
@@ -61,8 +64,17 @@ if [ "$(expr substr $(uname -s) 1 5)" == "MINGW" ]; then
 	mv ${SRC_DIR}/${GCC_DIR}/gcc/system.h.tmp ${SRC_DIR}/${GCC_DIR}/gcc/system.h
 fi
 
-# 事前にダウンロードしておいたライブラリをコピー
-cp {gmp,mpfr,mpc,isl}-* ${SRC_DIR}/${GCC_DIR}
+#
+#	mingw 環境で gcc-12.2.0 のビルドを行うと stage-2 の PCH コンパイルでエラーになる問題を修正する。
+#	https://github.com/brechtsanders/winlibs_mingw/issues/108
+#	mingw 向けに当たっているパッチと同じものを当てる
+#
+if [ "$(expr substr $(uname -s) 1 5)" == "MINGW" ]; then
+	cd ${SRC_DIR}/${GCC_DIR}
+	wget https://github.com/msys2/MINGW-packages/raw/efe952964b315b66104e332651d3b70c14e788ff/mingw-w64-gcc/0010-Fix-using-large-PCH.patch
+	patch -p1 < 0010-Fix-using-large-PCH.patch
+fi
+
 cd ${SRC_DIR}/${GCC_DIR}
 ./contrib/download_prerequisites
 
