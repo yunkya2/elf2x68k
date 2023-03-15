@@ -66,7 +66,7 @@ make -j${NUM_PROC} 2<&1 | tee build.gcc-stage2.1.log
 if [ ${PIPESTATUS[0]} -ne 0 ]; then
 	exit 1;
 fi
-make install 2<&1 | tee build.gcc-stage2.2.log
+make install-strip 2<&1 | tee build.gcc-stage2.2.log
 if [ ${PIPESTATUS[0]} -ne 0 ]; then
 	exit 1;
 fi
