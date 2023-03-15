@@ -27,6 +27,7 @@ set -e
 
 M68K_TOOLCHAIN=m68k-xelf
 
+rm -f ${M68K_TOOLCHAIN}/README
 rm -f ${M68K_TOOLCHAIN}/bin/m68k-xelf-ld.x
 rm -f ${M68K_TOOLCHAIN}/m68k-elf/bin/ld.x
 
