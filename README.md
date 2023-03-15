@@ -2,98 +2,124 @@
 
 ## 概要
 
-PC環境のm68k用gccクロスツールチェイン m68k-elf-gcc からシャープ X680x0 用実行ファイル(X形式)を出力できるようにした開発環境です。
+elf2x68k は、シャープ X680x0 用実行ファイル(X 形式)を PC の Unix/Linux 系環境上で開発するためのクロス開発環境です。m68k 用クロスツールチェイン (gcc, binutils, newlib) から出力される ELF ファイルを変換スクリプト elf2x68k.py で変換することで、X68k で実行可能な X 形式ファイルを出力します。
 
-既存のX68k用のクロス開発環境 xdev68k (https://github.com/yosshin4004/xdev68k) に含まれる m68k-toolchain を元に、スクリプトやライブラリ等を追加することで環境を構築します。
+(従来は xdev68k (https://github.com/yosshin4004/xdev68k) に含まれる m68k-toolchain を利用していたため、インストールに xdev68k が必要でしたが、自前でツールチェインを持つことで単独使用できるようになりました)
+
+xdev68k によるクロス開発環境とは以下のような違いがあります。
+
+* ツールチェインのコマンド名が `m68k-elf-*` から `m68k-xelf-*` に変わります (例: `m68k-xelf-gcc`)
+* コンパイラドライバ (`m68k-xelf-gcc`) から直接 X 形式ファイルが出力されます。ネイティブの gcc を使用するのと同様の感覚で X 形式ファイルを得ることができます。
+* アセンブラやリンカは HAS, HLK ではなく GNU binutils の GNU as, GNU ld を使用します。このため、アセンブラの書式には HAS などで用いられるモトローラ形式でなく [MIT形式](https://sourceware.org/binutils/docs/as/M68K_002dSyntax.html) (GASフォーマット) を使用する必要があります。
+* C標準ライブラリには [Newlib](https://sourceware.org/newlib/) に X68k 対応を追加したものを使用します。このため、C Compiler PRO-68K や X680x0 libc で提供される関数は使用できません。Human 68kの DOS コールや IOCS コールは独自ライブラリから利用可能です。
 
 ## インストール
 
-動作はWindows11のWSL2にインストールしたUbuntu-20.04で確認しています。
+### バイナリ配布
 
-インストールの前に xdev68k (https://github.com/yosshin4004/xdev68k) をインストールして環境変数 `XDEV68K_DIR` を設定し、更に `xdev68k/m68k-toolchain/bin` にパスを通しておく必要があります。
+x86_64 Linux と MSYS2 MinGW 64bit 向けはバイナリで配布しています
+(Linux 版は Windows 11 の WSL2 にインストールした Ubuntu-20.04 でのみ動作確認しています)。
 
-その後、
+バイナリ配布の tarball を任意のディレクトリに展開し、`m68k-xelf/bin` にパスを通すことで使用できるようになります。
 
-```
-./install.sh
-```
+### ソースコードからのビルド
 
-を実行すると、必要なスクリプト等を m68k-toolchain に追加します。
-
-```
-./uninstall.sh
-```
-
-を実行すると、インストール前の状態に戻します。
-
-インストールによって以下のファイルが追加されます。
-
-* bin/m68k-elf-ld.x
-  * GNUリンカ m68k-elf-ld を呼び出してロードアドレスを変えたELFファイルを2つ生成し、それらから elf2x68k.py スクリプトを用いてX形式のファイルを生成するスクリプトです
-  * m68k-elf-ld の代わりに使用することで m68k-elf-gcc の出力結果として直接X形式ファイルが得られるようになります
-* bin/elf2x68k.py
-  * ELFファイルをX形式実行ファイルに変換するpythonスクリプトです
-* lib/gcc/m68k-elf/specs
-  * m68k-elf-gcc の挙動を修正するspecsファイルです
-    * リンク時にX68kに必要なライブラリもリンクします
-    * リンカとして m68k-elf-ld の代わりに上記 m68k-elf-ld.x を使用します
-* m68k-elf/lib/x68k.ld
-  * X68k向けリンクの際に使用するリンカスクリプトです
-* m68k-elf/lib/x68k{nodos,}.specs
-  * m68k-elf-gcc の挙動を修正するspecsファイルです
-    * x68k.specs は上記 lib/gcc/m68k-elf/specs と同じものです
-    * x68knodos.specs はリンクされるライブラリからHuman68k関連のものを外してIOCSコールのみを利用可能にしてあるものです。ディスクのブートセクタからHuman68k抜きで起動するバイナリを開発できるようになります
-* m68k-elf/lib/libx68k.a
-  * newlibの下回りのシステムコール処理を提供するライブラリです
-* m68k-elf/lib/libx68knodos.a
-  * ilbx68k.aと同様ですがHuman68k関連のものを外したライブラリです。ファイルI/O関連はすべてエラーになり、コンソールへのwrite()のみがIOCS _B_PUTCとして処理されます
-* m68k-elf/lib/libiocs.a
-* m68k-elf/lib/libdos.a
-  * IOCSコール、DOSコールを提供するライブラリです
-* m68k-elf/lib/x68kcrt0.o
-* m68k-elf/lib/x68kcrt0nodos.o
-  * X68k用のC言語スタートアップ処理を行うオブジェクトファイルです。x68kcrt0nodos.o はコマンドライン引数の受け取りなどHuman68kに依存する処理を行いません
-* m68k-elf/include/x68k
-  * libiocs.a, libdos.a を利用するためのヘッダファイルです
-
-スクリプト自体は特にOSには依存しないので、他のUnix/Linux系環境でも問題なく動作すると思います。
-
-## elf2x68k.py スクリプト
+Linux 環境または MSYS2 MinGW 64bit 環境上で本リポジトリを clone して、
 
 ```
-usage: elf2x68k.py [-h] [-o OUTPUT] [-b BASE] [-s] file1 [file2]
+make all
 ```
 
-* file1, file2で指定したELFファイルを元にX形式に変換します。
-* 変換後のファイルは　`-o` オプションが指定されていればそのファイル名で、オプションが省略されている場合は file1 に '.x' を追加したファイル名で作成されます。
-* file1, file2はスタティックリンクされた、m68kアーキテクチャ用ELF実行ファイルである必要があります。
-  * file1のみが指定されている場合は、与えられたELFファイルをロード先アドレス固定X形式(Human.sysで使われている形式)に変換します。
-  * file1, file2が指定されている場合は、2つのELFファイルの差分を利用することで再配置情報を生成し、変換後のX形式ファイルに付加します。これによりHuman68kから実行可能なファイルになります。正しく再配置情報を生成するためには、2つのファイルはロード先アドレス以外の内容がすべて等しいELFファイルである必要があります。
-* `-b` オプションが指定されている場合は、変換後のX形式ファイルのベースアドレスが指定したアドレスに設定されます。
-  * X68kのディスクのブートセクタから起動可能なファイルを生成するためには、`-b 0x6800`　を指定してベースアドレスを0x6800にしておく必要があります。
-* 変換元のELFファイルにシンボル情報がある場合は、X形式ファイルにもその情報が付加されます。 `-s` オプションが指定されている場合はシンボル情報を削除します。
+で、必要なファイルをダウンロードしてビルドしたツールチェインと X68k 対応ファイルを `m68k-xelf` にインストールします。バイナリ配布同様に、`m68k-xelf/bin` にパスを通すと使用できるようになります。
 
-## サンプル
+その他、Makefile で以下のターゲットを指定することができます。
 
-### sample/hello
+```
+make m68k-xelf - m68k-xelf ツールチェインのビルドのみを行います
+make download  - ツールチェインビルドに必要なファイルのダウンロードのみを行います
+make install   - m68k-xelf に X68k 対応ファイルのインストールのみ行います
+make uninstall - m68k-xelf の X68k 対応ファイルを削除します
+make clean     - ビルドの生成物を削除します (ダウンロードしたアーカイブは削除しません)
+make pristine  - ダウンロードアーカイブも含めて削除
+make help      - 指定可能なターゲットを表示します
+```
 
-* printf()とシンプルなIOCSコール呼び出しのサンプルです
-* makeすると hello.x というファイルができます。Human68kでそのまま実行できます
+## 実行例
 
-### sample/hellosys
+テストとして、以下のようなサンプルをコンパイルしてみます。
 
-* 上記 sample/hello と同じ内容を、Human68k を使わずに実行するサンプルです
-* makeすると hellosys.sys というバイナリが生成されます。このファイルは以下の手順で起動できます。
-  1. 実機でフォーマット済みのフロッピーディスク、またはエミュレータでフォーマット済みディスクイメージを用意します
-  2. hellosys.sys を **human.sys という名前で** ディスクにコピーします
-      * ディスクには他のファイルを置かないでください。ブートセクタから起動できるファイルはディスクの連続したセクタに配置されている必要があるためです。
-  3. 作成したディスク(イメージ)を実機またはエミュレータにセットし、リセットします。
+```
+#include <stdio.h>
+int main()
+{
+  printf("Hello world.\n");
+  return 0;
+}
+```
 
+この内容のファイル `sample.c` を作成し、以下のコマンドを実行します。
 
-### sample/fileio
+```
+m68k-xelf-gcc -o sample.x sample.c
+```
 
-* newlibのファイルI/O周りのAPIをテストするサンプルです
+ソースコードがコンパイルされ、`sample.x`, `sample.x.elf`, `sample.x.elf.2` の 3 つのファイルが生成されます。
+* `sample.x` は X68k の X 形式実行ファイルなので、実機やエミュレータなどの環境で実行できます。
+* `sample.x.elf`, `sample.x.elf.2` は、X 形式実行ファイルを生成するために使用した ELF ファイルです。`m68k-xelf-readelf` や `m68k-xelf-objdump` などの ELF ファイルを扱うコマンドはこのファイルに対して実行することができます。
+
+このようにリンク後に X 形式実行ファイルと ELF ファイルが生成されることを除けば、使い方は通常の gcc と同じです。もちろんコンパイルとリンクを分けて実行することも可能ですが、リンクは GNU リンカ `m68k-xelf-ld` を直接呼び出すことは避けて、コンパイラドライバ `m68k-xelf-gcc` から実行するようにしてください
+(ELF → X 形式の変換を gcc の specs ファイルの記述によって行っているため)。
+
+## ライブラリ
+
+### C 標準ライブラリ
+
+elf2x68k は C 標準ライブラリに [Newlib](https://sourceware.org/newlib/) を使用しています。
+Newlib で提供しているライブラリ関数の仕様は、以下のページを参照してください。
+
+* [Red Hat newlib C Library Documentation](https://sourceware.org/newlib/)
+* [Red Hat newlib C Math Library Documentation](https://sourceware.org/newlib/)
+
+ファイル入出力では、Human68k の仕様にしたがってバイナリファイルとテキストファイルをサポートします。
+* `open()` のオープンモードでは `O_BINRAY` (バイナリモード)と `O_TEXT` (テキストモード)を指定できます。
+* `fopen()` などのオープンモードでは `"b"` (バイナリモード)と `"t"` (テキストモード)を指定できます。
+
+どちらも、指定がない場合にはテキストモードでオープンされます。
+
+### X68k 対応ライブラリ
+
+Newlib のライブラリ関数に加えて、X68k 対応のために以下のライブラリを提供しています。
+
+* libx68k  
+Newlib のライブラリ関数が利用する、OS 依存のファイル入出力などのシステムコール関数 (open(), close(), read(), write() 等)を提供します。
+* libdos  
+Human68k の DOS コールをサポートします。
+ヘッダファイル `x68k/dos.h` を include することで利用できます。
+* libiocs  
+X680x0 の IOCS コールをサポートします。
+ヘッダファイル `x68k/iocs.h` を include することで利用できます。
+
+これらのライブラリは、コンパイラドライバ `m68k-xelf-gcc` からリンクを行う際にデフォルトでリンクされます。
+
+## 制約事項
+
+* libx68k のシステムコール関数に不十分な実装が残っています。
+* C++ 周りの機能はあまりテストされていません。
+* デバッグ情報の出力に対応していません。
+* etc.
+
+## 謝辞
+
+elf2x68k の開発には以下のソースコードを参考にさせていただきました。
+
+* m68k クロスツールチェインのビルドスクリプトは、xdev68k 内のスクリプト [build_m68k-toolchain.sh](https://github.com/yosshin4004/xdev68k/blob/main/build_m68k-toolchain.sh) を元にしています。開発された よっしん氏 (@yosshin4004) に感謝いたします。
+* Newlib の X68k 対応は、[newlib-1.19.0-human68k](https://github.com/Lydux/newlib-1.19.0-human68k) の [human68k対応コード](https://github.com/Lydux/newlib-1.19.0-human68k/tree/master/newlib/libc/sys/human68k) を元にしています。開発された Lyderic Maillet 氏 に感謝いたします。
 
 ## ライセンス
 
-elf2x68k はBSDライセンスとします
+* src/*  
+BSDライセンスが適用されます。
+* scripts/*  
+元となった xdev68k 内のスクリプト [build_m68k-toolchain.sh](https://github.com/yosshin4004/xdev68k/pblob/main/build_m68k-toolchain.sh) と同様に、Apache License Version 2.0 が適用されます。
+* binutils, gcc, newlib  
+それぞれの配布元が規定したライセンス条件が適用されます。アーカイブ内の COPYING ファイル等を参照してください。
