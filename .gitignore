@@ -3,6 +3,7 @@
 *.x
 *.elf*
 *.sys
+*.bz2
 .vscode
 build_gcc/
 download/

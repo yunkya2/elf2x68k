@@ -18,10 +18,19 @@
 #
 #------------------------------------------------------------------------------
 
-all:
+help:
+	@echo "make all        - Build m68k-xelf development environment"
+	@echo "make m68k-xelf  - Build m68k cross toolchain only"
+	@echo "make download   - Download prerequisite archives only"
+	@echo "make install    - Install X68k support files only"
+	@echo "make uninstall  - Uninstall X68k support files"
+	@echo "make clean      - Remove artifacts"
+	@echo "make pristine   - Remove artifacts including downloaded archives"
+	@echo "make help       - Show this message"
 
+all: m68k-xelf install
 
-toolchain: binutils gcc-stage1 newlib gcc-stage2
+m68k-xelf: binutils gcc-stage1 newlib gcc-stage2
 
 binutils: download
 	scripts/binutils.sh
@@ -38,6 +47,12 @@ gcc-stage2: download
 download:
 	scripts/download.sh
 
+install:
+	scripts/install.sh
+
+uninstall:
+	scripts/uninstall.sh
+
 clean:
 	-rm -rf build_gcc
 	-rm -rf m68k-xelf
@@ -46,5 +61,10 @@ clean:
 pristine: clean
 	-rm -rf download
 
-.PHONY:	all clean pristine
-.PHONY:	download binutils gcc-stage1 newlib gcc-stage2
+ARCHIVE="elf2x68k-`uname -s|sed 's/_.*//'`-`date +%Y%m%d`"
+release:
+	tar jcvf ${ARCHIVE}.tar.bz2 m68k-xelf --owner=root --group=root
+
+.PHONY:	all clean pristine help
+.PHONY:	download toolchain binutils gcc-stage1 newlib gcc-stage2
+.PHONY:	install uninstall release
