@@ -34,7 +34,7 @@ rm -f ${M68K_TOOLCHAIN}/m68k-elf/bin/ld.x
 rm -f ${M68K_TOOLCHAIN}/bin/elf2x68k.py
 rm -f ${M68K_TOOLCHAIN}/m68k-elf/lib/x68k.ld
 rm -f ${M68K_TOOLCHAIN}/m68k-elf/lib/x68k.specs
-rm -f ${M68K_TOOLCHAIN}/lib/gcc/m68k-elf/specs
+rm -f ${M68K_TOOLCHAIN}/lib/gcc/m68k-elf/[0-9]*/specs
 rm -f ${M68K_TOOLCHAIN}/m68k-elf/lib/libx68k.a
 rm -f ${M68K_TOOLCHAIN}/m68k-elf/lib/libx68knodos.a
 rm -f ${M68K_TOOLCHAIN}/m68k-elf/lib/libiocs.a

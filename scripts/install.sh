@@ -37,6 +37,7 @@ cp src/x68k.ld ${M68K_TOOLCHAIN}/m68k-elf/lib
 cp src/x68k.specs ${M68K_TOOLCHAIN}/m68k-elf/lib
 cp src/x68knodos.specs ${M68K_TOOLCHAIN}/m68k-elf/lib
 cp src/x68k.specs ${M68K_TOOLCHAIN}/lib/gcc/m68k-elf/specs
+mv ${M68K_TOOLCHAIN}/lib/gcc/m68k-elf/specs ${M68K_TOOLCHAIN}/lib/gcc/m68k-elf/[0-9]*
 
 (cd src/libx68k; make) || exit 1
 cp src/libx68k/libx68k.a ${M68K_TOOLCHAIN}/m68k-elf/lib
