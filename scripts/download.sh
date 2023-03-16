@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/usr/bin/env bash
 #------------------------------------------------------------------------------
 #
 #	download.sh
@@ -60,7 +60,10 @@ fi
 # gcc ソースコード内にあるダウンロード用スクリプトのみを抽出して実行する
 
 if ! [ -f gmp-* -a -f mpfr-* -a -f mpc-* -a -f isl-* ]; then
-	tar xvf ${GCC_ARCHIVE} --wildcards ${GCC_DIR}/contrib/\*prerequisites\* ${GCC_DIR}/gcc/BASE-VER
+	tar xvf ${GCC_ARCHIVE} ${GCC_DIR}/contrib/download_prerequisites \
+			       ${GCC_DIR}/contrib/prerequisites.md5 \
+			       ${GCC_DIR}/contrib/prerequisites.sha512 \
+			       ${GCC_DIR}/gcc/BASE-VER
 	echo "Download prerequisites"
 	(cd gcc-${GCC_VERSION}; contrib/download_prerequisites) || exit 1
 	mv ${GCC_DIR}/*.tar.* .
