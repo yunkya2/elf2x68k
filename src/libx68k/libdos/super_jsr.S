@@ -1,9 +1,9 @@
 | void _dos_super_jsr (void (*)(void), struct _dos_dregs *, struct _dos_dregs *);
 .text
 .even
-.global _dos_dregs
-.type _dos_dregs,@function
-_dos_dregs:
+.global _dos_super_jsr
+.type _dos_super_jsr,@function
+_dos_super_jsr:
 	movem.l	%d2-%d7/%a2-%a6, %sp@-
 	move.l	%sp@(48), %sp@-
 	movea.l	%sp@(56), %a0	| inregs

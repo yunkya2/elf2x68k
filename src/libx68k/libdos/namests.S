@@ -1,9 +1,9 @@
 | int _dos_namests (const char *, struct _dos_namestbuf *);
 .text
 .even
-.global _dos_namestbuf
-.type _dos_namestbuf,@function
-_dos_namestbuf:
+.global _dos_namests
+.type _dos_namests,@function
+_dos_namests:
 	move.l	%sp@(8), %sp@-
 	move.l	%sp@(8), %sp@-
 	.short	0xff29

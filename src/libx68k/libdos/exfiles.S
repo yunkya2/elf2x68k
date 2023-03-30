@@ -1,9 +1,9 @@
 | int _dos_exfiles (struct _dos_exfilbuf *, const char *, int);
 .text
 .even
-.global _dos_exfilbuf
-.type _dos_exfilbuf,@function
-_dos_exfilbuf:
+.global _dos_exfiles
+.type _dos_exfiles,@function
+_dos_exfiles:
 	move.w	%sp@(14), %sp@-
 	move.l	%sp@(10), %sp@-
 	move.l	%sp@(10), %d0

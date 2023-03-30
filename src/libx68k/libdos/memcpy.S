@@ -5,6 +5,8 @@
 .type _dos_memcpy,@function
 _dos_memcpy:
 .global _dos_bus_err
+.type _dos_bus_err,@function
+_dos_bus_err:
 	move.w	%sp@(14), %sp@-
 	move.l	%sp@(10), %sp@-
 	move.l	%sp@(10), %sp@-
