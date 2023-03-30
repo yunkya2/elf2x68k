@@ -6,7 +6,8 @@ include Common.mk
 OBJS += chown.o close.o execve.o fork.o fstat.o \
 	getpid.o gettod.o isatty.o kill.o link.o lseek.o open.o \
 	read.o readlink.o sbrk.o stat.o symlink.o times.o unlink.o \
-	wait.o write.o _exit.o system.o
+	wait.o write.o _exit.o system.o \
+	chdir.o mkdir.o rmdir.o
 OBJS += crt1.o _sflags.o fds.o _doserror.o
 
 OBJS_NODOS += write-nodos.o _nodosfnc.o
