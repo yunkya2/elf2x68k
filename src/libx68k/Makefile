@@ -9,7 +9,7 @@ OBJS += chown.o close.o execve.o fork.o fstat.o \
 	wait.o write.o _exit.o system.o
 OBJS += crt1.o _sflags.o fds.o _doserror.o
 
-OBJS_NODOS += write-nodos.o
+OBJS_NODOS += write-nodos.o _nodosfnc.o
 
 CRT0OBJS += crt0.o crt0nodos.o
 
