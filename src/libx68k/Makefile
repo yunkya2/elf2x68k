@@ -3,9 +3,9 @@ TARGET = libx68k.a libx68knodos.a
 include Common.mk
 
 # object files needed
-OBJS += chown.o close.o execve.o fork.o fstat.o \
+OBJS += chown.o close.o creat.o execve.o fork.o fstat.o \
 	getpid.o gettod.o isatty.o kill.o link.o lseek.o open.o \
-	read.o readlink.o sbrk.o stat.o symlink.o times.o unlink.o \
+	read.o readlink.o rename.o sbrk.o stat.o symlink.o times.o unlink.o \
 	wait.o write.o _exit.o system.o \
 	chdir.o mkdir.o rmdir.o
 OBJS += crt1.o _sflags.o fds.o _doserror.o
