@@ -46,8 +46,10 @@ static const char errmap[] = {
 
 int __doserr2errno(int error)
 {
-  if ((error >= 0) && (error <= sizeof(errmap)))
+  if ((error >= 0) && (error < sizeof(errmap)))
     return errmap[error];
+  if (error == 80)   /* -80: File already exists */
+    return EEXIST;
 
   return EINVAL;
 }
