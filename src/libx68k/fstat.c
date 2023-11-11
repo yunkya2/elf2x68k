@@ -41,9 +41,9 @@ int fstat(int fd, struct stat *st)
   tm.tm_isdst = 0;
   st->st_atime = st->st_ctime = st->st_mtime = mktime(&tm);
 
-  filepos = _dos_seek(fd, 1, 0);
-  st->st_size = _dos_seek(fd, 2, 0);
-  _dos_seek(fd, 0, filepos);
+  filepos = _dos_seek(fd, 0, 1);
+  st->st_size = _dos_seek(fd, 0, 2);
+  _dos_seek(fd, filepos, 0);
   st->st_blksize = 512;
   st->st_blocks = (st->st_size + st->st_blksize - 1) / st->st_blksize;
 
