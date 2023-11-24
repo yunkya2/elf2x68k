@@ -1,9 +1,9 @@
 | struct _dos_psp *_dos_setpdb (struct _dos_psp *);
 .text
 .even
-.global _dos_psp
-.type _dos_psp,@function
-_dos_psp:
+.global _dos_setpdb
+.type _dos_setpdb,@function
+_dos_setpdb:
 	move.l	%sp@(4), %sp@-
 	cmpi.w	#0x200+14, _vernum+2	| 2.14
 	bcss	2f
