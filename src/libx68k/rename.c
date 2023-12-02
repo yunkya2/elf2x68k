@@ -8,7 +8,7 @@
 
 int __doserr2errno(int error);
 
-int rename (const char *old_path, const char *new_path)
+int _rename (const char *old_path, const char *new_path)
 {
   int res;
 
