@@ -7,7 +7,7 @@
 #
 #------------------------------------------------------------------------------
 #
-#	Copyright (C) 2023 Yuichi Nakamura (@yunkya2)
+#	Copyright (C) 2023,2024 Yuichi Nakamura (@yunkya2)
 #
 #	Licensed under the Apache License, Version 2.0 (the "License");
 #	you may not use this file except in compliance with the License.
@@ -33,6 +33,7 @@ rm -f ${M68K_TOOLCHAIN}/m68k-elf/bin/ld.x
 ln ${M68K_TOOLCHAIN}/bin/m68k-xelf-ld.x ${M68K_TOOLCHAIN}/m68k-elf/bin/ld.x
 
 cp src/elf2x68k.py ${M68K_TOOLCHAIN}/bin
+cp src/x68k2elf.py ${M68K_TOOLCHAIN}/bin
 cp src/x68k.ld ${M68K_TOOLCHAIN}/m68k-elf/lib
 cp src/x68k.specs ${M68K_TOOLCHAIN}/m68k-elf/lib
 cp src/x68knodos.specs ${M68K_TOOLCHAIN}/m68k-elf/lib
