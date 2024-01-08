@@ -63,9 +63,9 @@ int main()
 m68k-xelf-gcc -o sample.x sample.c
 ```
 
-ソースコードがコンパイルされ、`sample.x`, `sample.x.elf`, `sample.x.elf.2` の 3 つのファイルが生成されます。
+ソースコードがコンパイルされ、`sample.x`, `sample.x.elf` の 2 つのファイルが生成されます。
 * `sample.x` は X68k の X 形式実行ファイルなので、実機やエミュレータなどの環境で実行できます。
-* `sample.x.elf`, `sample.x.elf.2` は、X 形式実行ファイルを生成するために使用した ELF ファイルです。`m68k-xelf-readelf` や `m68k-xelf-objdump` などの ELF ファイルを扱うコマンドはこのファイルに対して実行することができます。
+* `sample.x.elf` は、X 形式実行ファイルを生成するために使用した ELF ファイルです。`m68k-xelf-readelf` や `m68k-xelf-objdump` などの ELF ファイルを扱うコマンドはこのファイルに対して実行することができます。
 
 このようにリンク後に X 形式実行ファイルと ELF ファイルが生成されることを除けば、使い方は通常の gcc と同じです。もちろんコンパイルとリンクを分けて実行することも可能ですが、リンクは GNU リンカ `m68k-xelf-ld` を直接呼び出すことは避けて、コンパイラドライバ `m68k-xelf-gcc` から実行するようにしてください
 (ELF → X 形式の変換を gcc の specs ファイルの記述によって行っているため)。
