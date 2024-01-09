@@ -56,6 +56,7 @@ SECTIONS
     *(.shbss)
     *(.bss .bss.*)
     *(COMMON)
+    *(.stack .stack.*)
     _end =  ALIGN (0x8);
     __end = _end;
     PROVIDE(end = .);

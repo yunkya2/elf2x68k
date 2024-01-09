@@ -679,7 +679,7 @@ def objfile(f, fn):
             fname = getstr(f)
             convlog(f'SECDEF: sec=0x{cmdl:02x} size={size} name={fname}\n')
 
-            s = SectionHeader(e, name=fname, type=SHT_PROGBITS)
+            s = SectionHeader(e, name='.'+fname, type=SHT_PROGBITS)
             s.size = size
             s.addralign = 2
             if cmdl == 1:           # text

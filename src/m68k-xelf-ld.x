@@ -5,6 +5,7 @@ set -e -o pipefail
 outfile="a.out"
 xbaseopt=""
 xstripopt=""
+elfbase="0"
 
 objs=""
 param=("$@")
@@ -16,6 +17,7 @@ for ((i=0; i<${#param[@]}; i++)); do
       outfile=${param[$i]}
       ;;
     -Ttext=*)
+      elfbase=${param[$i]#-Ttext=}
       xbaseopt="-b ${elfbase}"
       ;;
     -s | -S | --strip* )
@@ -34,5 +36,5 @@ done
 
 #set -x
 
-m68k-xelf-ld.bfd -o "${outfile}.elf" -q ${newparam[@]}
+m68k-xelf-ld.bfd -Ttext=${elfbase} -o "${outfile}.elf" -q ${newparam[@]}
 elf2x68k.py -o "${outfile}" ${xbaseopt} ${xstripopt} "${outfile}.elf"
