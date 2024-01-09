@@ -95,18 +95,18 @@ ${LHA} -x -w=${XC} ${DOWNLOAD_DIR}/${XC_ARCHIVE}
 
 rm -rf ${INSTALL_DIR}
 mkdir -p ${INSTALL_DIR}/include
+mkdir -p ${INSTALL_DIR}/include.sjis
 mkdir -p ${INSTALL_DIR}/lib
-
-ICONV="iconv -f cp932 -t utf-8"
-if [ "$1" = "-sjis" ]; then
-	ICONV="cat"
-fi
 
 # ヘッダファイルのファイル名を小文字に変換
 # ヘッダファイル末尾の EOF（文字コード 0x1a）を除去
 # ヘッダファイルの文字コードをUTF-8に変換
 for f in ${XC}/INCLUDE/* ; do \
-	cat $f | tr -d \\032 | ${ICONV} > ${INSTALL_DIR}/include/`basename $f | tr A-Z a-z` ;\
+	cat $f | tr -d \\032 | iconv -f cp932 -t utf-8 > ${INSTALL_DIR}/include/`basename $f | tr A-Z a-z` ;\
+done
+# include.sjis/ の文字コードはSJISのまま
+for f in ${XC}/INCLUDE/* ; do \
+	cat $f | tr -d \\032 > ${INSTALL_DIR}/include.sjis/`basename $f | tr A-Z a-z` ;\
 done
 
 # ライブラリファイルののファイル名を XXXLIB.L から libXXX.a に変換
@@ -122,16 +122,32 @@ done
 cd ${ROOT_DIR}
 SPECS_DIR=${ROOT_DIR}/m68k-elf/lib
 TMPL=${SPECS_DIR}/xc.specs.tmpl
+PATHCONV="s|\${TOOLCHAIN_PATH}|${ROOT_DIR}|"
+INPUTCONV="s|\${INPUT_CHARSET}||"
+SJISCONV="s|\${SJIS}||"
 
 # xc.specs           浮動小数点演算を FLOATn.X で実行する
-FLOAT=floatfnc
-cat ${TMPL} | sed -e "s|\${TOOLCHAIN_PATH}|${ROOT_DIR}|" -e "s|\${FLOAT}|${FLOAT}|" > ${SPECS_DIR}/xc.specs
+FLOATCONV="s|\${FLOAT}|floatfnc|"
+cat ${TMPL} | sed -e ${PATHCONV} -e ${FLOATCONV} -e ${INPUTCONV} -e ${SJISCONV} > ${SPECS_DIR}/xc.specs
 # xc.floateml.specs  浮動小数点演算をライブラリで実行する
-FLOAT=floateml
-cat ${TMPL} | sed -e "s|\${TOOLCHAIN_PATH}|${ROOT_DIR}|" -e "s|\${FLOAT}|${FLOAT}|" > ${SPECS_DIR}/xc.floateml.specs
+FLOATCONV="s|\${FLOAT}|floateml|"
+cat ${TMPL} | sed -e ${PATHCONV} -e ${FLOATCONV} -e ${INPUTCONV} -e ${SJISCONV} > ${SPECS_DIR}/xc.floateml.specs
 # xc.floatdrv.specs  浮動小数点演算をコプロセッサ命令で実行する
-FLOAT=floatdrv
-cat ${TMPL} | sed -e "s|\${TOOLCHAIN_PATH}|${ROOT_DIR}|" -e "s|\${FLOAT}|${FLOAT}|" > ${SPECS_DIR}/xc.floatdrv.specs
+FLOATCONV="s|\${FLOAT}|floatdrv|"
+cat ${TMPL} | sed -e ${PATHCONV} -e ${FLOATCONV} -e ${INPUTCONV} -e ${SJISCONV} > ${SPECS_DIR}/xc.floatdrv.specs
+
+# ファイルの文字コードをSJISにしたバージョン
+INPUTCONV="s|\${INPUT_CHARSET}|-finput-charset=cp932|"
+SJISCONV="s|\${SJIS}|.sjis|"
+# xc.sjis.specs           浮動小数点演算を FLOATn.X で実行する
+FLOATCONV="s|\${FLOAT}|floatfnc|"
+cat ${TMPL} | sed -e ${PATHCONV} -e ${FLOATCONV} -e ${INPUTCONV} -e ${SJISCONV} > ${SPECS_DIR}/xc.sjis.specs
+# xc.sjis.floateml.specs  浮動小数点演算をライブラリで実行する
+FLOATCONV="s|\${FLOAT}|floateml|"
+cat ${TMPL} | sed -e ${PATHCONV} -e ${FLOATCONV} -e ${INPUTCONV} -e ${SJISCONV} > ${SPECS_DIR}/xc.sjis.floateml.specs
+# xc.sjis.floatdrv.specs  浮動小数点演算をコプロセッサ命令で実行する
+FLOATCONV="s|\${FLOAT}|floatdrv|"
+cat ${TMPL} | sed -e ${PATHCONV} -e ${FLOATCONV} -e ${INPUTCONV} -e ${SJISCONV} > ${SPECS_DIR}/xc.sjis.floatdrv.specs
 
 #------------------------------------------------------------------------------
 # 正常終了

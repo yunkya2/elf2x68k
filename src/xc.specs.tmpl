@@ -22,9 +22,9 @@ ld.x
 %rename cc1_options         old_cc1_options
 
 *cc1_options:
--fcall-used-d2 -fcall-used-a2 -fexec-charset=cp932 %(old_cc1_options)
+-fcall-used-d2 -fcall-used-a2 ${INPUT_CHARSET} -fexec-charset=cp932 %(old_cc1_options)
 
 %rename cpp_unique_options         old_cpp_unique_options
 
 *cpp_unique_options:
--nostdinc -isystem ${TOOLCHAIN_PATH}/xc-elf/include %(old_cpp_unique_options)
+-nostdinc -isystem ${TOOLCHAIN_PATH}/xc-elf/include${SJIS} %(old_cpp_unique_options)
