@@ -670,6 +670,7 @@ def objfile(f, fn):
             else:                           # xref
                 s.shndx = SHN_UNDEF
                 symnum[val] = len(e.symlist)
+                commlabel += 1
                 convlog(f'SYMBOL: sec=0x{cmdl:02x} label={val} name={name}\n')
 
             e.symlist.append(s)
@@ -743,12 +744,14 @@ def arfile(f, fn):
             size = getlong(f)
             date = getlong(f)
             date = (date >> 16) | ((date & 0xffff) << 16)
-            convlog(f'======== {name} pos={f.tell()} size={size} {getfdate(date)}\n')
+            pos = f.tell()
+            convlog(f'======== {name} pos={pos} size={size} {getfdate(date)}\n')
 
             nm = tmpdir + '/' + name
             if not objfile(f, nm):
                 break
             files.append(nm)
+            f.seek(pos + size)
 
         mkarchive(fn, files)
 
