@@ -47,6 +47,10 @@ mkdir -p ${SRC_DIR}
 
 mkdir -p ${BUILD_DIR}/${GCC_DIR}_stage2
 
+#	XC 互換の ABI でビルド
+export CFLAGS_FOR_TARGET="-g -O2 -fcall-used-d2 -fcall-used-a2"
+export CXXFLAGS_FOR_TARGET="-g -O2 -fcall-used-d2 -fcall-used-a2"
+
 cd ${BUILD_DIR}/${GCC_DIR}_stage2
 `realpath --relative-to=./ ${SRC_DIR}/${GCC_DIR}`/configure \
     --prefix=${INSTALL_DIR} \

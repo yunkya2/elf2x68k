@@ -40,7 +40,9 @@ cp src/x68knodos.specs ${M68K_TOOLCHAIN}/m68k-elf/lib
 cp src/xc.specs.tmpl ${M68K_TOOLCHAIN}/m68k-elf/lib
 cp src/install-xclib.sh ${M68K_TOOLCHAIN}
 
-${M68K_TOOLCHAIN}/bin/m68k-xelf-gcc -dumpspecs > ${M68K_TOOLCHAIN}/lib/gcc/m68k-elf/specs
+${M68K_TOOLCHAIN}/bin/m68k-xelf-gcc -dumpspecs | \
+  sed '/omit-frame-pointer/s/^/-fcall-used-d2 -fcall-used-a2 -fexec-charset=cp932 /' \
+  > ${M68K_TOOLCHAIN}/lib/gcc/m68k-elf/specs
 cat src/x68k.specs >> ${M68K_TOOLCHAIN}/lib/gcc/m68k-elf/specs
 mv ${M68K_TOOLCHAIN}/lib/gcc/m68k-elf/specs ${M68K_TOOLCHAIN}/lib/gcc/m68k-elf/[0-9]*
 
