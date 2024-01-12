@@ -21,7 +21,7 @@ SECTIONS
     *(.rodata .rodata.*)
 
     . = ALIGN(0x4);
-    *(.gcc_except_table)
+    *(.gcc_except_table .gcc_except_table.*)
 
     . = ALIGN(0x4);
     *(.eh_frame)
