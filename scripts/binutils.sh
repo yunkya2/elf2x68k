@@ -3,7 +3,7 @@
 #
 #	binutils.sh
 #
-#		m68k-elfx toolchain の binutils をビルド
+#		m68k-xelf toolchain の binutils をビルド
 #		(事前に download.sh でファイルをダウンロードしておく必要がある)
 #
 #------------------------------------------------------------------------------

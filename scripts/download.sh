@@ -3,7 +3,7 @@
 #
 #	download.sh
 #
-#		m68k-elfx toolchain ビルドに必要なファイルをまとめてダウンロード
+#		m68k-xelf toolchain ビルドに必要なファイルをまとめてダウンロード
 #
 #------------------------------------------------------------------------------
 #
@@ -36,9 +36,7 @@ cd ${DOWNLOAD_DIR}
 # binutils のダウンロード
 #-----------------------------------------------------------------------------
 
-if ! [ -f "${BINUTILS_ARCHIVE}" ]; then
-    wget ${BINUTILS_URL}
-fi
+wget -nc ${BINUTILS_URL}
 if [ $(sha512sum ${BINUTILS_ARCHIVE} | awk '{print $1}') != ${BINUTILS_SHA512SUM} ]; then
 	echo "SHA512SUM verification of ${BINUTILS_ARCHIVE} failed!"
 	exit 1
@@ -48,9 +46,7 @@ fi
 # gcc のダウンロード
 #-----------------------------------------------------------------------------
 
-if ! [ -f "${GCC_ARCHIVE}" ]; then
-    wget ${GCC_URL}
-fi
+wget -nc ${GCC_URL}
 if [ $(sha512sum ${GCC_ARCHIVE} | awk '{print $1}') != ${GCC_SHA512SUM} ]; then
 	echo "SHA512SUM verification of ${GCC_ARCHIVE} failed!"
 	exit 1
@@ -74,9 +70,7 @@ fi
 # newlib のダウンロード
 #-----------------------------------------------------------------------------
 
-if ! [ -f "${NEWLIB_ARCHIVE}" ]; then
-    wget ${NEWLIB_URL}
-fi
+wget -nc ${NEWLIB_URL}
 if [ $(sha512sum ${NEWLIB_ARCHIVE} | awk '{print $1}') != ${NEWLIB_SHA512SUM} ]; then
 	echo "SHA512SUM verification of ${NEWLIB_ARCHIVE} failed!"
 	exit 1

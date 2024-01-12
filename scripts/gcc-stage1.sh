@@ -3,7 +3,7 @@
 #
 #	gcc-stage1.sh
 #
-#		m68k-elfx toolchain の gcc stage1 ビルド
+#		m68k-xelf toolchain の gcc stage1 ビルド
 #		(事前に download.sh でファイルをダウンロードしておく必要がある)
 #
 #------------------------------------------------------------------------------
