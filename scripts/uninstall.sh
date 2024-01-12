@@ -38,8 +38,8 @@ rm -f ${M68K_TOOLCHAIN}/m68k-elf/lib/x*.specs*
 rm -f ${M68K_TOOLCHAIN}/lib/gcc/m68k-elf/[0-9]*/specs
 rm -f ${M68K_TOOLCHAIN}/m68k-elf/lib/libx68k.a
 rm -f ${M68K_TOOLCHAIN}/m68k-elf/lib/libx68knodos.a
-rm -f ${M68K_TOOLCHAIN}/m68k-elf/lib/libiocs.a
-rm -f ${M68K_TOOLCHAIN}/m68k-elf/lib/libdos.a
+rm -f ${M68K_TOOLCHAIN}/m68k-elf/lib/libx68kiocs.a
+rm -f ${M68K_TOOLCHAIN}/m68k-elf/lib/libx68kdos.a
 rm -f ${M68K_TOOLCHAIN}/m68k-elf/lib/x68kcrt0*.o
 rm -rf ${M68K_TOOLCHAIN}/m68k-elf/include/x68k
 rm -rf ${M68K_TOOLCHAIN}/m68k-elf/sys-include/sys
@@ -48,6 +48,9 @@ rm -rf ${M68K_TOOLCHAIN}/m68k-elf/sys-include
 rm -rf ${M68K_TOOLCHAIN}/download
 rm -rf ${M68K_TOOLCHAIN}/install-xclib.sh
 rm -rf ${M68K_TOOLCHAIN}/xc-elf
+rm -f ${M68K_TOOLCHAIN}/m68k-elf/lib/libiocs.a
+rm -f ${M68K_TOOLCHAIN}/m68k-elf/lib/libdos.a
+rm -f ${M68K_TOOLCHAIN}/m68k-elf/lib/libbas.a
 
 echo ""
 echo "-----------------------------------------------------------------------------"

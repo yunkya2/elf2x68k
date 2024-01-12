@@ -1,4 +1,4 @@
-TARGET = libdos.a
+TARGET = libx68kdos.a
 
 include ../Common.mk
 

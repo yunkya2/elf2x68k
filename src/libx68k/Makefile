@@ -1,4 +1,4 @@
-TARGET = libx68k.a libx68knodos.a
+TARGET = libx68k.a libx68knodos.a libiocs/libx68kiocs.a libdos/libx68kdos.a
 
 include Common.mk
 
@@ -14,12 +14,12 @@ OBJS_NODOS += write-nodos.o _nodosfnc.o
 
 CRT0OBJS += crt0.o crt0nodos.o
 
-all: $(TARGET) $(CRT0OBJS) libiocs.a libdos.a
+all: $(TARGET) $(CRT0OBJS)
 
-libiocs.a:
+libiocs/libx68kiocs.a:
 	make -C libiocs all
 
-libdos.a:
+libdos/libx68kdos.a:
 	make -C libdos all
 
 libx68k.a: $(OBJS)

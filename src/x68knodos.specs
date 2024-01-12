@@ -11,7 +11,7 @@ x68kcrt0nodos.o%s crtbegin.o%s
 crtend.o%s
 
 *x68k_libgloss:
--lx68knodos -liocs
+-lx68knodos -lx68kiocs
 
 *link_gcc_c_sequence:
 --start-group %G %L %(x68k_libgloss) --end-group -lnosys

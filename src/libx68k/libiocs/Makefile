@@ -1,4 +1,4 @@
-TARGET = libiocs.a
+TARGET = libx68kiocs.a
 
 include ../Common.mk
 
