@@ -115,6 +115,22 @@ for f in ${XC}/LIB/* ; do \
 	${ROOT_DIR}/bin/x68k2elf.py $f ${INSTALL_DIR}/lib/lib`basename $f .L | sed 's/LIB//' | tr A-Z a-z`.a ;\
 done
 
+# libdos.a libiocs.a libbas.a は newlib 環境にもインストール
+cp ${INSTALL_DIR}/lib/lib{dos,iocs,bas}.a ${ROOT_DIR}/m68k-elf/lib
+for f in audio class gpib graph image mouse music music3 sprite stick doslib iocslib basic basic0; do
+	cat > ${ROOT_DIR}/m68k-elf/sys-include/${f}.h <<- EOS
+	#ifdef __cplusplus
+	extern "C" {
+	#endif
+	EOS
+	cat ${INSTALL_DIR}/include/${f}.h >> ${ROOT_DIR}/m68k-elf/sys-include/${f}.h
+	cat >> ${ROOT_DIR}/m68k-elf/sys-include/${f}.h <<- EOS
+	#ifdef __cplusplus
+	}
+	#endif
+	EOS
+done
+
 #-----------------------------------------------------------------------------
 # XC 用 specs ファイルをインストール
 #-----------------------------------------------------------------------------
