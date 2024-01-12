@@ -48,7 +48,6 @@ ${SRC_DIR}/${BINUTILS_DIR}/configure \
     --program-prefix=${PROGRAM_PREFIX} \
     --target=${TARGET} \
     --enable-lto \
-    --enable-interwork \
     --enable-multilib \
 
 make -j${NUM_PROC} 2<&1 | tee build.binutils.1.log

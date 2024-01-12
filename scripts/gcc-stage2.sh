@@ -61,7 +61,6 @@ cd ${BUILD_DIR}/${GCC_DIR}_stage2
     --with-arch=m68k \
     --with-cpu=${WITH_CPU} \
     --with-newlib \
-    --enable-interwork \
     --enable-multilib \
     --disable-shared \
     --disable-threads \
