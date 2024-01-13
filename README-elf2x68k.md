@@ -1,5 +1,27 @@
 # elf2x68k 補足ドキュメント
 
+## ソースコードからのビルド
+
+Linux 環境または MSYS2 MinGW 64bit 環境上で本リポジトリを clone して、
+
+```
+make all
+```
+
+で、必要なファイルをダウンロードしてビルドしたツールチェインと X68k 対応ファイルを `m68k-xelf` にインストールします。バイナリ配布同様に、`m68k-xelf/bin` にパスを通すと使用できるようになります。
+
+その他、Makefile で以下のターゲットを指定することができます。
+
+```
+make m68k-xelf - m68k-xelf ツールチェインのビルドのみを行います
+make download  - ツールチェインビルドに必要なファイルのダウンロードのみを行います
+make install   - m68k-xelf に X68k 対応ファイルのインストールのみ行います
+make uninstall - m68k-xelf の X68k 対応ファイルを削除します
+make clean     - ビルドの生成物を削除します (ダウンロードしたアーカイブは削除しません)
+make pristine  - ダウンロードアーカイブも含めて削除
+make help      - 指定可能なターゲットを表示します
+```
+
 ## X68k 対応ファイル
 
 m68k-xelf/ 内に追加される、X68k 対応のためのファイル一覧です。
@@ -9,8 +31,10 @@ m68k-xelf/ 内に追加される、X68k 対応のためのファイル一覧で�
   * m68k-xelf-ld の代わりに使用することで m68k-xelf-gcc の出力結果として直接X形式ファイルが得られるようになります
 * bin/elf2x68k.py
   * ELFファイルをX形式実行ファイルに変換するpythonスクリプトです
-* lib/gcc/m68k-elf/specs
-  * m68k-xelf-gcc の挙動を修正するspecsファイルです
+* bin/x68k2elf.py
+  * X68kのオブジェクトファイルやライブラリをELF形式に変換するpythonスクリプトです
+* lib/gcc/m68k-elf/\<gcc version\>/specs
+  * m68k-xelf-gcc の挙動を修正するspecsファイルです。デフォルトの Newlib 環境時に使われます
     * リンク時にX68kに必要なライブラリもリンクします
     * リンカとして m68k-xelf-ld の代わりに上記 m68k-xelf-ld.x を使用します
 * m68k-elf/lib/x68k.ld
@@ -23,8 +47,8 @@ m68k-xelf/ 内に追加される、X68k 対応のためのファイル一覧で�
   * newlibの下回りのシステムコール処理を提供するライブラリです
 * m68k-elf/lib/libx68knodos.a
   * ilbx68k.aと同様ですがHuman68k関連のものを外したライブラリです。ファイルI/O関連はすべてエラーになり、コンソールへのwrite()のみがIOCS _B_PUTCとして処理されます
-* m68k-elf/lib/libiocs.a
-* m68k-elf/lib/libdos.a
+* m68k-elf/lib/libx68kiocs.a
+* m68k-elf/lib/libx68kdos.a
   * IOCSコール、DOSコールを提供するライブラリです
 * m68k-elf/lib/x68kcrt0.o
 * m68k-elf/lib/x68kcrt0nodos.o
@@ -34,6 +58,8 @@ m68k-xelf/ 内に追加される、X68k 対応のためのファイル一覧で�
 * m68k-elf/sys-include/*
   * 標準ヘッダファイル m68k-elf/include 内を置き換えるためのヘッダファイルです。
   * fcntl.h に O_BINARY, O_TEXT の定義を追加するために使われます。
+* install-xclib.sh
+  * [無償公開されている C Compiler PRO-68K v2.1 (XC)](http://retropc.net/x68000/software/sharp/xc21/) をダウンロードし、ライブラリとヘッダファイルをインストールして XC 環境を構築するスクリプトです。
 
 ## elf2x68k.py スクリプト
 
