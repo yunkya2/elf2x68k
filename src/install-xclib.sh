@@ -142,6 +142,12 @@ PATHCONV="s|\${TOOLCHAIN_PATH}|${ROOT_DIR}|"
 INPUTCONV="s|\${INPUT_CHARSET}||"
 SJISCONV="s|\${SJIS}||"
 
+# MinGW ではフルパスを Windows 形式に変換
+if [ "${MSYSTEM}" = "MINGW64" ]; then
+	ROOT_DIR_WIN=`cygpath -m "${ROOT_DIR}"`
+	PATHCONV="s|\${TOOLCHAIN_PATH}|${ROOT_DIR_WIN}|"
+fi
+
 # xc.specs           浮動小数点演算を FLOATn.X で実行する
 FLOATCONV="s|\${FLOAT}|floatfnc|"
 cat ${TMPL} | sed -e ${PATHCONV} -e ${FLOATCONV} -e ${INPUTCONV} -e ${SJISCONV} > ${SPECS_DIR}/xc.specs
