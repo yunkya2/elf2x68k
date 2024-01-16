@@ -36,7 +36,46 @@ _start:
 
 	.even
 
+.global __cxx_x68k_odd_relocation
+__cxx_x68k_odd_relocation:
+	.long	0
+
 _start_1:
+	move.l	%pc@(__cxx_x68k_odd_relocation), %d0
+	beq.s	_start_2
+
+	lea.l	%a0@(0x100), %a4	| Program base address
+	movea.l	%d0, %a5
+	adda.l	%a4, %a5
+	move.l	%a4, %d1
+
+	moveq.l	#0, %d0
+odd_relocate:
+	move.w	%a5@+, %d0		| odd relocation info
+	beq.s	_start_2
+	cmpi.w	#0x0001, %d0
+	bne.s	odd_relocate_1
+	move.l	%a5@+, %d0
+odd_relocate_1:
+	adda.l	%d0, %a4		| get next fixup address
+	move.b	%a4@, %d0
+	lsl.l	#8, %d0
+	move.b	%a4@(1), %d0
+	lsl.l	#8, %d0
+	move.b	%a4@(2), %d0
+	lsl.l	#8, %d0
+	move.b	%a4@(3), %d0
+	add.l	%d1, %d0		| add base address
+	move.b	%d0, %a4@(3)
+	lsr.l	#8, %d0
+	move.b	%d0, %a4@(2)
+	lsr.l	#8, %d0
+	move.b	%d0, %a4@(1)
+	lsr.l	#8, %d0
+	move.b	%d0, %a4@
+	bra.s	odd_relocate
+
+_start_2:
 	move.l	%a0@(0x30), %a5
 
 clear_bss:

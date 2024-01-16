@@ -167,7 +167,9 @@ def elf2x68k(fh, xbase=0, strip=False):
 
     # Create relocation information for X68k
     reldata = b''
+    oreldata = b''
     prevoffset = 0
+    oprevoffset = 0
     for r in rellist:
         if symlist[r.sym].shndx !=0 and r.type < 4:
             assert r.type == 1          # R_68K_32
@@ -175,12 +177,39 @@ def elf2x68k(fh, xbase=0, strip=False):
             val = unpack(">L",body[off:off + 4])[0] - baseaddr + xbase
             body[off:off + 4] = pack(">L", val)
 
-            offdiff = off - prevoffset
-            prevoffset = off
-            if offdiff < 0x10000:
-                reldata += pack(">H", offdiff)
-            else:
-                reldata += pack(">HL", 1, offdiff)
+            if (r.offset & 1) == 0:     # normal relocation information
+                offdiff = off - prevoffset
+                prevoffset = off
+                if offdiff < 0x10000:
+                    reldata += pack(">H", offdiff)
+                else:
+                    reldata += pack(">HL", 1, offdiff)
+            else:                       # odd relocation information
+                offdiff = off - oprevoffset
+                oprevoffset = off
+                if offdiff < 0x10000:
+                    oreldata += pack(">H", offdiff)
+                else:
+                    oreldata += pack(">HL", 1, offdiff)
+
+    orlen = len(oreldata)
+    if orlen > 0:
+        for sym in symlist:
+            if sym.name == "__cxx_x68k_odd_relocation":
+                # set odd relocation info offset
+                off = sym.value - baseaddr
+                body[off:off + 4] = pack(">L", len(body))
+
+                oreldata += pack(">H", 0)       # terminator
+
+                # add odd relocation info into data section
+                if len(contents[2]) > orlen:
+                    contents[2] = contents[2][0:len(contents[2]) - orlen]
+                else:
+                    contents[2] = b''
+                contents[1] += oreldata
+                body += bytearray(oreldata)
+                break
 
     # Create symbol table for X68k
     symtbl = b''
