@@ -37,6 +37,7 @@ cp src/x68k2elf.py ${M68K_TOOLCHAIN}/bin
 cp src/x68k.ld ${M68K_TOOLCHAIN}/m68k-elf/lib
 cp src/x68k.specs ${M68K_TOOLCHAIN}/m68k-elf/lib
 cp src/x68knodos.specs ${M68K_TOOLCHAIN}/m68k-elf/lib
+cp src/c++small.specs ${M68K_TOOLCHAIN}/m68k-elf/lib
 cp src/xc.specs.tmpl ${M68K_TOOLCHAIN}/m68k-elf/lib
 cp src/install-xclib.sh ${M68K_TOOLCHAIN}
 

@@ -45,13 +45,7 @@ mkdir -p ${SRC_DIR}
 #	大量に生成されることを回避している。
 #-----------------------------------------------------------------------------
 
-mkdir -p ${BUILD_DIR}/${GCC_DIR}_stage2
-
-#	XC 互換の ABI でビルド
-export CFLAGS_FOR_TARGET="-g -O2 -fcall-used-d2 -fcall-used-a2"
-export CXXFLAGS_FOR_TARGET="-g -O2 -fcall-used-d2 -fcall-used-a2"
-
-cd ${BUILD_DIR}/${GCC_DIR}_stage2
+gcc_configure () {
 `realpath --relative-to=./ ${SRC_DIR}/${GCC_DIR}`/configure \
     --prefix=${INSTALL_DIR} \
     --program-prefix=${PROGRAM_PREFIX} \
@@ -64,6 +58,42 @@ cd ${BUILD_DIR}/${GCC_DIR}_stage2
     --enable-multilib \
     --disable-shared \
     --disable-threads \
+
+}
+
+#	libstdc++.a のみを縮小版 (-fno-rtti -fno-exceptions) でビルド、インストールする
+
+#	XC 互換の ABI でビルド
+export CFLAGS_FOR_TARGET="-g -O2 -fcall-used-d2 -fcall-used-a2"
+export CXXFLAGS_FOR_TARGET="-g -O2 -fcall-used-d2 -fcall-used-a2 -fno-rtti -fno-exceptions"
+
+mkdir -p ${BUILD_DIR}/${GCC_DIR}_stage2s
+cd ${BUILD_DIR}/${GCC_DIR}_stage2s
+gcc_configure
+
+make -j${NUM_PROC} all-target-libstdc++-v3 2<&1 | tee build.gcc-stage2.1.log
+if [ ${PIPESTATUS[0]} -ne 0 ]; then
+	exit 1;
+fi
+make install-strip-target-libstdc++-v3 2<&1 | tee build.gcc-stage2.2.log
+if [ ${PIPESTATUS[0]} -ne 0 ]; then
+	exit 1;
+fi
+
+#	縮小版の libstdc++.a を移動
+for f in `find ${INSTALL_DIR} -name libstdc++.a`; do
+	mv $f `dirname $f`/libstdc++small.a
+done
+
+#	通常のコンフィグでビルド、インストールする
+
+#	XC 互換の ABI でビルド
+export CFLAGS_FOR_TARGET="-g -O2 -fcall-used-d2 -fcall-used-a2"
+export CXXFLAGS_FOR_TARGET="-g -O2 -fcall-used-d2 -fcall-used-a2"
+
+mkdir -p ${BUILD_DIR}/${GCC_DIR}_stage2
+cd ${BUILD_DIR}/${GCC_DIR}_stage2
+gcc_configure
 
 make -j${NUM_PROC} 2<&1 | tee build.gcc-stage2.1.log
 if [ ${PIPESTATUS[0]} -ne 0 ]; then

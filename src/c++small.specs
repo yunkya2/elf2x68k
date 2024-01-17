@@ -1,0 +1,5 @@
+*cc1plus:
+-fno-rtti -fno-exceptions
+
+*link:
+-z max-page-size=2 -T x68k.ld --wrap __sflags %:replace-outfile(-lstdc++ -lstdc++small)
