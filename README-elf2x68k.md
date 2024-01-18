@@ -40,9 +40,11 @@ m68k-xelf/ 内に追加される、X68k 対応のためのファイル一覧で�
 * m68k-elf/lib/x68k.ld
   * X68k向けリンクの際に使用するリンカスクリプトです
 * m68k-elf/lib/x68k{nodos,}.specs
+* m68k-elf/lib/c++small.specs
   * m68k-elf-gcc の挙動を修正するspecsファイルです
     * x68k.specs は上記 lib/gcc/m68k-elf/specs と同じものです
     * x68knodos.specs はリンクされるライブラリからHuman68k関連のものを外してIOCSコールのみを利用可能にしてあるものです。ディスクのブートセクタからHuman68k抜きで起動するバイナリを開発できるようになります
+    * c++small.specs はC++プログラムのコンパイル、リンクで例外処理とRTTIを無効にします (-fno-exceptions -fno-rtti)。リンクで使用するC++標準ライブラリもこれらの機能を無効にしたものが使われます。
 * m68k-elf/lib/libx68k.a
   * newlibの下回りのシステムコール処理を提供するライブラリです
 * m68k-elf/lib/libx68knodos.a
