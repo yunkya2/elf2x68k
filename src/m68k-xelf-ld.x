@@ -2,7 +2,7 @@
 
 set -e -o pipefail
 
-outfile="a.out"
+outfile="a.x"
 xbaseopt=""
 xstripopt=""
 elfbase="0"
