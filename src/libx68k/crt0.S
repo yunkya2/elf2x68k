@@ -48,6 +48,8 @@ _start_1:
 	movea.l	%d0, %a5
 	adda.l	%a4, %a5
 	move.l	%a4, %d1
+	move.l	%a5, %a0@(0x30)		| fix BSS start address
+	move.l	%a5, %a0@(0x34)		| fix heap start address
 
 	moveq.l	#0, %d0
 odd_relocate:
