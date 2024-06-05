@@ -40,7 +40,7 @@ ssize_t read(int fd, void *buf, size_t count)
 
       while (r-- > 0) {
         ch = *q++;
-        if (ch != '\r') {
+        if (ch != '\r' && ch != '\x1a') {
           *p++ = ch;
           res++;
           count--;
