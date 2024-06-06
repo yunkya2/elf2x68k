@@ -32,6 +32,10 @@ cp src/m68k-xelf-ld.x ${M68K_TOOLCHAIN}/bin/m68k-xelf-ld.x
 rm -f ${M68K_TOOLCHAIN}/m68k-elf/bin/ld.x
 ln ${M68K_TOOLCHAIN}/bin/m68k-xelf-ld.x ${M68K_TOOLCHAIN}/m68k-elf/bin/ld.x
 
+cp src/m68k-xelf-bas ${M68K_TOOLCHAIN}/bin
+cp bas2c/bas2c.py ${M68K_TOOLCHAIN}/bin
+cp bas2c/bas2c.def ${M68K_TOOLCHAIN}/bin
+
 cp src/elf2x68k.py ${M68K_TOOLCHAIN}/bin
 cp src/x68k2elf.py ${M68K_TOOLCHAIN}/bin
 cp src/x68k.ld ${M68K_TOOLCHAIN}/m68k-elf/lib
