@@ -1,0 +1,3 @@
+[submodule "bas2c"]
+	path = bas2c
+	url = https://github.com/yunkya2/bas2c-x68k
