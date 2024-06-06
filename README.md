@@ -1,8 +1,10 @@
-# elf2x68k
+# X680x0 クロス開発環境 elf2x68k
 
 ## 概要
 
 elf2x68k はシャープ X680x0 用実行ファイル(X 形式)を PC の Unix/Linux 系環境上で開発するためのクロス開発環境です。m68k 用クロスツールチェイン (gcc, binutils) から出力される ELF ファイルを変換して、 X68k で実行可能な X 形式ファイルを出力します。
+
+更に、X-BASIC から C へのコンバートに対応しました。クロス環境上で X-BASIC プログラムを変換、コンパイルして X 形式ファイルを出力することができます。
 
 ## 特徴
 
@@ -15,6 +17,7 @@ elf2x68k はシャープ X680x0 用実行ファイル(X 形式)を PC の Unix/L
   * [Newlib](https://sourceware.org/newlib/) (組み込みシステム等で使われている標準 C ライブラリ)
   * C Compiler PRO-68K v2.1 (XC) の 標準 C ライブラリ
 * アセンブラには GNU binutils の as を使用します。680x0 アセンブリ言語の書式は、HAS.X などで用いられているモトローラ形式でなく [MIT形式](https://sourceware.org/binutils/docs/as/M68K_002dSyntax.html) (GASフォーマット) となります
+* X-BASIC to C コンバータ `bas2c.py` とそのサポートコマンド `m68k-xelf-bas` により、X-BASIC で書かれたプログラムを変換、コンパイルして X 形式ファイルを得ることができます
 
 ## インストール
 
@@ -27,6 +30,7 @@ x86_64 Linux 向けと MSYS2 MinGW 64bit 向けバイナリを配布していま
 アーカイブにはライブラリとして Newlib 環境のみが含まれています。
 展開した `m68k-xelf` ディレクトリにある `install-xclib.sh` スクリプトを実行することで、無償公開されている C Compiler PRO-68K ver2.1 (XC) をダウンロード、インストールします。
 これによって、Newlib に加えて XC のライブラリも利用できるようになります。
+* X-BASIC to C コンバータを利用する場合には必ず実行してください。
 * インストール後に `m68k-xelf` ディレクトリを移動した場合は `install-xclib.sh` スクリプトを再度実行してください (スクリプト内で実行時の絶対パスを記録する箇所があるため)。
 
 ソースコードからビルドを行う方法は [README-elf2x68k.md](README-elf2x68k.md) を参照してください
@@ -56,6 +60,55 @@ m68k-xelf-gcc -o sample.x sample.c
 
 このようにリンク後に X 形式実行ファイルと ELF ファイルが生成されることを除けば、使い方は通常の gcc と同じです。もちろんコンパイルとリンクを分けて実行することも可能ですが、リンクは GNU リンカ `m68k-xelf-ld` を直接呼び出すことは避けて、コンパイラドライバ `m68k-xelf-gcc` から実行するようにしてください
 (ELF → X 形式の変換を gcc の specs ファイルの記述によって行っているため)。
+
+## X-BASIC to C コンバータの利用
+
+elf2x68k は `m68k-xelf-bas` コマンドによる X-BASIC プログラムのコンパイルが可能です。
+
+```
+usage: m68k-xelf-bas [OPTIONS][-o output] input.bas
+```
+
+`input.bas` で指定された X-BASIC プログラムを C ソースコードに変換し、そのファイルを m68k-xelf-gcc でコンパイルします。コンパイル時には XC の BASIC ライブラリ (libbas) が自動的にリンクされます。\
+(`-specs=xc.specs -lbas` オプションがデフォルトで指定されます)
+
+以下のコマンドラインオプション指定が可能です。
+* `-o output` : 出力先となる X 形式実行ファイルのファイル名を指定します。省略した場合は入力ファイル名の拡張子を .bas から .x に変えたものになります。
+* `-S`: X-BASIC から C への変換のみを行い、実行ファイルへのコンパイルは行いません。
+* `-Xb [option]` : bas2c.py へ渡すオプションを指定します。
+
+その他のオプションは、変換後に実行される `m68k-xelf-gcc` にそのまま渡されます。
+
+X-BASIC から C への変換には [bas2c.py](https://github.com/yunkya2/bas2c-x68k) を使用しています。オプションの詳細については[こちらのドキュメント](https://github.com/yunkya2/bas2c-x68k/blob/main/README.md)も参照してください
+
+実行例:
+```
+% cat test.bas                (X-BASIC プログラム)
+10 for i=0 to 100
+20 print i
+30 next
+
+% m68k-xelf-bas test.bas      (test.x と test.x.elf が生成される)
+
+% m68k-xelf-bas -S test.bas   (test.c が生成される)
+
+% cat test.c                  (変換された C ソースコード)
+#include <basic0.h>
+#include <string.h>
+
+static int i;
+
+/******** program start ********/
+void main(int b_argc, char *b_argv[])
+{
+        b_init();
+        for (i = 0; i <= 100; i++) {
+                b_iprint(i);
+                b_sprint(STRCRLF);
+        }
+        b_exit(0);
+}
+```
 
 ## ライブラリ環境の選択
 
