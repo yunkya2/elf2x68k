@@ -1,0 +1,100 @@
+#!/bin/bash
+
+set -e -o pipefail
+
+srcfile=""
+outfile=""
+cfile=""
+
+param=("$@")
+j=0
+k=0
+for ((i=0; i<${#param[@]}; i++)); do
+  case ${param[$i]} in
+    -o )                    # output file name
+      i=$((i+1));
+      outfile=${param[$i]}
+      ;;
+
+    -t )                    # C source file name
+      i=$((i+1));
+      cfile=${param[$i]}
+      ;;
+
+    -S )                    # C source generation
+      xsflag=1
+      ;;
+
+    -Wb,*)                  # bas2c option
+      p=${param[$i]#-Wb,}
+      IFS=',' read -ra pp <<< ${p}
+      for ((ii=0; ii<${#pp[@]}; ii++)); do
+        parambas2c[k]="${pp[$ii]}"
+        k=$((k+1))
+      done
+      ;;
+
+    -Xb*)                   # bas2c option
+      i=$((i+1));
+      parambas2c[k]="${param[$i]}"
+      k=$((k+1))
+      ;;
+
+    * )                     # BAS source file name and gcc option
+      if [[ (! ${param[$i]} == -*) && (-z ${srcfile})]]; then
+        srcfile=${param[$i]}
+      else
+        paramgcc[j]="${param[$i]}"
+        j=$((j+1))
+      fi
+      ;;
+  esac
+done
+
+if [[ ! -v xsflag ]]; then        # generate executable
+
+  if [[ -z ${srcfile} ]]; then
+    echo usage: ${0} [OPTIONS][-o output] input.bas
+    exit 1
+  fi
+  if [[ -z ${cfile} ]]; then
+    cfile="${srcfile%%.*}".c      # default .c file name
+  fi
+  if [[ -z ${outfile} ]]; then
+    outfile="${srcfile%%.*}".x    # default .x file name
+  fi
+
+else                              # generate C source
+
+  if [[ ! -z ${srcfile} ]]; then
+    if [[ ! -z ${outfile} ]]; then
+      cfile="${outfile}"          # -o<file> specifies C source file name
+    fi
+    if [[ -z ${cfile} ]]; then
+      cfile="${srcfile%%.*}".c      # default .c file name
+    fi
+  fi
+
+fi
+
+#echo paramgcc:
+#for ((i=0; i<${#paramgcc[@]}; i++)); do
+#	echo $i ${paramgcc[$i]}
+#done
+#echo parambas2c:
+#for ((i=0; i<${#parambas2c[@]}; i++)); do
+#	echo $i ${parambas2c[$i]}
+#done
+
+# convert BAS to C
+bas2c.py ${parambas2c} ${srcfile} ${cfile}
+
+# compile C source
+if [[ ! -v xsflag ]]; then
+  if [[ $? ]]; then 
+    trap "rm ${cfile}" EXIT
+    m68k-xelf-gcc -o ${outfile} ${cfile} -specs=xc.specs -lbas ${paramgcc}
+  fi
+fi
+
+exit
