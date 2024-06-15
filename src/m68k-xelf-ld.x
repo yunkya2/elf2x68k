@@ -10,6 +10,7 @@ elfbase="0"
 objs=""
 param=("$@")
 j=0
+newparam=()
 for ((i=0; i<${#param[@]}; i++)); do
   case ${param[$i]} in
     -o )
@@ -30,11 +31,24 @@ for ((i=0; i<${#param[@]}; i++)); do
   esac
 done
 
+case ${outfile} in
+  *.out | *.OUT | *.elf | *.ELF )   # -o ABC.out : ABC.out   -> ABC.x
+    xoutfile="${outfile%.*}.x"
+    ;;
+  *.* )                             # -o ABC.x   : ABC.x.elf -> ABC.x
+    xoutfile="${outfile}"
+    outfile="${xoutfile}.elf"
+    ;;
+  * )                               # -o ABC     : ABC       -> ABC.x    
+    xoutfile="${outfile}".x
+    ;;
+esac
+
 #for ((i=0; i<${#newparam[@]}; i++)); do
 #	echo $i ${newparam[$i]}
 #done
 
 #set -x
 
-m68k-xelf-ld.bfd -Ttext=${elfbase} -o "${outfile}.elf" -q ${newparam[@]}
-elf2x68k.py -o "${outfile}" ${xbaseopt} ${xstripopt} "${outfile}.elf"
+m68k-xelf-ld.bfd -Ttext=${elfbase} -o "${outfile}" -q ${newparam[@]}
+elf2x68k.py -o "${xoutfile}" ${xbaseopt} ${xstripopt} "${outfile}"
