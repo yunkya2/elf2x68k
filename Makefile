@@ -61,7 +61,8 @@ clean:
 pristine: clean
 	-rm -rf download
 
-ARCHIVE="elf2x68k-`uname -s|sed 's/_.*//'`-`date +%Y%m%d`"
+GIT_REPO_VERSION=$(shell git describe --tags --always)
+ARCHIVE="elf2x68k-`uname -s|sed 's/_.*//'`-${GIT_REPO_VERSION}"
 release: uninstall install
 	tar jcvf ${ARCHIVE}.tar.bz2 m68k-xelf --owner=root --group=root
 

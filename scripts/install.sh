@@ -65,10 +65,10 @@ cp -r src/libx68k/x68k ${M68K_TOOLCHAIN}/m68k-elf/include
 mkdir -p ${M68K_TOOLCHAIN}/m68k-elf/sys-include/sys
 cp src/_default_fcntl.h ${M68K_TOOLCHAIN}/m68k-elf/sys-include/sys
 
-DATE=`date +%Y%m%d`
+GIT_REPO_VERSION=`git describe --tags --always`
 cat > ${M68K_TOOLCHAIN}/README << EOF
 elf2x68k: m68k-xelf cross toolchain for X680x0
-version: ${DATE}
+version: ${GIT_REPO_VERSION}
 URL: https://github.com/yunkya2/elf2x68k/
 EOF
 
