@@ -51,6 +51,11 @@ tar xvf ${GCC_ARCHIVE} -C ${SRC_DIR}
 # 事前にダウンロードしておいたライブラリをコピー
 cp {gmp,mpfr,mpc,isl}-* ${SRC_DIR}/${GCC_DIR}
 
+# gcc-14.1.0 の libstdc++ が -fno-rtti　でビルドできない問題の修正
+# https://gcc.gnu.org/bugzilla/show_bug.cgi?id=115015
+cd ${SRC_DIR}/${GCC_DIR}
+patch -p1 < ${PATCH_DIR}/gcc-14.1.0-dynamic_cast.patch
+
 cd ${SRC_DIR}/${GCC_DIR}
 ./contrib/download_prerequisites
 

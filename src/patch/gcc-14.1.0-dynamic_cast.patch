@@ -1,0 +1,34 @@
+From eefa4c06483f95f5076687ed6aae5c6001731164 Mon Sep 17 00:00:00 2001
+From: Jonathan Wakely <jwakely@redhat.com>
+Date: Tue, 14 May 2024 14:32:23 +0100
+Subject: [PATCH] libstdc++: Guard dynamic_cast use in src/c++23/print.cc
+ [PR115015]
+
+Do not use dynamic_cast unconditionally, in case libstdc++ is built with
+-fno-rtti.
+
+libstdc++-v3/ChangeLog:
+
+	PR libstdc++/115015
+	* src/c++23/print.cc (__open_terminal(streambuf*)) [!__cpp_rtti]:
+	Do not use dynamic_cast.
+---
+ libstdc++-v3/src/c++23/print.cc | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/libstdc++-v3/src/c++23/print.cc b/libstdc++-v3/src/c++23/print.cc
+index aceca6f9139b..99a19cd45002 100644
+--- a/libstdc++-v3/src/c++23/print.cc
++++ b/libstdc++-v3/src/c++23/print.cc
+@@ -87,7 +87,7 @@ namespace
+   void*
+   __open_terminal(std::streambuf* sb)
+   {
+-#ifndef _GLIBCXX_USE_STDIO_PURE
++#if ! defined _GLIBCXX_USE_STDIO_PURE && defined __cpp_rtti
+     using namespace __gnu_cxx;
+ 
+     if (auto fb = dynamic_cast<stdio_sync_filebuf<char>*>(sb))
+-- 
+2.43.0
+
