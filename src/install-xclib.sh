@@ -78,6 +78,42 @@ LHA=${DOWNLOAD_DIR}/lha
 if ! [ -f ${LHA} ]; then
 	unzip ${DOWNLOAD_DIR}/${LHA_ARCHIVE}
 	cd lha-release-20211125/
+	# MinGW で lha のビルドに失敗する問題の修正
+	patch -p1 << EOS
+diff --git a/src/header.c b/src/header.c
+index ecd585d..2de57e8 100644
+--- a/src/header.c
++++ b/src/header.c
+@@ -69,6 +69,7 @@ calc_sum(p, len)
+ 
+ static void
+ _skip_bytes(len)
++    int len;
+ {
+     if (len < 0) {
+       error("Invalid header: %d", len);
+diff --git a/src/lhext.c b/src/lhext.c
+index 0c95e09..ce5b99a 100644
+--- a/src/lhext.c
++++ b/src/lhext.c
+@@ -203,15 +203,7 @@ symlink_with_make_path(realname, name)
+     const char     *realname;
+     const char     *name;
+ {
+-    int l_code;
+-
+-    l_code = symlink(realname, name);
+-    if (l_code < 0) {
+-        make_parent_path(name);
+-        l_code = symlink(realname, name);
+-    }
+-
+-    return l_code;
++    return -1; /* not supported */
+ }
+ 
+ /* ------------------------------------------------------------------------ */
+EOS
 	autoreconf -is
 	sh ./configure
 	make
