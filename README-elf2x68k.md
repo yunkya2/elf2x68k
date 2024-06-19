@@ -2,25 +2,35 @@
 
 ## ソースコードからのビルド
 
-Linux 環境または MSYS2 MinGW 64bit 環境上で本リポジトリを clone して、
-
-```
-make all
-```
-
-で、必要なファイルをダウンロードしてビルドしたツールチェインと X68k 対応ファイルを `m68k-xelf` にインストールします。バイナリ配布同様に、`m68k-xelf/bin` にパスを通すと使用できるようになります。
-
-その他、Makefile で以下のターゲットを指定することができます。
-
-```
-make m68k-xelf - m68k-xelf ツールチェインのビルドのみを行います
-make download  - ツールチェインビルドに必要なファイルのダウンロードのみを行います
-make install   - m68k-xelf に X68k 対応ファイルのインストールのみ行います
-make uninstall - m68k-xelf の X68k 対応ファイルを削除します
-make clean     - ビルドの生成物を削除します (ダウンロードしたアーカイブは削除しません)
-make pristine  - ダウンロードアーカイブも含めて削除
-make help      - 指定可能なターゲットを表示します
-```
+* elf2x68k は、Linux 環境または MSYS2 MinGW 64bit 環境上でビルドすることができます。
+* 他の環境でビルドを行ってみた例もありますので、以下のリンクも参考にしてみてください。
+  * Cygwin (Makoto Kamada さん)
+    * https://x.com/kamadox/status/1802555953600213313
+  * macOS 14.5 (ザバイオーネ さん)
+    * https://x.com/z_zabaglione/status/1802552434306294072
+  * macOS 14.5 (tantan さん)
+    * https://x.com/snakGH/status/1803395890780185031   
+* [Releases](https://github.com/yunkya2/elf2x68k/releases) にはバイナリリリースとともにソースコードの tarball が置かれていますが、ビルドの際は基本的には git リポジトリから clone してビルドすることを推奨します。
+* elf2x68k は git のサブモジュールに bas2c を含んでいるため、git clone 時には `--recursive` オプションを指定して以下のように行ってください。
+  ```
+  git clone --recursive https://github.com/yunkya2/elf2x68k.git
+  ```
+  * `--recursive` を付けずに clone してしまった場合は、後から `git submodule update --init` を実行することでもサブモジュールを取得できます。
+* ソースコードの clone 後、
+  ```
+  make all
+  ```
+  で、必要なファイルをダウンロードしてビルドしたツールチェインと X68k 対応ファイルを `m68k-xelf` にインストールします。バイナリ配布同様に、`m68k-xelf/bin` にパスを通すと使用できるようになります。
+* その他、Makefile で以下のターゲットを指定することができます。
+  ```
+  make m68k-xelf - m68k-xelf ツールチェインのビルドのみを行います
+  make download  - ツールチェインビルドに必要なファイルのダウンロードのみを行います
+  make install   - m68k-xelf に X68k 対応ファイルのインストールのみ行います
+  make uninstall - m68k-xelf の X68k 対応ファイルを削除します
+  make clean     - ビルドの生成物を削除します (ダウンロードしたアーカイブは削除しません)
+  make pristine  - ダウンロードアーカイブも含めて削除
+  make help      - 指定可能なターゲットを表示します
+  ```
 
 ## X68k 対応ファイル
 
