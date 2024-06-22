@@ -34,6 +34,7 @@ rm -f ${M68K_TOOLCHAIN}/m68k-elf/bin/ld.x
 rm -f ${M68K_TOOLCHAIN}/bin/m68k-xelf-bas
 rm -f ${M68K_TOOLCHAIN}/bin/bas2c.py
 rm -f ${M68K_TOOLCHAIN}/bin/bas2c.def
+rm -f ${M68K_TOOLCHAIN}/bin/unlha.py
 
 rm -f ${M68K_TOOLCHAIN}/bin/elf2x68k.py
 rm -f ${M68K_TOOLCHAIN}/bin/x68k2elf.py

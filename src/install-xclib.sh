@@ -38,10 +38,6 @@ INSTALLER_TEMP_DIR="${ROOT_DIR}/installer_temp"
 INSTALL_DIR="${ROOT_DIR}/xc-elf"
 DOWNLOAD_DIR="${ROOT_DIR}/download"
 
-LHA_ARCHIVE="release-20211125.zip"
-LHA_SHA512SUM="e75dc606d7637f2c506072f2f44eda69da075a57ad2dc76f54e41b1d39d34ca01410317cc6538f8ea42f4da81ca14889df1195161f4e305d2d67189ec8e60e24"
-LHA_URL="https://github.com/jca02266/lha/archive/refs/tags/${LHA_ARCHIVE}"
-
 XC_ARCHIVE="XC2102_02.LZH"
 XC_SHA512SUM="c06339be8bf3251bb0b4a37365aa013a6083294edad17a3c4fafc35ab2cd2656260454642b1fa89645e3d796fe6c0ba67ce7f541d43e0a14b6529ce5aa113ede"
 XC_URL="http://retropc.net/x68000/software/sharp/xc21/${XC_ARCHIVE}"
@@ -53,12 +49,6 @@ XC_URL="http://retropc.net/x68000/software/sharp/xc21/${XC_ARCHIVE}"
 mkdir -p ${DOWNLOAD_DIR}
 cd ${DOWNLOAD_DIR}
 
-wget -nc ${LHA_URL}
-if [ $(sha512sum ${LHA_ARCHIVE} | awk '{print $1}') != ${LHA_SHA512SUM} ]; then
-	echo "SHA512SUM verification of ${LHA_ARCHIVE} failed!"
-	exit 1
-fi
-
 wget -nc ${XC_URL}
 if [ $(sha512sum ${XC_ARCHIVE} | awk '{print $1}') != ${XC_SHA512SUM} ]; then
 	echo "SHA512SUM verification of ${XC_ARCHIVE} failed!"
@@ -69,65 +59,14 @@ rm -rf ${INSTALLER_TEMP_DIR}
 mkdir -p ${INSTALLER_TEMP_DIR}
 
 #-----------------------------------------------------------------------------
-# lha コマンドをソースからビルド
-#-----------------------------------------------------------------------------
-
-cd ${INSTALLER_TEMP_DIR}
-LHA=${DOWNLOAD_DIR}/lha
-
-if ! [ -f ${LHA} ]; then
-	unzip ${DOWNLOAD_DIR}/${LHA_ARCHIVE}
-	cd lha-release-20211125/
-	# MinGW で lha のビルドに失敗する問題の修正
-	patch -p1 << EOS
-diff --git a/src/header.c b/src/header.c
-index ecd585d..2de57e8 100644
---- a/src/header.c
-+++ b/src/header.c
-@@ -69,6 +69,7 @@ calc_sum(p, len)
- 
- static void
- _skip_bytes(len)
-+    int len;
- {
-     if (len < 0) {
-       error("Invalid header: %d", len);
-diff --git a/src/lhext.c b/src/lhext.c
-index 0c95e09..ce5b99a 100644
---- a/src/lhext.c
-+++ b/src/lhext.c
-@@ -203,15 +203,7 @@ symlink_with_make_path(realname, name)
-     const char     *realname;
-     const char     *name;
- {
--    int l_code;
--
--    l_code = symlink(realname, name);
--    if (l_code < 0) {
--        make_parent_path(name);
--        l_code = symlink(realname, name);
--    }
--
--    return l_code;
-+    return -1; /* not supported */
- }
- 
- /* ------------------------------------------------------------------------ */
-EOS
-	autoreconf -is
-	sh ./configure
-	make
-	cp -p src/lha ${LHA}
-fi
-
-#-----------------------------------------------------------------------------
 # C Compiler PRO-68K ver2.1（XC）から include/ lib/ をインストール
 #-----------------------------------------------------------------------------
 
-cd ${INSTALLER_TEMP_DIR}
 XC=${INSTALLER_TEMP_DIR}/XC
-
-${LHA} -x -w=${XC} ${DOWNLOAD_DIR}/${XC_ARCHIVE}
+mkdir -p ${XC}
+cd ${XC}
+${ROOT_DIR}/bin/unlha.py x ${DOWNLOAD_DIR}/${XC_ARCHIVE}
+cd ${INSTALLER_TEMP_DIR}
 
 rm -rf ${INSTALL_DIR}
 mkdir -p ${INSTALL_DIR}/include
