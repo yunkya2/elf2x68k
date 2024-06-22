@@ -1,3 +1,6 @@
 [submodule "bas2c"]
 	path = bas2c
 	url = https://github.com/yunkya2/bas2c-x68k
+[submodule "unlha"]
+	path = unlha
+	url = https://github.com/yunkya2/unlha.git
