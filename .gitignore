@@ -7,4 +7,4 @@
 .vscode
 build_gcc/
 download/
-m68k-xelf/
+m68k-xelf*/
