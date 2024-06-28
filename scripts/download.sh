@@ -37,7 +37,7 @@ cd ${DOWNLOAD_DIR}
 #-----------------------------------------------------------------------------
 
 wget -nc ${BINUTILS_URL}
-if [ $(sha512sum ${BINUTILS_ARCHIVE} | awk '{print $1}') != ${BINUTILS_SHA512SUM} ]; then
+if [ $(eval "${SHA512SUM} ${BINUTILS_ARCHIVE}" | awk '{print $1}') != ${BINUTILS_SHA512SUM} ]; then
 	echo "SHA512SUM verification of ${BINUTILS_ARCHIVE} failed!"
 	exit 1
 fi
@@ -47,7 +47,7 @@ fi
 #-----------------------------------------------------------------------------
 
 wget -nc ${GCC_URL}
-if [ $(sha512sum ${GCC_ARCHIVE} | awk '{print $1}') != ${GCC_SHA512SUM} ]; then
+if [ $(eval "${SHA512SUM} ${GCC_ARCHIVE}" | awk '{print $1}') != ${GCC_SHA512SUM} ]; then
 	echo "SHA512SUM verification of ${GCC_ARCHIVE} failed!"
 	exit 1
 fi
@@ -71,7 +71,7 @@ fi
 #-----------------------------------------------------------------------------
 
 wget -nc ${NEWLIB_URL}
-if [ $(sha512sum ${NEWLIB_ARCHIVE} | awk '{print $1}') != ${NEWLIB_SHA512SUM} ]; then
+if [ $(eval "${SHA512SUM} ${NEWLIB_ARCHIVE}" | awk '{print $1}') != ${NEWLIB_SHA512SUM} ]; then
 	echo "SHA512SUM verification of ${NEWLIB_ARCHIVE} failed!"
 	exit 1
 fi

@@ -42,6 +42,12 @@ XC_ARCHIVE="XC2102_02.LZH"
 XC_SHA512SUM="c06339be8bf3251bb0b4a37365aa013a6083294edad17a3c4fafc35ab2cd2656260454642b1fa89645e3d796fe6c0ba67ce7f541d43e0a14b6529ce5aa113ede"
 XC_URL="http://retropc.net/x68000/software/sharp/xc21/${XC_ARCHIVE}"
 
+if [ -x "$(command -v sha512sum)" ]; then
+	SHA512SUM="sha512sum"
+else
+	SHA512SUM="shasum -a 512"
+fi
+
 #-----------------------------------------------------------------------------
 # 必要なファイルをダウンロードする
 #-----------------------------------------------------------------------------
@@ -50,7 +56,7 @@ mkdir -p ${DOWNLOAD_DIR}
 cd ${DOWNLOAD_DIR}
 
 wget -nc ${XC_URL}
-if [ $(sha512sum ${XC_ARCHIVE} | awk '{print $1}') != ${XC_SHA512SUM} ]; then
+if [ $(eval "${SHA512SUM} ${XC_ARCHIVE}" | awk '{print $1}') != ${XC_SHA512SUM} ]; then
 	echo "SHA512SUM verification of ${XC_ARCHIVE} failed!"
 	exit 1
 fi
@@ -77,11 +83,11 @@ mkdir -p ${INSTALL_DIR}/lib
 # ヘッダファイル末尾の EOF（文字コード 0x1a）を除去
 # ヘッダファイルの文字コードをUTF-8に変換
 for f in ${XC}/INCLUDE/* ; do \
-	cat $f | tr -d \\032 | iconv -f cp932 -t utf-8 > ${INSTALL_DIR}/include/`basename $f | tr A-Z a-z` ;\
+	cat $f | iconv -f cp932 -t utf-8 | tr -d \\032 > ${INSTALL_DIR}/include/`basename $f | tr A-Z a-z` ;\
 done
 # include.sjis/ の文字コードはSJISのまま
 for f in ${XC}/INCLUDE/* ; do \
-	cat $f | tr -d \\032 > ${INSTALL_DIR}/include.sjis/`basename $f | tr A-Z a-z` ;\
+	cat $f | iconv -f cp932 -t utf-8 | tr -d \\032 | iconv -f utf-8 -t cp932 > ${INSTALL_DIR}/include.sjis/`basename $f | tr A-Z a-z` ;\
 done
 
 # ライブラリファイルののファイル名を XXXLIB.L から libXXX.a に変換

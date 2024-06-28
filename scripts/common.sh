@@ -82,7 +82,16 @@ CPU="m68000"
 TARGET=${GCC_ABI}
 PREFIX="m68k-xelf-"
 PROGRAM_PREFIX=${PREFIX}
-NUM_PROC=$(nproc)
+if [ -x "$(command -v nproc)" ]; then
+	NUM_PROC=$(nproc)
+else
+	NUM_PROC=$(sysctl -n hw.physicalcpu)
+fi
+if [ -x "$(command -v sha512sum)" ]; then
+	SHA512SUM="sha512sum"
+else
+	SHA512SUM="shasum -a 512"
+fi
 ROOT_DIR="${PWD}"
 INSTALL_DIR="${ROOT_DIR}/m68k-xelf"
 DOWNLOAD_DIR="${ROOT_DIR}/download"

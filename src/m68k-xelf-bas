@@ -51,7 +51,7 @@ for ((i=0; i<${#param[@]}; i++)); do
   esac
 done
 
-if [[ ! -v xsflag ]]; then        # generate executable
+if [[ ! -n "${xsflag}" ]]; then   # generate executable
 
   if [[ -z ${srcfile} ]]; then
     echo usage: ${0} [OPTIONS][-o output] input.bas
@@ -90,7 +90,7 @@ fi
 bas2c.py ${parambas2c} ${srcfile} ${cfile}
 
 # compile C source
-if [[ ! -v xsflag ]]; then
+if [[ ! -n "${xsflag}" ]]; then
   if [[ $? ]]; then 
     trap "rm ${cfile}" EXIT
     m68k-xelf-gcc -o ${outfile} ${cfile} -specs=xc.specs -lbas ${paramgcc}
