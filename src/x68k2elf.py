@@ -367,8 +367,9 @@ def mkarchive(fn, files):
     if fn:
         if os.path.exists(fn):
             os.remove(fn)
-        cmd = ['ar', 'rcs', fn] + files
-        subprocess.run(cmd)
+        sdir = os.path.dirname(os.path.abspath(__file__))
+        subprocess.run([sdir + '/m68k-xelf-ar', 'rc', fn] + files)
+        subprocess.run([sdir + '/m68k-xelf-ranlib', fn])
 
 ##############################################################################
 # Convert X68k object file to ELF object file
