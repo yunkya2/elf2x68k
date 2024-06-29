@@ -1,0 +1,401 @@
+diff -ru a/lib/pcg90.h b/lib/pcg90.h
+--- a/lib/pcg90.h	2024-06-29 15:21:53.986825025 +0900
++++ b/lib/pcg90.h	2024-06-29 15:24:58.986827469 +0900
+@@ -1,7 +1,7 @@
+ #ifndef PCG90_H
+ #define PCG90_H
+ 
+-void	pcg_roll90(void *pcg, int lr);
+-void	bgpcg_roll90(void *pcg, int lr);
++void	_pcg_roll90(void *pcg, int lr);
++void	_bgpcg_roll90(void *pcg, int lr);
+ 
+ #endif
+diff -ru a/lib/xsp2lib.h b/lib/xsp2lib.h
+--- a/lib/xsp2lib.h	2024-06-29 15:21:53.936825025 +0900
++++ b/lib/xsp2lib.h	2024-06-29 15:24:58.986827469 +0900
+@@ -65,7 +65,7 @@
+ 		register short reg_d2 asm ("d2") = pt;
+ 		register short reg_d3 asm ("d3") = info;
+ 		asm volatile (
+-				"	jbsr	_xsp_set_asm\n"
++				"	jbsr	xsp_set_asm\n"
+ 		:	/* 出力 */	"+r"	(reg_d0)	/* in out %0 (入力＆戻り値) */
+ 		:	/* 入力 */	"r"		(reg_d1),	/* in     %1 (入力＆維持) */
+ 						"r"		(reg_d2),	/* in     %2 (入力＆維持) */
+@@ -78,7 +78,7 @@
+ 		register short       reg_d0 asm ("d0");
+ 		register const void *reg_a0 asm ("a0") = arg;
+ 		asm volatile (
+-				"	jbsr	_xsp_set_st_asm\n"
++				"	jbsr	xsp_set_st_asm\n"
+ 		:	/* 出力 */	"=r"	(reg_d0),	/*    out %0 (戻り値) */
+ 						"+r"	(reg_a0)	/* in out %1 (入力＆破壊) */
+ 		:	/* 入力 */
+@@ -93,7 +93,7 @@
+ 		register short reg_d2 asm ("d2") = pt;
+ 		register short reg_d3 asm ("d3") = info;
+ 		asm volatile (
+-				"	jbsr	_xobj_set_asm\n"
++				"	jbsr	xobj_set_asm\n"
+ 		:	/* 出力 */	"+r"	(reg_d0),	/* in out %0 (入力＆破壊) */
+ 						"+r"	(reg_d1),	/* in out %1 (入力＆破壊) */
+ 						"+r"	(reg_d2),	/* in out %2 (入力＆破壊) */
+@@ -107,7 +107,7 @@
+ 		register short       reg_d0 asm ("d0");
+ 		register const void *reg_a0 asm ("a0") = arg;
+ 		asm volatile (
+-				"	jbsr	_xobj_set_st_asm\n"
++				"	jbsr	xobj_set_st_asm\n"
+ 		:	/* 出力 */	"=r"	(reg_d0),	/* out %0 (破壊) */
+ 						"+r"	(reg_a0)	/* out %1 (入力＆破壊) */
+ 		:	/* 入力 */
+diff -ru a/xsp_010.c b/xsp_010.c
+--- a/xsp_010.c	2024-06-29 15:21:53.986825025 +0900
++++ b/xsp_010.c	2024-06-29 15:29:51.076833781 +0900
+@@ -14,7 +14,7 @@
+ #include <stdlib.h>
+ #include <doslib.h>
+ #include <iocslib.h>
+-#include "../../XSP/XSP2lib.H"
++#include "lib/xsp2lib.h"
+ 
+ /* スプライト PCG パターン最大使用数 */
+ #define	PCG_MAX		256
+@@ -27,7 +27,7 @@
+ char pcg_alt[PCG_MAX + 1];
+ 
+ /* PCG データファイル読み込みバッファ */
+-char pcg_dat[PCG_MAX * 128];
++char pcg_dat[PCG_MAX * 128] __attribute__((aligned(2)));
+ 
+ /* パレットデータファイル読み込みバッファ */
+ unsigned short pal_dat[256];
+@@ -73,10 +73,10 @@
+ 
+ 	/*------------------[ PCG データ読み込み ]------------------*/
+ 
+-	fp = fopen("../PANEL.SP", "rb");
++	fp = fopen("data/PANEL.SP", "rb");
+ 	if (fp == NULL) {
+ 		CRTMOD(0x10);
+-		printf("../PANEL.SP が open できません。\n");
++		printf("data/PANEL.SP が open できません。\n");
+ 		exit(1);
+ 	}
+ 	fread(
+@@ -90,10 +90,10 @@
+ 
+ 	/*--------[ スプライトパレットデータ読み込みと定義 ]--------*/
+ 
+-	fp = fopen("../PANEL.PAL", "rb");
++	fp = fopen("data/PANEL.PAL", "rb");
+ 	if (fp == NULL) {
+ 		CRTMOD(0x10);
+-		printf("../PANEL.PAL が open できません。\n");
++		printf("data/PANEL.PAL が open できません。\n");
+ 		exit(1);
+ 	}
+ 	fread(
+diff -ru a/xsp_020.c b/xsp_020.c
+--- a/xsp_020.c	2024-06-29 15:21:53.986825025 +0900
++++ b/xsp_020.c	2024-06-29 15:29:51.076833781 +0900
+@@ -43,13 +43,12 @@
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>
+-#include <conio.h>
+ #include <doslib.h>
+ #include <iocslib.h>
+ #include <graph.h>
+ #include <math.h>
+-#include "../../XSP/XSP2lib.H"
+-#include "../../PCM8Afnc/PCM8Afnc.H"
++#include "lib/xsp2lib.h"
++#include "lib/pcm8afnc.h"
+ 
+ /* スプライト PCG パターン最大使用数 */
+ #define	PCG_MAX		256
+@@ -64,7 +63,7 @@
+ char	pcg_alt[PCG_MAX + 1];
+ 
+ /* PCG データファイル読み込みバッファ */
+-char	pcg_dat[PCG_MAX * 128];
++char	pcg_dat[PCG_MAX * 128] __attribute__((aligned(2)));
+ 
+ /* XSP 複合スプライトフレームデータ */
+ XOBJ_FRM_DAT	frm_dat[512];
+@@ -205,10 +204,10 @@
+ 
+ 	/*------------------[ PCG データ読み込み ]------------------*/
+ 
+-	fp = fopen("../PANEL.SP", "rb");
++	fp = fopen("data/PANEL.SP", "rb");
+ 	if (fp == NULL) {
+ 		CRTMOD(0x10);
+-		printf("../PANEL.SP が open できません。\n");
++		printf("data/PANEL.SP が open できません。\n");
+ 		exit(1);
+ 	}
+ 	fread(
+@@ -222,10 +221,10 @@
+ 
+ 	/*--------[ スプライトパレットデータ読み込みと定義 ]--------*/
+ 
+-	fp = fopen("../PANEL.PAL", "rb");
++	fp = fopen("data/PANEL.PAL", "rb");
+ 	if (fp == NULL) {
+ 		CRTMOD(0x10);
+-		printf("../PANEL.PAL が open できません。\n");
++		printf("data/PANEL.PAL が open できません。\n");
+ 		exit(1);
+ 	}
+ 	fread(
+diff -ru a/xsp_030.c b/xsp_030.c
+--- a/xsp_030.c	2024-06-29 15:21:53.986825025 +0900
++++ b/xsp_030.c	2024-06-29 15:29:51.076833781 +0900
+@@ -28,7 +28,7 @@
+ #include <string.h>
+ #include <doslib.h>
+ #include <iocslib.h>
+-#include "../../XSP/XSP2lib.H"
++#include "lib/xsp2lib.h"
+ 
+ /* スプライト PCG パターン最大使用数 */
+ #define		PCG_MAX		2048
+@@ -47,7 +47,7 @@
+ char	pcg_alt[PCG_MAX + 1];
+ 
+ /* PCG データファイル読み込みバッファ */
+-char	pcg_dat[PCG_MAX * 128];
++char	pcg_dat[PCG_MAX * 128] __attribute__((aligned(2)));
+ 
+ /* XSP 複合スプライトフレームデータ */
+ XOBJ_FRM_DAT	frm_dat[FRM_MAX];
+@@ -73,15 +73,19 @@
+ 
+ 	/*----------[ コマンドライン解析～ファイル読み込み ]----------*/
+ 
++	char	*name = argv[1];
+ 	if (argc <= 1) {
+-		/* ヘルプを表示して終了 */
+-		printf("使用法：main.X [形状データファイル名（拡張子省略）]\n");
+-		exit(0);
+-	} else {
++		name = "data/ZAKO";
++//		/* ヘルプを表示して終了 */
++//		printf("使用法：main.X [形状データファイル名（拡張子省略）]\n");
++//		exit(0);
++	}
++	{
+ 		char	str_tmp[256];
+ 
+ 		/* ファイル読み込み */
+-		strmfe(str_tmp, argv[1], "xsp");		/* 拡張子置換 */
++		strcpy(str_tmp, name);					/* 拡張子置換 */
++		strcat(str_tmp, ".xsp");
+ 		fp = fopen(str_tmp, "rb");
+ 		if (fp == NULL) {
+ 			CRTMOD(0x10);
+@@ -89,8 +93,10 @@
+ 			exit(1);
+ 		}
+ 		fread(pcg_dat, sizeof(char), 128 * PCG_MAX, fp);
++		fclose(fp);
+ 
+-		strmfe(str_tmp, argv[1], "frm");		/* 拡張子置換 */
++		strcpy(str_tmp, name);					/* 拡張子置換 */
++		strcat(str_tmp, ".frm");
+ 		fp = fopen(str_tmp, "rb");
+ 		if (fp == NULL) {
+ 			CRTMOD(0x10);
+@@ -98,8 +104,10 @@
+ 			exit(1);
+ 		}
+ 		fread(frm_dat, sizeof(XOBJ_FRM_DAT), FRM_MAX, fp);
++		fclose(fp);
+ 
+-		strmfe(str_tmp, argv[1], "ref");		/* 拡張子置換 */
++		strcpy(str_tmp, name);					/* 拡張子置換 */
++		strcat(str_tmp, ".ref");
+ 		fp = fopen(str_tmp, "rb");
+ 		if (fp == NULL) {
+ 			CRTMOD(0x10);
+@@ -107,8 +115,7 @@
+ 			exit(1);
+ 		}
+ 		sizeof_ref = fread(ref_dat, sizeof(XOBJ_REF_DAT), REF_MAX, fp);
+-
+-		fcloseall();
++		fclose(fp);
+ 
+ 		/* REF_DAT[].ptr 補正 */
+ 		for (i = 0; i < sizeof_ref; i++) {
+diff -ru a/xsp_040.c b/xsp_040.c
+--- a/xsp_040.c	2024-06-29 15:21:53.986825025 +0900
++++ b/xsp_040.c	2024-06-29 15:29:51.076833781 +0900
+@@ -14,8 +14,8 @@
+ #include <stdlib.h>
+ #include <doslib.h>
+ #include <iocslib.h>
+-#include "../../XSP/XSP2lib.H"
+-#include "../../PCG90/PCG90.H"
++#include "lib/xsp2lib.h"
++#include "lib/pcg90.h"
+ 
+ /* スプライト PCG パターン最大使用数 */
+ #define	PCG_MAX		256
+@@ -28,7 +28,7 @@
+ char	pcg_alt[PCG_MAX + 1];
+ 
+ /* PCG データファイル読み込みバッファ */
+-char	pcg_dat[PCG_MAX * 128];
++char	pcg_dat[PCG_MAX * 128] __attribute__((aligned(2)));
+   
+ /* パレットデータファイル読み込みバッファ */
+ unsigned short pal_dat[256];
+@@ -74,10 +74,10 @@
+ 
+ 	/*------------------[ PCG データ読み込み ]------------------*/
+ 
+-	fp = fopen("../PANEL.SP", "rb");
++	fp = fopen("data/PANEL.SP", "rb");
+ 	if (fp == NULL) {
+ 		CRTMOD(0x10);
+-		printf("../PANEL.SP が open できません。\n");
++		printf("data/PANEL.SP が open できません。\n");
+ 		exit(1);
+ 	}
+ 	fread(
+@@ -91,15 +91,15 @@
+ 	/*-----------[ PCG データを縦画面用に 90 度回転 ]-----------*/
+ 
+ 	for (i = 0; i < 256; i++) {
+-		pcg_roll90(&pcg_dat[i * 128], 1);
++		_pcg_roll90(&pcg_dat[i * 128], 1);
+ 	}
+ 
+ 	/*--------[ スプライトパレットデータ読み込みと定義 ]--------*/
+ 
+-	fp = fopen("../PANEL.PAL", "rb");
++	fp = fopen("data/PANEL.PAL", "rb");
+ 	if (fp == NULL) {
+ 		CRTMOD(0x10);
+-		printf("../PANEL.PAL が open できません。\n");
++		printf("data/PANEL.PAL が open できません。\n");
+ 		exit(1);
+ 	}
+ 	fread(
+diff -ru a/xsp_050.c b/xsp_050.c
+--- a/xsp_050.c	2024-06-29 15:21:53.986825025 +0900
++++ b/xsp_050.c	2024-06-29 15:29:51.076833781 +0900
+@@ -23,7 +23,7 @@
+ #include <doslib.h>
+ #include <iocslib.h>
+ #include <math.h>
+-#include "../../XSP/XSP2lib.H"
++#include "lib/xsp2lib.h"
+ 
+ /* スプライト PCG パターン最大使用数 */
+ #define	PCG_MAX		256
+@@ -38,7 +38,7 @@
+ char	pcg_alt[PCG_MAX + 1];
+ 
+ /* PCG データファイル読み込みバッファ */
+-char	pcg_dat[PCG_MAX * 128];
++char	pcg_dat[PCG_MAX * 128] __attribute__((aligned(2)));
+ 
+ /* パレットデータファイル読み込みバッファ */
+ unsigned short pal_dat[256];
+@@ -129,10 +129,10 @@
+ 
+ 	/*------------------[ PCG データ読み込み ]------------------*/
+ 
+-	fp = fopen("../PANEL.SP", "rb");
++	fp = fopen("data/PANEL.SP", "rb");
+ 	if (fp == NULL) {
+ 		CRTMOD(0x10);
+-		printf("../PANEL.SP が open できません。\n");
++		printf("data/PANEL.SP が open できません。\n");
+ 		exit(1);
+ 	}
+ 	fread(
+@@ -146,10 +146,10 @@
+ 
+ 	/*--------[ スプライトパレットデータ読み込みと定義 ]--------*/
+ 
+-	fp = fopen("../PANEL.PAL", "rb");
++	fp = fopen("data/PANEL.PAL", "rb");
+ 	if (fp == NULL) {
+ 		CRTMOD(0x10);
+-		printf("../PANEL.PAL が open できません。\n");
++		printf("data/PANEL.PAL が open できません。\n");
+ 		exit(1);
+ 	}
+ 	fread(
+diff -ru a/xsp_060.c b/xsp_060.c
+--- a/xsp_060.c	2024-06-29 15:21:53.986825025 +0900
++++ b/xsp_060.c	2024-06-29 15:29:51.076833781 +0900
+@@ -51,7 +51,7 @@
+ #include <iocslib.h>
+ #include <stdlib.h>
+ #include <basic0.h>
+-#include "../../XSP/XSP2lib.H"
++#include "lib/xsp2lib.h"
+ 
+ int input2(char *mes, int def);
+ 
+@@ -65,7 +65,7 @@
+ char	pcg_alt[PCG_MAX + 1];
+ 
+ /* PCG データファイル読み込みバッファ */
+-char	pcg_dat[PCG_MAX * 128];
++char	pcg_dat[PCG_MAX * 128] __attribute__((aligned(2)));
+ 
+ /* パレットデータファイル読み込みバッファ */
+ unsigned short pal_dat[256];
+@@ -161,7 +161,7 @@
+ 		"   何かキーを押すと終了します。\n"
+ 	);
+ 	B_LOCATE(3, 5);
+-	printf("delay _ frames");
++	printf("delay _ frames"); fflush(stdout);
+ 
+ 	/* カーソル消去 */
+ 	B_CUROFF();			/* X68000 EnvironmentHandBook p.312 */
+@@ -204,10 +204,10 @@
+ 
+ 	/*------------------[ PCG データ読み込み ]------------------*/
+ 
+-	fp = fopen("../PANEL.SP", "rb");
++	fp = fopen("data/PANEL.SP", "rb");
+ 	if (fp == NULL) {
+ 		CRTMOD(0x10);
+-		printf("../PANEL.SP が open できません。\n");
++		printf("data/PANEL.SP が open できません。\n");
+ 		exit(1);
+ 	}
+ 	fread(
+@@ -221,10 +221,10 @@
+ 
+ 	/*--------[ スプライトパレットデータ読み込みと定義 ]--------*/
+ 
+-	fp = fopen("../PANEL.PAL", "rb");
++	fp = fopen("data/PANEL.PAL", "rb");
+ 	if (fp == NULL) {
+ 		CRTMOD(0x10);
+-		printf("../PANEL.PAL が open できません。\n");
++		printf("data/PANEL.PAL が open できません。\n");
+ 		exit(1);
+ 	}
+ 	fread(
+@@ -309,7 +309,8 @@
+ 			}
+ 			GPALET(2, 0xFFFF);
+ 			B_LOCATE(9, 5);
+-			printf("%d", s_frame_count - s_flipped_frame_count);
++			printf("%d", s_frame_count - s_flipped_frame_count); fflush(stdout);
++
+ 
+ 			/* スティック操作 */
+ 			{
