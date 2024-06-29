@@ -31,6 +31,10 @@ ROOT_DIR="${PWD}"
 TEMP_DIR="${ROOT_DIR}/temp"
 DOWNLOAD_DIR="${ROOT_DIR}/download"
 
+# ソースコードを UTF-8 に変換し、改行コードを CRLF → LF に変換する
+copysrc() {
+    iconv -f cp932 -t utf-8 $1 | tr -d \\r > $2
+}
 # retropc.net から公開版 Human68k システムディスクをダウンロードする
 mkdir -p ${DOWNLOAD_DIR}
 cd ${DOWNLOAD_DIR}
@@ -47,7 +51,7 @@ unlha.py x ${DOWNLOAD_DIR}/${HUMAN_ARCHIVE}
 echo -n ' "-'|dd of=ETC/DEFSPTOOL.BAS bs=1 seek=20968 conv=notrunc
 
 # UTF-8 に変換してコピー (ヘルプファイルは SJIS のまま)
-iconv -f cp932 -t utf-8 ETC/DEFSPTOOL.BAS > ${ROOT_DIR}/DEFSPTOOL.BAS
+copysrc ETC/DEFSPTOOL.BAS ${ROOT_DIR}/DEFSPTOOL.BAS
 cp ETC/DEFSPTOOL.HLP ${ROOT_DIR}
 
 # BAStoC 変換用のパッチを当てる

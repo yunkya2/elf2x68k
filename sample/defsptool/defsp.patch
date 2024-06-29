@@ -1,6 +1,6 @@
 diff -ru a/DEFSPTOOL.BAS b/DEFSPTOOL.BAS
---- a/DEFSPTOOL.BAS
-+++ b/DEFSPTOOL.BAS
+--- a/DEFSPTOOL.BAS	2024-06-29 18:09:42.397054968 +0900
++++ b/DEFSPTOOL.BAS	2024-06-29 18:10:57.937055937 +0900
 @@ -2,7 +2,7 @@
     20 /* sprite pattern editor ver.1.2
     30 /*   Copyright (C) 1987,1989 SHARP
