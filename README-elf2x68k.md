@@ -2,14 +2,10 @@
 
 ## ソースコードからのビルド
 
-* elf2x68k は、Linux 環境または MSYS2 MinGW 64bit 環境上でビルドすることができます。
+* elf2x68k は、x86_64 Linux、MSYS2 MinGW 64bit、macOS (Apple Silicon) 上でビルドすることができます。
 * 他の環境でビルドを行ってみた例もありますので、以下のリンクも参考にしてみてください。
   * Cygwin (Makoto Kamada さん)
     * https://x.com/kamadox/status/1802555953600213313
-  * macOS 14.5 (ザバイオーネ さん)
-    * https://x.com/z_zabaglione/status/1802552434306294072
-  * macOS 14.5 (tantan さん)
-    * https://x.com/snakGH/status/1803395890780185031   
 * [Releases](https://github.com/yunkya2/elf2x68k/releases) にはバイナリリリースとともにソースコードの tarball が置かれていますが、ビルドの際は基本的には git リポジトリから clone してビルドすることを推奨します。
 * elf2x68k は git のサブモジュールに bas2c を含んでいるため、git clone 時には `--recursive` オプションを指定して以下のように行ってください。
   ```
@@ -107,3 +103,11 @@ usage: elf2x68k.py [-h] [-o OUTPUT] [-b BASE] [-s] file
 ### sample/fileio
 
 * newlibのファイルI/O周りのAPIをテストするサンプルです
+
+### sample/xsp
+
+* よっしん氏 (@yosshin4004) 作の [スプライト管理ライブラリ XSP](https://github.com/yosshin4004/x68k_xsp) のサンプルコードを elf2x68k 環境でビルドできるようにしたサンプルです
+
+### sample/defsptool
+
+* Human68k システムディスクに含まれているスプライトパターンエディタ DEFSPTOOL.BAS を C に変換できるようにパッチを当てて m68k-xelf-bas でコンパイルするサンプルです

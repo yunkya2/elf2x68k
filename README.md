@@ -2,13 +2,13 @@
 
 ## 概要
 
-elf2x68k はシャープ X680x0 用実行ファイル(X 形式)を PC の Unix/Linux 系環境上で開発するためのクロス開発環境です。m68k 用クロスツールチェイン (gcc, binutils) から出力される ELF ファイルを変換して、 X68k で実行可能な X 形式ファイルを出力します。
+elf2x68k はシャープ X680x0 用実行ファイル(X 形式)を PC の Unix/Linux 系環境や macOS 上で開発するためのクロス開発環境です。m68k 用クロスツールチェイン (gcc, binutils) から出力される ELF ファイルを変換して、 X68k で実行可能な X 形式ファイルを出力します。
 
 更に、X-BASIC から C へのコンバートに対応しました。クロス環境上で X-BASIC プログラムを変換、コンパイルして X 形式ファイルを出力することができます。
 
 ## 特徴
 
-* 最新の binutils (2.41)、gcc (13.2.0) を用いた X68k のクロス開発が可能です
+* 最新の binutils (2.42)、gcc (13.3.0) を用いた X68k のクロス開発が可能です
 * binutils, gcc の各コマンド名の頭に `m68k-xelf-` が付いたコマンドがクロスツールチェインとなります (例: `m68k-xelf-gcc`)
 * コンパイラドライバ (`m68k-xelf-gcc`) から直接 X 形式ファイルが出力されます。ネイティブの gcc を使用するのと同様の感覚で X 形式ファイルを得ることができます
 * ツールチェインから出力される ELF ファイルに含まれるデバッグ情報を利用して、[gdbserver-x68k](https://github.com/yunkya2/gdbserver-x68k) を用いたリモートデバッグが可能です
@@ -21,8 +21,10 @@ elf2x68k はシャープ X680x0 用実行ファイル(X 形式)を PC の Unix/L
 
 ## インストール
 
-x86_64 Linux 向けと MSYS2 MinGW 64bit 向けバイナリを配布しています
-(Linux 版は Windows 11 の WSL2 にインストールした Ubuntu-20.04 でのみ動作確認しています)。
+以下の環境向けバイナリを配布しています
+* x86_64 Linux (Windows 11 の WSL2 にインストールした Ubuntu-20.04 で動作確認)
+* MSYS2 MinGW 64bit
+* Apple Silicon macOS (14.5 Sonoma)
 
 [Release](https://github.com/yunkya2/elf2x68k/releases) から利用する環境のアーカイブをダウンロードし、任意のディレクトリに展開してください。
 `m68k-xelf/bin` にパスを通すことで使用できるようになります。
@@ -297,6 +299,7 @@ elf2x68k の開発には以下のソースコードを参考にさせていた�
 
 * m68k クロスツールチェインのビルドスクリプトは、xdev68k 内のスクリプト [build_m68k-toolchain.sh](https://github.com/yosshin4004/xdev68k/blob/main/build_m68k-toolchain.sh) を元にしています。開発された よっしん氏 (@yosshin4004) に感謝いたします。
 * Newlib の X68k 対応は、[newlib-1.19.0-human68k](https://github.com/Lydux/newlib-1.19.0-human68k) の [human68k対応コード](https://github.com/Lydux/newlib-1.19.0-human68k/tree/master/newlib/libc/sys/human68k) を元にしています。開発された Lyderic Maillet 氏 に感謝いたします。
+* macOS ビルド対応については tantan さんの変更内容を参考にさせていただきました。感謝します。
 
 ## ライセンス
 
