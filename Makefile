@@ -63,8 +63,16 @@ pristine: clean
 
 GIT_REPO_VERSION=$(shell git describe --tags --always)
 ARCHIVE="elf2x68k-`uname -s|sed 's/_.*//'`-${GIT_REPO_VERSION}"
+ifeq ("$(shell tar --version|grep bsdtar)","")
+UID=owner
+GID=group
+else
+UID=uid
+GID=gid
+endif
+
 release: uninstall install
-	tar jcvf ${ARCHIVE}.tar.bz2 m68k-xelf --owner=root --group=root
+	tar -c -v -j -f ${ARCHIVE}.tar.bz2 --${UID}=0 --${GID}=0 m68k-xelf
 
 .PHONY:	all clean pristine help
 .PHONY:	download toolchain binutils gcc-stage1 newlib gcc-stage2
