@@ -92,8 +92,13 @@ if [ -x "$(command -v sha512sum)" ]; then
 else
 	SHA512SUM="shasum -a 512"
 fi
+
+# インストール先ディレクトリ作成 (デフォルトは ./m68k-xelf)
+INSTALL_DIR=${INSTALL_DIR:-"m68k-xelf"}
+mkdir -p ${INSTALL_DIR}
+INSTALL_DIR=$(realpath ${INSTALL_DIR})
+
 ROOT_DIR="${PWD}"
-INSTALL_DIR="${ROOT_DIR}/m68k-xelf"
 DOWNLOAD_DIR="${ROOT_DIR}/download"
 BUILD_DIR="${ROOT_DIR}/${GCC_BUILD_DIR}/build"
 SRC_DIR="${ROOT_DIR}/${GCC_BUILD_DIR}/src"
@@ -103,3 +108,9 @@ WITH_CPU=${CPU}
 export LC_ALL="C"
 export LC_CTYPE="C"
 export LANG="en_US.UTF-8"
+
+export PATH=${INSTALL_DIR}/bin:${PATH}
+
+# ディレクトリ作成
+mkdir -p ${BUILD_DIR}
+mkdir -p ${SRC_DIR}

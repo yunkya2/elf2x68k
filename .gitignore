@@ -5,6 +5,7 @@
 *.sys
 *.bz2
 .vscode
-build_gcc/
+.DS_Store
+build_gcc*/
 download/
 m68k-xelf*/

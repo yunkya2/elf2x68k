@@ -23,40 +23,39 @@
 #
 #------------------------------------------------------------------------------
 
-set -e
+# 共通設定を読み込み
+. scripts/common.sh
 
-M68K_TOOLCHAIN=m68k-xelf
+rm -f ${INSTALL_DIR}/README
+rm -f ${INSTALL_DIR}/bin/m68k-xelf-ld.x
+rm -f ${INSTALL_DIR}/m68k-elf/bin/ld.x
 
-rm -f ${M68K_TOOLCHAIN}/README
-rm -f ${M68K_TOOLCHAIN}/bin/m68k-xelf-ld.x
-rm -f ${M68K_TOOLCHAIN}/m68k-elf/bin/ld.x
+rm -f ${INSTALL_DIR}/bin/m68k-xelf-bas
+rm -f ${INSTALL_DIR}/bin/bas2c.py
+rm -f ${INSTALL_DIR}/bin/bas2c.def
+rm -f ${INSTALL_DIR}/bin/unlha.py
 
-rm -f ${M68K_TOOLCHAIN}/bin/m68k-xelf-bas
-rm -f ${M68K_TOOLCHAIN}/bin/bas2c.py
-rm -f ${M68K_TOOLCHAIN}/bin/bas2c.def
-rm -f ${M68K_TOOLCHAIN}/bin/unlha.py
+rm -f ${INSTALL_DIR}/bin/elf2x68k.py
+rm -f ${INSTALL_DIR}/bin/x68k2elf.py
+rm -f ${INSTALL_DIR}/m68k-elf/lib/x68k.ld
+rm -f ${INSTALL_DIR}/m68k-elf/lib/x*.specs*
+rm -f ${INSTALL_DIR}/m68k-elf/lib/c++small.specs
+rm -f ${INSTALL_DIR}/lib/gcc/m68k-elf/[0-9]*/specs
+rm -f ${INSTALL_DIR}/m68k-elf/lib/libx68k.a
+rm -f ${INSTALL_DIR}/m68k-elf/lib/libx68knodos.a
+rm -f ${INSTALL_DIR}/m68k-elf/lib/libx68kiocs.a
+rm -f ${INSTALL_DIR}/m68k-elf/lib/libx68kdos.a
+rm -f ${INSTALL_DIR}/m68k-elf/lib/x68kcrt0*.o
+rm -rf ${INSTALL_DIR}/m68k-elf/include/x68k
+rm -rf ${INSTALL_DIR}/m68k-elf/sys-include/sys
+rm -rf ${INSTALL_DIR}/m68k-elf/sys-include
 
-rm -f ${M68K_TOOLCHAIN}/bin/elf2x68k.py
-rm -f ${M68K_TOOLCHAIN}/bin/x68k2elf.py
-rm -f ${M68K_TOOLCHAIN}/m68k-elf/lib/x68k.ld
-rm -f ${M68K_TOOLCHAIN}/m68k-elf/lib/x*.specs*
-rm -f ${M68K_TOOLCHAIN}/m68k-elf/lib/c++small.specs
-rm -f ${M68K_TOOLCHAIN}/lib/gcc/m68k-elf/[0-9]*/specs
-rm -f ${M68K_TOOLCHAIN}/m68k-elf/lib/libx68k.a
-rm -f ${M68K_TOOLCHAIN}/m68k-elf/lib/libx68knodos.a
-rm -f ${M68K_TOOLCHAIN}/m68k-elf/lib/libx68kiocs.a
-rm -f ${M68K_TOOLCHAIN}/m68k-elf/lib/libx68kdos.a
-rm -f ${M68K_TOOLCHAIN}/m68k-elf/lib/x68kcrt0*.o
-rm -rf ${M68K_TOOLCHAIN}/m68k-elf/include/x68k
-rm -rf ${M68K_TOOLCHAIN}/m68k-elf/sys-include/sys
-rm -rf ${M68K_TOOLCHAIN}/m68k-elf/sys-include
-
-rm -rf ${M68K_TOOLCHAIN}/download
-rm -rf ${M68K_TOOLCHAIN}/install-xclib.sh
-rm -rf ${M68K_TOOLCHAIN}/xc-elf
-rm -f ${M68K_TOOLCHAIN}/m68k-elf/lib/libiocs.a
-rm -f ${M68K_TOOLCHAIN}/m68k-elf/lib/libdos.a
-rm -f ${M68K_TOOLCHAIN}/m68k-elf/lib/libbas.a
+rm -rf ${INSTALL_DIR}/download
+rm -rf ${INSTALL_DIR}/install-xclib.sh
+rm -rf ${INSTALL_DIR}/xc-elf
+rm -f ${INSTALL_DIR}/m68k-elf/lib/libiocs.a
+rm -f ${INSTALL_DIR}/m68k-elf/lib/libdos.a
+rm -f ${INSTALL_DIR}/m68k-elf/lib/libbas.a
 
 echo ""
 echo "-----------------------------------------------------------------------------"

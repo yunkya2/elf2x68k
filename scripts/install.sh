@@ -23,51 +23,49 @@
 #
 #------------------------------------------------------------------------------
 
-set -e
+# 共通設定を読み込み
+. scripts/common.sh
 
-M68K_TOOLCHAIN=m68k-xelf
-export PATH="${PWD}/${M68K_TOOLCHAIN}/bin:${PATH}"
+cp src/m68k-xelf-ld.x ${INSTALL_DIR}/bin/m68k-xelf-ld.x
+rm -f ${INSTALL_DIR}/m68k-elf/bin/ld.x
+ln ${INSTALL_DIR}/bin/m68k-xelf-ld.x ${INSTALL_DIR}/m68k-elf/bin/ld.x
 
-cp src/m68k-xelf-ld.x ${M68K_TOOLCHAIN}/bin/m68k-xelf-ld.x
-rm -f ${M68K_TOOLCHAIN}/m68k-elf/bin/ld.x
-ln ${M68K_TOOLCHAIN}/bin/m68k-xelf-ld.x ${M68K_TOOLCHAIN}/m68k-elf/bin/ld.x
+cp src/m68k-xelf-bas ${INSTALL_DIR}/bin
+cp bas2c/bas2c.py ${INSTALL_DIR}/bin
+cp bas2c/bas2c.def ${INSTALL_DIR}/bin
+cp unlha/unlha.py ${INSTALL_DIR}/bin
 
-cp src/m68k-xelf-bas ${M68K_TOOLCHAIN}/bin
-cp bas2c/bas2c.py ${M68K_TOOLCHAIN}/bin
-cp bas2c/bas2c.def ${M68K_TOOLCHAIN}/bin
-cp unlha/unlha.py ${M68K_TOOLCHAIN}/bin
+cp src/elf2x68k.py ${INSTALL_DIR}/bin
+cp src/x68k2elf.py ${INSTALL_DIR}/bin
+cp src/x68k.ld ${INSTALL_DIR}/m68k-elf/lib
+cp src/x68k.specs ${INSTALL_DIR}/m68k-elf/lib
+cp src/x68knodos.specs ${INSTALL_DIR}/m68k-elf/lib
+cp src/c++small.specs ${INSTALL_DIR}/m68k-elf/lib
+cp src/xc.specs.tmpl ${INSTALL_DIR}/m68k-elf/lib
+cp src/install-xclib.sh ${INSTALL_DIR}
 
-cp src/elf2x68k.py ${M68K_TOOLCHAIN}/bin
-cp src/x68k2elf.py ${M68K_TOOLCHAIN}/bin
-cp src/x68k.ld ${M68K_TOOLCHAIN}/m68k-elf/lib
-cp src/x68k.specs ${M68K_TOOLCHAIN}/m68k-elf/lib
-cp src/x68knodos.specs ${M68K_TOOLCHAIN}/m68k-elf/lib
-cp src/c++small.specs ${M68K_TOOLCHAIN}/m68k-elf/lib
-cp src/xc.specs.tmpl ${M68K_TOOLCHAIN}/m68k-elf/lib
-cp src/install-xclib.sh ${M68K_TOOLCHAIN}
-
-${M68K_TOOLCHAIN}/bin/m68k-xelf-gcc -dumpspecs | \
+${INSTALL_DIR}/bin/m68k-xelf-gcc -dumpspecs | \
   sed '/omit-frame-pointer/s/^/-fcall-used-d2 -fcall-used-a2 -fexec-charset=cp932 /' \
-  > ${M68K_TOOLCHAIN}/lib/gcc/m68k-elf/specs
-cat src/x68k.specs >> ${M68K_TOOLCHAIN}/lib/gcc/m68k-elf/specs
-mv ${M68K_TOOLCHAIN}/lib/gcc/m68k-elf/specs ${M68K_TOOLCHAIN}/lib/gcc/m68k-elf/[0-9]*
+  > ${INSTALL_DIR}/lib/gcc/m68k-elf/specs
+cat src/x68k.specs >> ${INSTALL_DIR}/lib/gcc/m68k-elf/specs
+mv ${INSTALL_DIR}/lib/gcc/m68k-elf/specs ${INSTALL_DIR}/lib/gcc/m68k-elf/[0-9]*
 
 (cd src/libx68k; make) || exit 1
-cp src/libx68k/libx68k.a ${M68K_TOOLCHAIN}/m68k-elf/lib
-cp src/libx68k/libx68knodos.a ${M68K_TOOLCHAIN}/m68k-elf/lib
-cp src/libx68k/libiocs/libx68kiocs.a ${M68K_TOOLCHAIN}/m68k-elf/lib
-cp src/libx68k/libdos/libx68kdos.a ${M68K_TOOLCHAIN}/m68k-elf/lib
-cp src/libx68k/crt0.o ${M68K_TOOLCHAIN}/m68k-elf/lib/x68kcrt0.o
-cp src/libx68k/crt0nodos.o ${M68K_TOOLCHAIN}/m68k-elf/lib/x68kcrt0nodos.o
+cp src/libx68k/libx68k.a ${INSTALL_DIR}/m68k-elf/lib
+cp src/libx68k/libx68knodos.a ${INSTALL_DIR}/m68k-elf/lib
+cp src/libx68k/libiocs/libx68kiocs.a ${INSTALL_DIR}/m68k-elf/lib
+cp src/libx68k/libdos/libx68kdos.a ${INSTALL_DIR}/m68k-elf/lib
+cp src/libx68k/crt0.o ${INSTALL_DIR}/m68k-elf/lib/x68kcrt0.o
+cp src/libx68k/crt0nodos.o ${INSTALL_DIR}/m68k-elf/lib/x68kcrt0nodos.o
 
-mkdir -p ${M68K_TOOLCHAIN}/m68k-elf/include/x68k
-cp -r src/libx68k/x68k ${M68K_TOOLCHAIN}/m68k-elf/include
+mkdir -p ${INSTALL_DIR}/m68k-elf/include/x68k
+cp -r src/libx68k/x68k ${INSTALL_DIR}/m68k-elf/include
 
-mkdir -p ${M68K_TOOLCHAIN}/m68k-elf/sys-include/sys
-cp src/_default_fcntl.h ${M68K_TOOLCHAIN}/m68k-elf/sys-include/sys
+mkdir -p ${INSTALL_DIR}/m68k-elf/sys-include/sys
+cp src/_default_fcntl.h ${INSTALL_DIR}/m68k-elf/sys-include/sys
 
 GIT_REPO_VERSION=`git describe --tags --always`
-cat > ${M68K_TOOLCHAIN}/README << EOF
+cat > ${INSTALL_DIR}/README << EOF
 elf2x68k: m68k-xelf cross toolchain for X680x0
 version: ${GIT_REPO_VERSION}
 URL: https://github.com/yunkya2/elf2x68k/
