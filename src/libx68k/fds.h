@@ -2,6 +2,7 @@
 #define _FDS_H
 
 #include <sys/cdefs.h>
+#include <x68k/dos.h>
 
 #ifndef O_BINARY
 #define O_BINARY        0x10000
@@ -22,6 +23,18 @@ extern fdent __fd_list[];
 #define __valid_fd(fd)		(__fd_list[fd].filename != NULL)
 #define __fd_filename(fd)	(__fd_list[fd].filename)
 #define __fd_flags(fd)		(__fd_list[fd].flags)
+
+#include "../dirent.h"
+
+typedef struct DIR DIR;
+
+struct DIR {
+  int active;     /* 0:free / 1:in-use / 2:in-use(no directory entry) */
+  int count;
+  char dirname[88 + 5];
+  struct dirent dirent;
+  struct dos_filbuf filbuf;
+};
 
 __BEGIN_DECLS
 

@@ -63,6 +63,7 @@ cp -r src/libx68k/x68k ${INSTALL_DIR}/m68k-elf/include
 
 mkdir -p ${INSTALL_DIR}/m68k-elf/sys-include/sys
 cp src/_default_fcntl.h ${INSTALL_DIR}/m68k-elf/sys-include/sys
+cp src/dirent.h ${INSTALL_DIR}/m68k-elf/sys-include/sys
 
 GIT_REPO_VERSION=`git describe --tags --always`
 cat > ${INSTALL_DIR}/README << EOF
