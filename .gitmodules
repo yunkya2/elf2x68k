@@ -4,3 +4,6 @@
 [submodule "unlha"]
 	path = unlha
 	url = https://github.com/yunkya2/unlha.git
+[submodule "sample"]
+	path = sample
+	url = https://github.com/yunkya2/elf2x68k-sample
