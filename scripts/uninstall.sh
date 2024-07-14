@@ -34,6 +34,7 @@ rm -f ${INSTALL_DIR}/bin/m68k-xelf-bas
 rm -f ${INSTALL_DIR}/bin/bas2c.py
 rm -f ${INSTALL_DIR}/bin/bas2c.def
 rm -f ${INSTALL_DIR}/bin/unlha.py
+rm -f ${INSTALL_DIR}/bin/m68k-xelf-gdb*
 
 rm -f ${INSTALL_DIR}/bin/elf2x68k.py
 rm -f ${INSTALL_DIR}/bin/x68k2elf.py
