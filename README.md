@@ -21,10 +21,11 @@ elf2x68k はシャープ X680x0 用実行ファイル(X 形式)を PC の Unix/L
 
 ## インストール
 
+### Linux/MinGW 向け
+
 以下の環境向けバイナリを配布しています
 * x86_64 Linux (Windows 11 の WSL2 にインストールした Ubuntu-20.04 で動作確認)
 * MSYS2 MinGW 64bit
-* Apple Silicon macOS (14.5 Sonoma)
 
 [Release](https://github.com/yunkya2/elf2x68k/releases) から利用する環境のアーカイブをダウンロードし、任意のディレクトリに展開してください。
 `m68k-xelf/bin` にパスを通すことで使用できるようになります。
@@ -35,7 +36,27 @@ elf2x68k はシャープ X680x0 用実行ファイル(X 形式)を PC の Unix/L
 * X-BASIC to C コンバータを利用する場合には必ず実行してください。
 * インストール後に `m68k-xelf` ディレクトリを移動した場合は `install-xclib.sh` スクリプトを再度実行してください (スクリプト内で実行時の絶対パスを記録する箇所があるため)。
 
+### macOS 向け
+
+macOS 向けは Homebrew からインストールできます (M3 Macbook Air / macOS 14.5 (Sonoma) で動作確認)。
+Homebrew がインストールされている環境でコマンドラインから
+
+```
+brew install yunkya2/tap/elf2x68k
+```
+を実行すると、ソースコードをダウンロードしてビルド、インストールを行います
+(M3 Macbook Air で 30 分程度かかります)。
+
+XC ライブラリのインストールも合わせて行いますので、`install-xclib.sh` スクリプトは実行不要です。
+
+### ソースコードからのビルド
+
 ソースコードからビルドを行う方法は [README-elf2x68k.md](README-elf2x68k.md) を参照してください
+
+## サンプルコード
+
+C や C++、X-BASIC to C のサンプルコードを [elf2x68k-samples](https://github.com/yunkya2/elf2x68k-sample) リポジトリに用意しています。
+サンプルコードの説明は [README.md](https://github.com/yunkya2/elf2x68k-sample/blob/master/README.md) を参照してください。
 
 ## 実行例
 

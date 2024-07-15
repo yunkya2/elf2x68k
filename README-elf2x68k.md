@@ -39,6 +39,13 @@ m68k-xelf/ 内に追加される、X68k 対応のためのファイル一覧で�
   * ELFファイルをX形式実行ファイルに変換するpythonスクリプトです
 * bin/x68k2elf.py
   * X68kのオブジェクトファイルやライブラリをELF形式に変換するpythonスクリプトです
+* bin/bas2c.py
+* bin/bas2c.def
+  * [X-BASIC to Cコンバータ](https://github.com/yunkya2/bas2c-x68k) の python スクリプトです
+* bin/m68k-xelf-bas
+  * bas2c.py を用いて X-BASIC プログラムを C に変換し、m68k-xelf-gcc でコンパイルするスク
+* bin/unlha.py
+  * [LZH アーカイブ展開ツール](https://github.com/yunkya2/unlha) の python スクリプトです
 * lib/gcc/m68k-elf/\<gcc version\>/specs
   * m68k-xelf-gcc の挙動を修正するspecsファイルです。デフォルトの Newlib 環境時に使われます
     * リンク時にX68kに必要なライブラリもリンクします
@@ -64,8 +71,9 @@ m68k-xelf/ 内に追加される、X68k 対応のためのファイル一覧で�
 * m68k-elf/include/x68k/*
   * libiocs.a, libdos.a を利用するためのヘッダファイルです
 * m68k-elf/sys-include/*
-  * 標準ヘッダファイル m68k-elf/include 内を置き換えるためのヘッダファイルです。
-  * fcntl.h に O_BINARY, O_TEXT の定義を追加するために使われます。
+  * 標準ヘッダファイル m68k-elf/include 内を置き換えるためのヘッダファイルです
+  * fcntl.h に O_BINARY, O_TEXT の定義を追加するために使われます
+  * dirent.h に DIR, struct dirent の定義を追加するために使われます
 * install-xclib.sh
   * [無償公開されている C Compiler PRO-68K v2.1 (XC)](http://retropc.net/x68000/software/sharp/xc21/) をダウンロードし、ライブラリとヘッダファイルをインストールして XC 環境を構築するスクリプトです。
 
@@ -82,32 +90,3 @@ usage: elf2x68k.py [-h] [-o OUTPUT] [-b BASE] [-s] file
 * `-b` オプションが指定されている場合は、変換後のX形式ファイルのベースアドレスが指定したアドレスに設定されます。
   * X68kのディスクのブートセクタから起動可能なファイルを生成するためには、`-b 0x6800`　を指定してベースアドレスを0x6800にしておく必要があります。
 * 変換元のELFファイルのシンボル情報がX形式ファイルにも付加されます。 `-s` オプションが指定されている場合はシンボル情報を削除します。
-
-## サンプル
-
-### sample/hello
-
-* printf()とシンプルなIOCSコール呼び出しのサンプルです
-* makeすると hello.x というファイルができます。Human68kでそのまま実行できます
-
-### sample/hellosys
-
-* 上記 sample/hello と同じ内容を、Human68k を使わずに実行するサンプルです
-* makeすると hellosys.sys というバイナリが生成されます。このファイルは以下の手順で起動できます。
-  1. 実機でフォーマット済みのフロッピーディスク、またはエミュレータでフォーマット済みディスクイメージを用意します
-  2. hellosys.sys を **human.sys という名前で** ディスクにコピーします
-      * ディスクには他のファイルを置かないでください。ブートセクタから起動できるファイルはディスクの連続したセクタに配置されている必要があるためです。
-  3. 作成したディスク(イメージ)を実機またはエミュレータにセットし、リセットします。
-
-
-### sample/fileio
-
-* newlibのファイルI/O周りのAPIをテストするサンプルです
-
-### sample/xsp
-
-* よっしん氏 (@yosshin4004) 作の [スプライト管理ライブラリ XSP](https://github.com/yosshin4004/x68k_xsp) のサンプルコードを elf2x68k 環境でビルドできるようにしたサンプルです
-
-### sample/defsptool
-
-* Human68k システムディスクに含まれているスプライトパターンエディタ DEFSPTOOL.BAS を C に変換できるようにパッチを当てて m68k-xelf-bas でコンパイルするサンプルです
