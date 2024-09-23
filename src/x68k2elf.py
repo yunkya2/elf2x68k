@@ -311,11 +311,11 @@ def getword(f):
     (r,) = unpack('>H', data)
     return r
 
-def getlong(f):
+def getlong(f, signed=False):
     data = f.read(4)
     if not data or len(data) != 4:
         return None
-    (r,) = unpack('>L', data)
+    (r,) = unpack('>L' if not signed else '>l', data)
     return r
 
 def getstr(f):
@@ -440,14 +440,14 @@ def objfile(f, fn):
             if cmdl >= 0xfc:
                 label = getword(f)
                 if (cmdh & 0xf0) == 0x50:
-                    addend = getlong(f)
+                    addend = getlong(f, signed=True)
                 ra.sym = symnum[label]
                 ra.addend = addend
                 convlog(f'REF{size}: sec=0x{cmdl:02x} label={label} name={e.symlist[ra.sym].name}')
             else:
-                offst = getlong(f)
+                offst = getlong(f, signed=True)
                 if (cmdh & 0xf0) == 0x50:
-                    addend = getlong(f)
+                    addend = getlong(f, signed=True)
                 ra.sym = sectsym[cmdl]
                 ra.addend = offst + addend
                 convlog(f'ADR{size}: sec=0x{cmdl:02x} offst=0x{offst:08x}')
