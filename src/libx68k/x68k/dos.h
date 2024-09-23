@@ -320,6 +320,7 @@ __BEGIN_DECLS
 extern void	_dos_allclose (void);
 extern int	_dos_bindno (const char *, const char *);
 extern int	_dos_breakck (int);
+extern int	_dos_bus_err (void *, void *, int);
 extern int	_dos_c_cls_al (void);
 extern int	_dos_c_cls_ed (void);
 extern int	_dos_c_cls_st (void);

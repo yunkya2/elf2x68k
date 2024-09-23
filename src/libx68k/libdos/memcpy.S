@@ -1,4 +1,5 @@
 | int _dos_memcpy (void *, void *, int);
+| int _dos_bus_err (void *, void *, int);
 .text
 .even
 .global _dos_memcpy
