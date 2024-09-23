@@ -649,6 +649,14 @@ def objfile(f, fn):
         elif cmdh == 0xb2 or cmdh == 0xb0:
             val = getlong(f)
             name = getsymstr(f)
+
+            if name.startswith('*'):        # alignment information
+                convlog(f'SYMBOL: align={1 << val}\n')
+                for s in e.shlist:
+                    if s.addralign != 0:
+                        s.addralign = 1 << val
+                continue
+
             s = Symbol(e, name=name, type=STT_NOTYPE)
             s.bind = STB_GLOBAL
 
