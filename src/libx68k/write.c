@@ -27,14 +27,14 @@ ssize_t write(int fd, const void *buf, size_t count)
   if (!isatty(fd) && __fd_flags(fd) & O_BINARY) {
     res = _dos_write(fd, buf, count);
   } else {
-    char textbuf[TEXTBUFSIZE];
+    char textbuf[TEXTBUFSIZE + 1];  /* extra space is needed for '\r' */
     char *p;
     char ch;
 
     c = count;
     while (c > 0) {
       p = textbuf;
-      while ((c > 0) && (p - textbuf < sizeof(textbuf))) {
+      while ((c > 0) && (p - textbuf < TEXTBUFSIZE)) {
         ch = *(char *)buf++;
         c--;
         if (ch == '\n') {
