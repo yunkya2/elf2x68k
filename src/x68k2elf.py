@@ -560,7 +560,7 @@ def objfile(f, fn):
                     if s1[0] == 0 and s2[0] == 0:           # imm - imm
                         exprstack.append((0, s[1] - s[2], 0, False))
                     elif s2[0] == 0:                        # label - imm
-                        exprstack.append((s1[0], s1[1], s1[2] - s2[1], False))
+                        exprstack.append((s1[0], s1[1], s1[2] - s2[1], s1[3]))
                     elif s1[0] == 0:                        # imm - label .. error
                         assert(0)
                     else:                                   # label - label
