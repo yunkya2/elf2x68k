@@ -326,10 +326,10 @@ def getstr(f):
             return None
         (c1, c2) = unpack('2c', data)
         if c1 == b'\0':
-            return s.decode() 
+            return s.decode('cp932')
         s += c1
         if c2 == b'\0':
-            return s.decode()
+            return s.decode('cp932')
         s += c2
 
 def getsymstr(f):
@@ -357,7 +357,7 @@ def getfdate(date):
         + f'{(date >> 11) & 0x1f:02d}:{(date >> 5) & 0x3f:02d}:{(date & 0x1f) << 1:02d}'
 
 def getname(name):
-    return name[0:name.find(b'\0')].decode()
+    return name[0:name.find(b'\0')].decode('cp932')
 
 def convlog(msg):
     if verbose:
