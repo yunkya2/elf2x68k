@@ -1,0 +1,460 @@
+diff --git a/opcodes/m68k-dis.c b/opcodes/m68k-dis.c
+index bc2f8203..28bd2e1b 100644
+--- a/opcodes/m68k-dis.c
++++ b/opcodes/m68k-dis.c
+@@ -26,6 +26,12 @@
+ #include "cpu-m68k.h"
+ #include "opcode/m68k.h"
+ 
++#include "m68k-x68kdoscall.h"
++#include "m68k-x68kiocscall.h"
++
++static int x68kiocsflg = 0;
++static unsigned char x68kiocsnum = 0;
++
+ /* Local function prototypes.  */
+ 
+ const char * const fpcr_names[] =
+@@ -1576,6 +1582,22 @@ match_insn_m68k (bfd_vma memaddr,
+ 
+   d = args;
+ 
++  switch (x68kiocsflg) {
++  case 0:
++    if (buffer[0] == 0x70) {                      /* moveql #xx,%d0 */
++      x68kiocsflg = 1;
++      x68kiocsnum = buffer[1];
++    }
++    break;
++  case 1:
++    if (buffer[0] == 0x4e && buffer[1] == 0x4f) { /* trap #15 */
++      x68kiocsflg = 2;
++    } else {
++      x68kiocsflg = 0;
++    }
++    break;
++  }
++
+   info->fprintf_styled_func (info->stream, dis_style_mnemonic, "%s", best->name);
+ 
+   if (*d)
+@@ -1590,6 +1612,17 @@ match_insn_m68k (bfd_vma memaddr,
+ 	info->fprintf_styled_func (info->stream, dis_style_text, ",");
+     }
+ 
++  if (x68kiocsflg == 2) {
++    for (size_t i = 0; i < sizeof(x68kiocscall) / sizeof(x68kiocscall[0]); i++) {
++      if (x68kiocscall[i].code == x68kiocsnum) {
++        info->fprintf_styled_func (info->stream, dis_style_comment_start,
++          "\t\t// IOCS %s", x68kiocscall[i].name);
++        break;
++      }
++    }
++    x68kiocsflg = 0;
++  }
++
+   return p - buffer;
+ }
+ 
+@@ -1761,6 +1794,16 @@ print_insn_m68k (bfd_vma memaddr, disassemble_info *info)
+       info->fprintf_styled_func (info->stream, dis_style_text, " ");
+       info->fprintf_styled_func (info->stream, dis_style_immediate,
+ 				 "0x%04x", (buffer[0] << 8) + buffer[1]);
++      x68kiocsflg = 0;
++      if (buffer[0] == 0xff) {
++        for (size_t i = 0; i < sizeof(x68kdoscall) / sizeof(x68kdoscall[0]); i++) {
++          if ((x68kdoscall[i].code & 0xff) == buffer[1]) {
++            info->fprintf_styled_func (info->stream, dis_style_comment_start,
++              "\t\t// DOS %s", x68kdoscall[i].name);
++            break;
++          }
++        }
++      }
+     }
+ 
+   return val ? val : 2;
+diff --git a/opcodes/m68k-x68kdoscall.h b/opcodes/m68k-x68kdoscall.h
+new file mode 100644
+index 00000000..9885c3e6
+--- /dev/null
++++ b/opcodes/m68k-x68kdoscall.h
+@@ -0,0 +1,142 @@
++static const struct { unsigned int code; const char *name; } x68kdoscall[] = {
++	{ 0xff00, "_EXIT" },
++	{ 0xff01, "_GETCHAR" },
++	{ 0xff02, "_PUTCHAR" },
++	{ 0xff03, "_COMINP" },
++	{ 0xff04, "_COMOUT" },
++	{ 0xff05, "_PRNOUT" },
++	{ 0xff06, "_INPOUT" },
++	{ 0xff07, "_INKEY" },
++	{ 0xff08, "_GETC" },
++	{ 0xff09, "_PRINT" },
++	{ 0xff0a, "_GETS" },
++	{ 0xff0b, "_KEYSNS" },
++	{ 0xff0c, "_KFLUSH" },
++	{ 0xff0d, "_FFLUSH" },
++	{ 0xff0e, "_CHGDRV" },
++	{ 0xff0e, "_CHDRV" },
++	{ 0xff0f, "_DRVCTRL" },
++
++	{ 0xff10, "_CONSNS" },
++	{ 0xff11, "_PRNSNS" },
++	{ 0xff12, "_CINSNS" },
++	{ 0xff13, "_COUTSNS" },
++	{ 0xff17, "_FATCHK" },
++	{ 0xff18, "_HENDSP" },
++	{ 0xff19, "_CURDRV" },
++	{ 0xff1a, "_GETSS" },
++	{ 0xff1b, "_FGETC" },
++	{ 0xff1c, "_FGETS" },
++	{ 0xff1d, "_FPUTC" },
++	{ 0xff1e, "_FPUTS" },
++	{ 0xff1f, "_ALLCLOSE" },
++
++	{ 0xff20, "_SUPER" },
++	{ 0xff21, "_FNCKEY" },
++	{ 0xff22, "_KNJCTRL" },
++	{ 0xff23, "_CONCTRL" },
++	{ 0xff24, "_KEYCTRL" },
++	{ 0xff25, "_INTVCS" },
++	{ 0xff26, "_PSPSET" },
++	{ 0xff27, "_GETTIM2" },
++	{ 0xff28, "_SETTIM2" },
++	{ 0xff29, "_NAMESTS" },
++	{ 0xff2a, "_GETDATE" },
++	{ 0xff2b, "_SETDATE" },
++	{ 0xff2c, "_GETTIME" },
++	{ 0xff2d, "_SETTIME" },
++	{ 0xff2e, "_VERIFY" },
++	{ 0xff2f, "_DUP0" },
++
++	{ 0xff30, "_VERNUM" },
++	{ 0xff31, "_KEEPPR" },
++	{ 0xff32, "_GETDPB" },
++	{ 0xff33, "_BREAKCK" },
++	{ 0xff34, "_DRVXCHG" },
++	{ 0xff35, "_INTVCG" },
++	{ 0xff36, "_DSKFRE" },
++	{ 0xff37, "_NAMECK" },
++	{ 0xff39, "_MKDIR" },
++	{ 0xff3a, "_RMDIR" },
++	{ 0xff3b, "_CHDIR" },
++	{ 0xff3c, "_CREATE" },
++	{ 0xff3d, "_OPEN" },
++	{ 0xff3e, "_CLOSE" },
++	{ 0xff3f, "_READ" },
++
++	{ 0xff40, "_WRITE" },
++	{ 0xff41, "_DELETE" },
++	{ 0xff42, "_SEEK" },
++	{ 0xff43, "_CHMOD" },
++	{ 0xff44, "_IOCTRL" },
++	{ 0xff45, "_DUP" },
++	{ 0xff46, "_DUP2" },
++	{ 0xff47, "_CURDIR" },
++	{ 0xff48, "_MALLOC" },
++	{ 0xff49, "_MFREE" },
++	{ 0xff4a, "_SETBLOCK" },
++	{ 0xff4b, "_EXEC" },
++	{ 0xff4c, "_EXIT2" },
++	{ 0xff4d, "_WAIT" },
++	{ 0xff4e, "_FILES" },
++	{ 0xff4f, "_NFILES" },
++
++	{ 0xff50, "_SETPDB_v2" },
++	{ 0xff51, "_GETPDB_v2" },
++	{ 0xff52, "_SETENV_v2" },
++	{ 0xff53, "_GETENV_v2" },
++	{ 0xff54, "_VERIFYG_v2" },
++	{ 0xff55, "_COMMON_v2" },
++	{ 0xff56, "_RENAME_v2" },
++	{ 0xff57, "_FILEDATE_v2" },
++	{ 0xff58, "_MALLOC2_v2" },
++	{ 0xff5A, "_MAKETMP_v2" },
++	{ 0xff5B, "_NEWFILE_v2" },
++	{ 0xff5C, "_LOCK_v2" },
++	{ 0xff5F, "_ASSIGN_v2" },
++
++	{ 0xff7A, "_FFLUSH_SET_v2" },
++	{ 0xff7B, "_OS_PATCH_v2" },
++	{ 0xff7C, "_GET_FCB_ADR_v2" },
++	{ 0xff7D, "_S_MALLOC_v2" },
++	{ 0xff7E, "_S_MFREE_v2" },
++	{ 0xff7F, "_S_PROCESS_v2" },
++
++	{ 0xff80, "_SETPDB" },
++	{ 0xff81, "_GETPDB" },
++	{ 0xff82, "_SETENV" },
++	{ 0xff83, "_GETENV" },
++	{ 0xff84, "_VERIFYG" },
++	{ 0xff85, "_COMMON" },
++	{ 0xff86, "_RENAME" },
++	{ 0xff87, "_FILEDATE" },
++	{ 0xff88, "_MALLOC2" },
++	{ 0xff8A, "_MAKETMP" },
++	{ 0xff8B, "_NEWFILE" },
++	{ 0xff8C, "_LOCK" },
++	{ 0xff8F, "_ASSIGN" },
++
++	{ 0xffAA, "_FFLUSH_SET" },
++	{ 0xffAB, "_OS_PATCH" },
++	{ 0xffAC, "_GET_FCB_ADR" },
++	{ 0xffAD, "_S_MALLOC" },
++	{ 0xffAE, "_S_MFREE" },
++	{ 0xffAF, "_S_PROCESS" },
++
++	{ 0xfff0, "_EXITVC" },
++	{ 0xfff1, "_CTRLVC" },
++	{ 0xfff2, "_ERRJVC" },
++	{ 0xfff3, "_DISKRED" },
++	{ 0xfff4, "_DISKWRT" },
++	{ 0xfff5, "_INDOSFLG" },
++	{ 0xfff6, "_SUPER_JSR" },
++	{ 0xfff7, "_BUS_ERR" },
++	{ 0xfff8, "_OPEN_PR" },
++	{ 0xfff9, "_KILL_PR" },
++	{ 0xfffa, "_GET_PR" },
++	{ 0xfffb, "_SUSPEND" },
++	{ 0xfffc, "_SLEEP_PR" },
++	{ 0xfffd, "_SEND_PR" },
++	{ 0xfffe, "_TIME_PR" },
++	{ 0xffff, "_CHANGE_PR" },
++};
+diff --git a/opcodes/m68k-x68kiocscall.h b/opcodes/m68k-x68kiocscall.h
+new file mode 100644
+index 00000000..fac058ef
+--- /dev/null
++++ b/opcodes/m68k-x68kiocscall.h
+@@ -0,0 +1,231 @@
++static const struct { unsigned int code; const char *name; } x68kiocscall[] = {
++	{ 0x00, "_B_KEYINP" },
++	{ 0x01, "_B_KEYSNS" },
++	{ 0x02, "_B_SFTSNS" },
++	{ 0x03, "_KEY_INIT" },
++	{ 0x04, "_BITSNS" },
++	{ 0x05, "_SKEYSET" },
++	{ 0x06, "_LEDCTRL" },
++	{ 0x07, "_LEDSET" },
++	{ 0x08, "_KEYDLY" },
++	{ 0x09, "_KEYREP" },
++	{ 0x0a, "_OPT2TVON" },
++	{ 0x0b, "_OPT2TVOFF" },
++	{ 0x0c, "_TVCTRL" },
++	{ 0x0d, "_LEDMOD" },
++	{ 0x0e, "_TGUSEMD" },
++	{ 0x0f, "_DEFCHR" },
++
++	{ 0x10, "_CRTMOD" },
++	{ 0x11, "_CONTRAST" },
++	{ 0x12, "_HSVTORGB" },
++	{ 0x13, "_TPALET" },
++	{ 0x14, "_TPALET2" },
++	{ 0x15, "_TCOLOR" },
++	{ 0x16, "_FNTADR" },
++	{ 0x17, "_VRAMGET" },
++	{ 0x18, "_VRAMPUT" },
++	{ 0x19, "_FNTGET" },
++	{ 0x1a, "_TEXTGET" },
++	{ 0x1b, "_TEXTPUT" },
++	{ 0x1c, "_CLIPPUT" },
++	{ 0x1d, "_SCROLL" },
++	{ 0x1e, "_B_CURON" },
++	{ 0x1f, "_B_CUROFF" },
++
++	{ 0x20, "_B_PUTC" },
++	{ 0x21, "_B_PRINT" },
++	{ 0x22, "_B_COLOR" },
++	{ 0x23, "_B_LOCATE" },
++	{ 0x24, "_B_DOWN_S" },
++	{ 0x25, "_B_UP_S" },
++	{ 0x26, "_B_UP" },
++	{ 0x27, "_B_DOWN" },
++	{ 0x28, "_B_RIGHT" },
++	{ 0x29, "_B_LEFT" },
++	{ 0x2a, "_B_CLR_ST" },
++	{ 0x2b, "_B_ERA_ST" },
++	{ 0x2c, "_B_INS" },
++	{ 0x2d, "_B_DEL" },
++	{ 0x2e, "_B_CONSOL" },
++	{ 0x2f, "_B_PUTMES" },
++
++	{ 0x30, "_SET232C" },
++	{ 0x31, "_LOF232C" },
++	{ 0x32, "_INP232C" },
++	{ 0x33, "_ISNS232C" },
++	{ 0x34, "_OSNS232C" },
++	{ 0x35, "_OUT232C" },
++	{ 0x36, "_MS_VCS" },
++	{ 0x37, "_EXESC" },
++	{ 0x38, "_SETFNTADR" },
++	{ 0x39, "_SETBEEP" },
++	{ 0x3a, "_SETPRN" },
++	{ 0x3b, "_JOYGET" },
++	{ 0x3c, "_INIT_PRN" },
++	{ 0x3d, "_SNSPRN" },
++	{ 0x3e, "_OUTLPT" },
++	{ 0x3f, "_OUTPRN" },
++
++	{ 0x40, "_B_SEEK" },
++	{ 0x41, "_B_VERIFY" },
++	{ 0x42, "_B_READDI" },
++	{ 0x43, "_B_DSKINI" },
++	{ 0x44, "_B_DRVSNS" },
++	{ 0x45, "_B_WRITE" },
++	{ 0x46, "_B_READ" },
++	{ 0x47, "_B_RECALI" },
++	{ 0x48, "_B_ASSIGN" },
++	{ 0x49, "_B_WRITED" },
++	{ 0x4a, "_B_READID" },
++	{ 0x4b, "_B_BADFMT" },
++	{ 0x4c, "_B_READDL" },
++	{ 0x4d, "_B_FORMAT" },
++	{ 0x4e, "_B_DRVCHK" },
++	{ 0x4f, "_B_EJECT" },
++
++	{ 0x50, "_DATEBCD" },
++	{ 0x51, "_DATESET" },
++	{ 0x52, "_TIMEBCD" },
++	{ 0x53, "_TIMESET" },
++	{ 0x54, "_DATEGET" },
++	{ 0x55, "_DATEBIN" },
++	{ 0x56, "_TIMEGET" },
++	{ 0x57, "_TIMEBIN" },
++	{ 0x58, "_DATECNV" },
++	{ 0x59, "_TIMECNV" },
++	{ 0x5a, "_DATEASC" },
++	{ 0x5b, "_TIMEASC" },
++	{ 0x5c, "_DAYASC" },
++	{ 0x5d, "_ALARMMOD" },
++	{ 0x5e, "_ALARMSET" },
++	{ 0x5f, "_ALARMGET" },
++
++	{ 0x60, "_ADPCMOUT" },
++	{ 0x61, "_ADPCMINP" },
++	{ 0x62, "_ADPCMAOT" },
++	{ 0x63, "_ADPCMAIN" },
++	{ 0x64, "_ADPCMLOT" },
++	{ 0x65, "_ADPCMLIN" },
++	{ 0x66, "_ADPCMSNS" },
++	{ 0x67, "_ADPCMMOD" },
++	{ 0x68, "_OPMSET" },
++	{ 0x69, "_OPMSNS" },
++	{ 0x6a, "_OPMINTST" },
++	{ 0x6b, "_TIMERDST" },
++	{ 0x6c, "_VDISPST" },
++	{ 0x6d, "_CRTCRAS" },
++	{ 0x6e, "_HSYNCST" },
++	{ 0x6f, "_PRNINTST" },
++
++	{ 0x70, "_MS_INIT" },
++	{ 0x71, "_MS_CURON" },
++	{ 0x72, "_MS_CUROF" },
++	{ 0x73, "_MS_STAT" },
++	{ 0x74, "_MS_GETDT" },
++	{ 0x75, "_MS_CURGT" },
++	{ 0x76, "_MS_CURST" },
++	{ 0x77, "_MS_LIMIT" },
++	{ 0x78, "_MS_OFFTM" },
++	{ 0x79, "_MS_ONTM" },
++	{ 0x7a, "_MS_PATST" },
++	{ 0x7b, "_MS_SEL" },
++	{ 0x7c, "_MS_SEL2" },
++	{ 0x7d, "_SKEY_MOD" },
++	{ 0x7e, "_DENSNS" },
++	{ 0x7f, "_ONTIME" },
++
++	{ 0x80, "_B_INTVCS" },
++	{ 0x81, "_B_SUPER" },
++	{ 0x82, "_B_BPEEK" },
++	{ 0x83, "_B_WPEEK" },
++	{ 0x84, "_B_LPEEK" },
++	{ 0x85, "_B_MEMSTR" },
++	{ 0x86, "_B_BPOKE" },
++	{ 0x87, "_B_WPOKE" },
++	{ 0x88, "_B_LPOKE" },
++	{ 0x89, "_B_MEMSET" },
++	{ 0x8a, "_DMAMOVE" },
++	{ 0x8b, "_DMAMOV_A" },
++	{ 0x8c, "_DMAMOV_L" },
++	{ 0x8d, "_DMAMODE" },
++	{ 0x8e, "_BOOTINF" },
++	{ 0x8f, "_ROMVER" },
++
++	{ 0x90, "_G_CLR_ON" },
++	{ 0x91, "_G_MOD" },
++	{ 0x92, "_PRIORITY" },
++	{ 0x93, "_CRTMOD2" },
++	{ 0x94, "_GPALET" },
++	{ 0x95, "_PENCOLOR" },
++	{ 0x96, "_SET_PAGE" },
++	{ 0x97, "_GGET" },
++	{ 0x98, "_MASK_GPUT" },
++	{ 0x99, "_GPUT" },
++	{ 0x9a, "_GPTRN" },
++	{ 0x9b, "_BK_GPTRN" },
++	{ 0x9c, "_X_GPTRN" },
++
++	{ 0xa0, "_SFTJIS" },
++	{ 0xa1, "_JISSFT" },
++	{ 0xa2, "_AKCONV" },
++	{ 0xa3, "_RMACNV" },
++	{ 0xa4, "_DAKJOB" },
++	{ 0xa5, "_HANJOB" },
++	{ 0xac, "_SYS_STAT" },
++	{ 0xad, "_B_CONMOD" },
++	{ 0xae, "_OS_CURON" },
++	{ 0xaf, "_OS_CUROF" },
++
++	{ 0xb0, "_DRAWMODE" },
++	{ 0xb1, "_APAGE" },
++	{ 0xb2, "_VPAGE" },
++	{ 0xb3, "_HOME" },
++	{ 0xb4, "_WINDOW" },
++	{ 0xb5, "_WIPE" },
++	{ 0xb6, "_PSET" },
++	{ 0xb7, "_POINT" },
++	{ 0xb8, "_LINE" },
++	{ 0xb9, "_BOX" },
++	{ 0xba, "_FILL" },
++	{ 0xbb, "_CIRCLE" },
++	{ 0xbc, "_PAINT" },
++	{ 0xbd, "_SYMBOL" },
++	{ 0xbe, "_GETGRM" },
++	{ 0xbf, "_PUTGRM" },
++
++	{ 0xc0, "_SP_INIT" },
++	{ 0xc1, "_SP_ON" },
++	{ 0xc2, "_SP_OFF" },
++	{ 0xc3, "_SP_CGCLR" },
++	{ 0xc4, "_SP_DEFCG" },
++	{ 0xc5, "_SP_GTPCG" },
++	{ 0xc6, "_SP_REGST" },
++	{ 0xc7, "_SP_REGGT" },
++	{ 0xc8, "_BGSCRLST" },
++	{ 0xc9, "_BGSCRLGT" },
++	{ 0xca, "_BGCTRLST" },
++	{ 0xcb, "_BGCTRLGT" },
++	{ 0xcc, "_BGTEXTCL" },
++	{ 0xcd, "_BGTEXTST" },
++	{ 0xce, "_BGTEXTGT" },
++	{ 0xcf, "_SPALET" },
++
++	{ 0xd3, "_TXXLINE" },
++	{ 0xd4, "_TXYLINE" },
++	{ 0xd5, "_TXLINE" },
++	{ 0xd6, "_TXBOX" },
++	{ 0xd7, "_TXFILL" },
++	{ 0xd8, "_TXREV" },
++	{ 0xdf, "_TXRASCPY" },
++
++	{ 0xf0, "_OPMDRV" },
++	{ 0xf1, "_RSDRV" },
++	{ 0xf2, "_A_JOYGET" },
++	{ 0xf3, "_MUSICDRV" },
++	{ 0xf5, "_SCSIDRV" },
++
++	{ 0xfd, "_ABORTRST" },
++	{ 0xfe, "_IPLERR" },
++	{ 0xff, "_ABORTJOB" },
++};
