@@ -1,13 +1,14 @@
 diff --git a/opcodes/m68k-dis.c b/opcodes/m68k-dis.c
-index bc2f8203..28bd2e1b 100644
+index bc2f8203..04e87ec4 100644
 --- a/opcodes/m68k-dis.c
 +++ b/opcodes/m68k-dis.c
-@@ -26,6 +26,12 @@
+@@ -26,6 +26,13 @@
  #include "cpu-m68k.h"
  #include "opcode/m68k.h"
  
 +#include "m68k-x68kdoscall.h"
 +#include "m68k-x68kiocscall.h"
++#include "m68k-x68kfefunc.h"
 +
 +static int x68kiocsflg = 0;
 +static unsigned char x68kiocsnum = 0;
@@ -15,7 +16,7 @@ index bc2f8203..28bd2e1b 100644
  /* Local function prototypes.  */
  
  const char * const fpcr_names[] =
-@@ -1576,6 +1582,22 @@ match_insn_m68k (bfd_vma memaddr,
+@@ -1576,6 +1583,22 @@ match_insn_m68k (bfd_vma memaddr,
  
    d = args;
  
@@ -38,7 +39,7 @@ index bc2f8203..28bd2e1b 100644
    info->fprintf_styled_func (info->stream, dis_style_mnemonic, "%s", best->name);
  
    if (*d)
-@@ -1590,6 +1612,17 @@ match_insn_m68k (bfd_vma memaddr,
+@@ -1590,6 +1613,17 @@ match_insn_m68k (bfd_vma memaddr,
  	info->fprintf_styled_func (info->stream, dis_style_text, ",");
      }
  
@@ -56,7 +57,7 @@ index bc2f8203..28bd2e1b 100644
    return p - buffer;
  }
  
-@@ -1761,6 +1794,16 @@ print_insn_m68k (bfd_vma memaddr, disassemble_info *info)
+@@ -1761,6 +1795,24 @@ print_insn_m68k (bfd_vma memaddr, disassemble_info *info)
        info->fprintf_styled_func (info->stream, dis_style_text, " ");
        info->fprintf_styled_func (info->stream, dis_style_immediate,
  				 "0x%04x", (buffer[0] << 8) + buffer[1]);
@@ -66,6 +67,14 @@ index bc2f8203..28bd2e1b 100644
 +          if ((x68kdoscall[i].code & 0xff) == buffer[1]) {
 +            info->fprintf_styled_func (info->stream, dis_style_comment_start,
 +              "\t\t// DOS %s", x68kdoscall[i].name);
++            break;
++          }
++        }
++      } else if (buffer[0] == 0xfe) {
++        for (size_t i = 0; i < sizeof(x68kfefunc) / sizeof(x68kfefunc[0]); i++) {
++          if ((x68kfefunc[i].code & 0xff) == buffer[1]) {
++            info->fprintf_styled_func (info->stream, dis_style_comment_start,
++              "\t\t// FPACK %s", x68kfefunc[i].name);
 +            break;
 +          }
 +        }
@@ -220,6 +229,155 @@ index 00000000..9885c3e6
 +	{ 0xfffd, "_SEND_PR" },
 +	{ 0xfffe, "_TIME_PR" },
 +	{ 0xffff, "_CHANGE_PR" },
++};
+diff --git a/opcodes/m68k-x68kfefunc.h b/opcodes/m68k-x68kfefunc.h
+new file mode 100644
+index 00000000..b219b787
+--- /dev/null
++++ b/opcodes/m68k-x68kfefunc.h
+@@ -0,0 +1,143 @@
++static const struct { unsigned int code; const char *name; } x68kfefunc[] = {
++	{ 0xFE00, "__LMUL" },
++	{ 0xFE01, "__LDIV" },
++	{ 0xFE02, "__LMOD" },
++	{ 0xFE04, "__UMUL" },
++	{ 0xFE05, "__UDIV" },
++	{ 0xFE06, "__UMOD" },
++	{ 0xFE08, "__IMUL" },
++	{ 0xFE09, "__IDIV" },
++	{ 0xFE0C, "__RANDOMIZE" },
++	{ 0xFE0D, "__SRAND" },
++	{ 0xFE0E, "__RAND" },
++
++	{ 0xFE10, "__STOL" },
++	{ 0xFE11, "__LTOS" },
++	{ 0xFE12, "__STOH" },
++	{ 0xFE13, "__HTOS" },
++	{ 0xFE14, "__STOO" },
++	{ 0xFE15, "__OTOS" },
++	{ 0xFE16, "__STOB" },
++	{ 0xFE17, "__BTOS" },
++	{ 0xFE18, "__IUSING" },
++	{ 0xFE1A, "__LTOD" },
++	{ 0xFE1B, "__DTOL" },
++	{ 0xFE1C, "__LTOF" },
++	{ 0xFE1D, "__FTOL" },
++	{ 0xFE1E, "__FTOD" },
++	{ 0xFE1F, "__DTOF" },
++
++	{ 0xFE20, "__VAL" },
++	{ 0xFE21, "__USING" },
++	{ 0xFE22, "__STOD" },
++	{ 0xFE23, "__DTOS" },
++	{ 0xFE24, "__ECVT" },
++	{ 0xFE25, "__FCVT" },
++	{ 0xFE26, "__GCVT" },
++	{ 0xFE28, "__DTST" },
++	{ 0xFE29, "__DCMP" },
++	{ 0xFE2A, "__DNEG" },
++	{ 0xFE2B, "__DADD" },
++	{ 0xFE2C, "__DSUB" },
++	{ 0xFE2D, "__DMUL" },
++	{ 0xFE2E, "__DDIV" },
++	{ 0xFE2F, "__DMOD" },
++	{ 0xFE30, "__DABS" },
++	{ 0xFE31, "__DCEIL" },
++	{ 0xFE32, "__DFIX" },
++	{ 0xFE33, "__DFLOOR" },
++	{ 0xFE34, "__DFRAC" },
++	{ 0xFE35, "__DSGN" },
++	{ 0xFE36, "__SIN" },
++	{ 0xFE37, "__COS" },
++	{ 0xFE38, "__TAN" },
++	{ 0xFE39, "__ATAN" },
++	{ 0xFE3A, "__LOG" },
++	{ 0xFE3B, "__EXP" },
++	{ 0xFE3C, "__SQR" },
++	{ 0xFE3D, "__PI" },
++	{ 0xFE3E, "__NPI" },
++	{ 0xFE3F, "__POWER" },
++	{ 0xFE40, "__RND" },
++	{ 0xFE49, "__DFREXP" },
++	{ 0xFE4A, "__DLDEXP" },
++	{ 0xFE4B, "__DADDONE" },
++	{ 0xFE4C, "__DSUBONE" },
++	{ 0xFE4D, "__DDIVTWO" },
++	{ 0xFE4E, "__DIEECNV" },
++	{ 0xFE4F, "__IEEDCNV" },
++
++	{ 0xFE50, "__FVAL" },
++	{ 0xFE51, "__FUSING" },
++	{ 0xFE52, "__STOF" },
++	{ 0xFE53, "__FTOS" },
++	{ 0xFE54, "__FECVT" },
++	{ 0xFE55, "__FFCVT" },
++	{ 0xFE56, "__FGCVT" },
++	{ 0xFE58, "__FTST" },
++	{ 0xFE59, "__FCMP" },
++	{ 0xFE5A, "__FNEG" },
++	{ 0xFE5B, "__FADD" },
++	{ 0xFE5C, "__FSUB" },
++	{ 0xFE5D, "__FMUL" },
++	{ 0xFE5E, "__FDIV" },
++	{ 0xFE5F, "__FMOD" },
++	{ 0xFE60, "__FABS" },
++	{ 0xFE61, "__FCEIL" },
++	{ 0xFE62, "__FFIX" },
++	{ 0xFE63, "__FFLOOR" },
++	{ 0xFE64, "__FFRAC" },
++	{ 0xFE65, "__FSGN" },
++	{ 0xFE66, "__FSIN" },
++	{ 0xFE67, "__FCOS" },
++	{ 0xFE68, "__FTAN" },
++	{ 0xFE69, "__FATAN" },
++	{ 0xFE6A, "__FLOG" },
++	{ 0xFE6B, "__FEXP" },
++	{ 0xFE6C, "__FSQR" },
++	{ 0xFE6D, "__FPI" },
++	{ 0xFE6E, "__FNPI" },
++	{ 0xFE6F, "__FPOWER" },
++	{ 0xFE70, "__FRND" },
++	{ 0xFE79, "__FFREXP" },
++	{ 0xFE7A, "__FLDEXP" },
++	{ 0xFE7B, "__FADDONE" },
++	{ 0xFE7C, "__FSUBONE" },
++	{ 0xFE7D, "__FDIVTWO" },
++	{ 0xFE7E, "__FIEECNV" },
++	{ 0xFE7F, "__IEEFCNV" },
++
++	{ 0xFEE0, "__CLMUL" },
++	{ 0xFEE1, "__CLDIV" },
++	{ 0xFEE2, "__CLMOD" },
++	{ 0xFEE3, "__CUMUL" },
++	{ 0xFEE4, "__CUDIV" },
++	{ 0xFEE5, "__CUMOD" },
++	{ 0xFEE6, "__CLTOD" },
++	{ 0xFEE7, "__CDTOL" },
++	{ 0xFEE8, "__CLTOF" },
++	{ 0xFEE9, "__CFTOL" },
++	{ 0xFEEA, "__CFTOD" },
++	{ 0xFEEB, "__CDTOF" },
++	{ 0xFEEC, "__CDCMP" },
++	{ 0xFEED, "__CDADD" },
++	{ 0xFEEE, "__CDSUB" },
++	{ 0xFEEF, "__CDMUL" },
++	{ 0xFEF0, "__CDDIV" },
++	{ 0xFEF1, "__CDMOD" },
++	{ 0xFEF2, "__CFCMP" },
++	{ 0xFEF3, "__CFADD" },
++	{ 0xFEF4, "__CFSUB" },
++	{ 0xFEF5, "__CFMUL" },
++	{ 0xFEF6, "__CFDIV" },
++	{ 0xFEF7, "__CFMOD" },
++	{ 0xFEF8, "__CDTST" },
++	{ 0xFEF9, "__CFTST" },
++	{ 0xFEFA, "__CDINC" },
++	{ 0xFEFB, "__CFINC" },
++	{ 0xFEFC, "__CDDEC" },
++	{ 0xFEFD, "__CFDEC" },
++
++	{ 0xFEFE, "__FEVARG" },
++	{ 0xFEFF, "__FEVECS" },
 +};
 diff --git a/opcodes/m68k-x68kiocscall.h b/opcodes/m68k-x68kiocscall.h
 new file mode 100644
