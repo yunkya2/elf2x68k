@@ -108,8 +108,6 @@ clear_bss:
 	add.l	#STACK_SIZE, %a1
 	move.l	%a1, _SEND
 
-	move.l	%a1, %sp
-	
 | Setup heap
 	move.l	%a1, _HSTA		| HEAP Start
 	add.l	#HEAP_SIZE, %a1
@@ -123,12 +121,27 @@ clear_bss:
 	move.l	%a5, %sp@-		| ptr
 	.short	0xFF4A			| setblock
 	addq.l	#8, %sp
+	tst.l	%d0
+	bmi	out_of_memory
 
+	move.l	_SEND, %sp
 	jmp	__crt1_startup		| Human initialization
+
+out_of_memory:
+	pea.l	%pc@(oom_msg)
+	.short	0xff09			| print
+	addq.l	#4,%sp
+	move.w	#0x007f,%sp@
+	.short	0xff4c			| exit2
 
 	|
 	| No return
 	|
+
+oom_msg:
+	.ascii	"Out of memory. Program terminated."
+	.byte	13,10,0
+	.even
 
 |
 | Variables
