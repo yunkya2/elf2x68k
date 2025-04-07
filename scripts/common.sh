@@ -64,7 +64,7 @@ GCC_DIR="gcc-${GCC_VERSION}"
 NEWLIB_VERSION="4.4.0.20231231"
 NEWLIB_ARCHIVE="newlib-${NEWLIB_VERSION}.tar.gz"
 NEWLIB_SHA512SUM="ea3baa0b7c9175aae024f0b7d272be092ef2c07483239a99329203e18a44bc23093d29e0ffcbe14bc591f610f0829eacd646cabb06d1c34aa23239cb1b814b46"
-NEWLIB_URL="ftp://sourceware.org/pub/newlib/${NEWLIB_ARCHIVE}"
+NEWLIB_URL="https://sourceware.org/pub/newlib/${NEWLIB_ARCHIVE}"
 NEWLIB_DIR="newlib-${NEWLIB_VERSION}"
 
 # gcc ビルド用ワークディレクトリ
