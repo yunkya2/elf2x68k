@@ -38,7 +38,7 @@ elf2x68k はシャープ X680x0 用実行ファイル(X 形式)を PC の Unix/L
 
 ### macOS 向け
 
-macOS 向けは Homebrew からインストールできます (M3 Macbook Air / macOS 14.5 (Sonoma) で動作確認)。
+macOS 向けは Homebrew からインストールできます (M3 Macbook Air / macOS 15.4 (Sequoia) で動作確認)。
 Homebrew がインストールされている環境でコマンドラインから
 
 ```
@@ -232,6 +232,19 @@ elf2x68k のインストール時に `install-xclib.sh` で XC 環境をイン�
   * music3.h
   * sprite.h
   * stick.h
+
+#### スタックサイズ、ヒープサイズの指定
+
+Newlib 環境でビルドされた実行ファイルは、スタックサイズ 32KB、ヒープサイズ初期値 64KB で実行されます。
+
+(ヒープサイズは実行開始時の初期値です。実行中にヒープ領域が不足した場合、実行ファイルの存在するメモリブロックの後ろに空きがあれば自動的にメモリブロックを拡張します)
+
+これらの値を変更したい場合は、ソースコード中で `_stack_size` , `_heap_size` というグローバル変数にそれぞれ以下のように値を設定してください。
+
+```
+int _stack_size = 128 * 1024;   // 128KB stack
+int _heap_size = 256 * 1024;    // 256KB heap
+```
 
 ### XC 環境
 
