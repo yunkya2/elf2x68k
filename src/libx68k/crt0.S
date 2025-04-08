@@ -130,8 +130,8 @@ clear_bss:
 out_of_memory:
 	pea.l	%pc@(oom_msg)
 	.short	0xff09			| print
-	addq.l	#4,%sp
-	move.w	#0x007f,%sp@
+	addq.l	#4, %sp
+	move.w	#0x007f, %sp@-
 	.short	0xff4c			| exit2
 
 	|
