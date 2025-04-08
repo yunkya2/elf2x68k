@@ -34,11 +34,12 @@
 
 cd ${DOWNLOAD_DIR}
 mkdir -p ${BUILD_DIR}/${BINUTILS_DIR}
+rm -rf ${SRC_DIR}/${BINUTILS_DIR}
 tar jxvf ${BINUTILS_ARCHIVE} -C ${SRC_DIR}
 
 #	objdumpでX68000のIOCS/DOSコール命令を表示させるためのパッチ
 cd ${SRC_DIR}/${BINUTILS_DIR}
-patch -p1 < ${PATCH_DIR}/binutils-x68k.patch
+patch -p1 -N < ${PATCH_DIR}/binutils-x68k.patch
 
 cd ${BUILD_DIR}/${BINUTILS_DIR}
 ${SRC_DIR}/${BINUTILS_DIR}/configure \
