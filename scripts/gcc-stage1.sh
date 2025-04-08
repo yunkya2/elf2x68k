@@ -60,6 +60,7 @@ cd ${BUILD_DIR}/${GCC_DIR}_stage1
     --enable-multilib \
     --disable-shared \
     --disable-threads \
+    --with-system-zlib \
 
 make -j${NUM_PROC} all-gcc 2<&1 | tee build.gcc-stage1.1.log
 if [ ${PIPESTATUS[0]} -ne 0 ]; then

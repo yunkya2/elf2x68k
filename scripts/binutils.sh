@@ -47,6 +47,7 @@ ${SRC_DIR}/${BINUTILS_DIR}/configure \
     --target=${TARGET} \
     --enable-lto \
     --enable-multilib \
+    --with-system-zlib \
 
 make -j${NUM_PROC} 2<&1 | tee build.binutils.1.log
 if [ ${PIPESTATUS[0]} -ne 0 ]; then

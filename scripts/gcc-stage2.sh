@@ -50,6 +50,7 @@ gcc_configure () {
     --enable-multilib \
     --disable-shared \
     --disable-threads \
+    --with-system-zlib \
 
 }
 
