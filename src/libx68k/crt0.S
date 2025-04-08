@@ -19,6 +19,8 @@
 
 .extern __crt1_startup
 .extern _exit
+.extern _stack_size
+.extern _heap_size
 
 .global _start
 
@@ -105,12 +107,12 @@ clear_bss:
 
 | Setup stack
 	move.l	%a1, _SSTA
-	add.l	#STACK_SIZE, %a1
+	add.l	_stack_size, %a1
 	move.l	%a1, _SEND
 
 | Setup heap
 	move.l	%a1, _HSTA		| HEAP Start
-	add.l	#HEAP_SIZE, %a1
+	add.l	_heap_size, %a1
 	move.l	%a1, _HEND		| HEAP End
 	move.l	%a0@(0x08), _HMAX	| End block
 
