@@ -82,11 +82,17 @@ CPU="m68000"
 TARGET=${GCC_ABI}
 PREFIX="m68k-xelf-"
 PROGRAM_PREFIX=${PREFIX}
+
+# コア数の半分+1をビルドに使用する
 if [ -x "$(command -v nproc)" ]; then
 	NUM_PROC=$(nproc)
 else
 	NUM_PROC=$(sysctl -n hw.physicalcpu)
 fi
+if [ ${NUM_PROC} -gt 3 ]; then
+	NUM_PROC=$((${NUM_PROC} / 2 + 1))
+fi
+
 if [ -x "$(command -v sha512sum)" ]; then
 	SHA512SUM="sha512sum"
 else
