@@ -43,6 +43,10 @@ tar xvf ${GCC_ARCHIVE} -C ${SRC_DIR}
 # 事前にダウンロードしておいたライブラリをコピー
 cp {gmp,mpfr,mpc,isl}-* ${SRC_DIR}/${GCC_DIR}
 
+# MinGW64環境でビルドエラーになる問題の修正
+cd ${SRC_DIR}/${GCC_DIR}
+patch -p1 < ${PATCH_DIR}/gcc-13.3.0-libcpp.patch
+
 cd ${SRC_DIR}/${GCC_DIR}
 ./contrib/download_prerequisites
 
