@@ -48,9 +48,12 @@ gcc_configure () {
     --with-cpu=${WITH_CPU} \
     --with-newlib \
     --enable-multilib \
+    --disable-nls \
     --disable-shared \
     --disable-threads \
     --with-system-zlib \
+    --with-pkgversion="elf2x68k" \
+    --with-bugurl="https://github.com/yunkya2/elf2x68k/issues" \
 
 }
 
