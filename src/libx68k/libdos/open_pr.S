@@ -7,10 +7,10 @@ _dos_open_pr:
 	movem.l	%sp@(20), %d0-%d1/%a0-%a1
 	movem.l	%d1/%a0-%a1, %sp@-
 	move.w	%d0, %sp@-
-	move.l	%sp@(32), %sp@-
-	move.l	%sp@(32), %sp@-
-	move.w	%sp@(34), %sp@-
 	move.l	%sp@(30), %sp@-
+	move.l	%sp@(30), %sp@-
+	move.w	%sp@(32), %sp@-
+	move.l	%sp@(28), %sp@-
 	.short	0xfff8
 	lea	%sp@(28), %sp
 	rts
