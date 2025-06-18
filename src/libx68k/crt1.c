@@ -22,25 +22,32 @@ uint32_t _vernum;
 static void
 setup_environ (void)
 {
-  int env_size = *(int *) _ENV0;
-  char *cp = _ENV0 + sizeof (int);	/* Skip env size */
-  int i, count = 0;
+  int env_size;
+  char *cp;
+  int i;
+  int count = 0;
 
-  /* Determine vector size */
-  for (i = 0, cp = _ENV0 + sizeof (int);
-       i <= env_size; 
-       i++, cp++)
-  {
-    if (*cp == '\0')
+  if ((int)_ENV0 == 0xffffffff) {
+    _ENV0 = 0;
+    env_size = 0;
+  } else {
+    env_size = *(int *) _ENV0;
+    /* Determine vector size */
+    for (i = 0, cp = _ENV0 + sizeof (int);  /* Skip env size */
+         i <= env_size;
+         i++, cp++)
     {
-      count++;
-      if (cp[1] == '\0')
-        break;
+      if (*cp == '\0')
+      {
+        count++;
+        if (cp[1] == '\0')
+          break;
+      }
     }
   }
 
   /* Vectorize env */
-  environ = (char **) malloc (count * sizeof (char *));
+  environ = (char **) malloc ((count + 1) * sizeof (char *));
 
   for (i = 0, cp = _ENV0 + sizeof (int);
        i < count;
