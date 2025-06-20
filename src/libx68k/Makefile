@@ -42,3 +42,5 @@ clean:
 	make -C libiocs clean
 	make -C libdos clean
 	-rm -f *.o $(TARGET)
+
+.PHONY: all clean libiocs/libx68kiocs.a libdos/libx68kdos.a

@@ -45,3 +45,5 @@ $(TARGET): $(OBJS)
 
 clean:
 	-rm -f *.o $(TARGET)
+
+.PHONY: all clean
