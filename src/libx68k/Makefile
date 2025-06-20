@@ -8,7 +8,8 @@ OBJS += chown.o close.o creat.o execve.o fcntl.o fork.o fstat.o \
 	read.o readlink.o rename.o sbrk.o stat.o symlink.o times.o unlink.o \
 	wait.o write.o _exit.o system.o \
 	chdir.o mkdir.o rmdir.o getentropy.o \
-	opendir.o readdir.o closedir.o telldir.o seekdir.o
+	opendir.o readdir.o closedir.o telldir.o seekdir.o \
+	sleep.o
 OBJS += crt1.o _sflags.o fds.o _doserror.o
 OBJS += _stacksize.o _heapsize.o
 
