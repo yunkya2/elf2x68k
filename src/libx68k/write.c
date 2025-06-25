@@ -7,6 +7,10 @@
 #include <errno.h>
 #include "fds.h"
 
+#ifdef LIBSOCKET
+#include "libsocket/tcpipdrv.h"
+#endif
+
 #define TEXTBUFSIZE   256
 
 int __doserr2errno(int error);
@@ -15,6 +19,31 @@ ssize_t write(int fd, const void *buf, size_t count)
 {
   int res;
   size_t c;
+
+#ifdef LIBSOCKET
+  if (fd >= 128) {
+    _ti_func func = _search_ti_entry();
+
+    if (!func) {
+      errno = ENOSYS;
+      return -1;
+    }
+
+    long arg[3];
+    ssize_t res;
+
+    arg[0] = fd;
+    arg[1] = (long)buf;
+    arg[2] = count;
+
+    res = func(_TI_write_s, arg);
+    if (res < 0) {
+        errno = EIO;
+        return res;
+    }
+    return res;
+  }
+#endif
 
   if (!isatty(fd) && !__valid_fd(fd)) {
     errno = EBADF;
