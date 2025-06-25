@@ -46,9 +46,9 @@ rm -f ${INSTALL_DIR}/m68k-elf/lib/libx68k.a
 rm -f ${INSTALL_DIR}/m68k-elf/lib/libx68knodos.a
 rm -f ${INSTALL_DIR}/m68k-elf/lib/libx68kiocs.a
 rm -f ${INSTALL_DIR}/m68k-elf/lib/libx68kdos.a
+rm -f ${INSTALL_DIR}/m68k-elf/lib/libsocket.a
 rm -f ${INSTALL_DIR}/m68k-elf/lib/x68kcrt0*.o
 rm -rf ${INSTALL_DIR}/m68k-elf/include/x68k
-rm -rf ${INSTALL_DIR}/m68k-elf/sys-include/sys
 rm -rf ${INSTALL_DIR}/m68k-elf/sys-include
 
 rm -rf ${INSTALL_DIR}/download
