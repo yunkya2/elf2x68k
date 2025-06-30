@@ -4,6 +4,7 @@
 #include <sys/unistd.h>
 #include <x68k/dos.h>
 #include <x68k/iocs.h>
+#include "_at_exit.h"
 
 /* From crt0 */
 extern char *_ENV0;
@@ -126,6 +127,8 @@ setup_arguments (void)
 void __INIT_SECTION__(void);
 void __FINI_SECTION__(void);
 
+__attribute__((weak)) void __at_exit_init (void) {}
+
 void
 __crt1_startup (void)
 {
@@ -135,6 +138,7 @@ __crt1_startup (void)
   setup_environ ();
   setup_arguments ();
 
+  __at_exit_init ();
   atexit(__FINI_SECTION__);
   __INIT_SECTION__();
 
