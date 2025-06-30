@@ -9,7 +9,7 @@
 
 int setsockopt(int sockfd, int level, int optname, const void *optval, socklen_t optlen)
 {
-    _ti_func func = _search_ti_entry();
+    _ti_func func = __sock_search_ti_entry();
 
     if (!func) {
         errno = ENOSYS;

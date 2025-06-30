@@ -11,7 +11,7 @@ extern uint32_t __sock_fds;
 
 int socket(int domain, int type, int protocol)
 {
-    _ti_func func = _search_ti_entry ();
+    _ti_func func = __sock_search_ti_entry ();
 
     if (!func) {
         errno = ENOSYS;

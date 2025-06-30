@@ -11,7 +11,7 @@ extern uint32_t __sock_fds;
 
 int accept(int sockfd, struct sockaddr *addr, socklen_t *addrlen)
 {
-    _ti_func func = _search_ti_entry();
+    _ti_func func = __sock_search_ti_entry();
 
     if (!func) {
         errno = ENOSYS;

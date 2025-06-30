@@ -20,7 +20,7 @@ int close(int fd)
 
 #ifdef LIBSOCKET
   if (fd >= 128) {
-    _ti_func func = _search_ti_entry();
+    _ti_func func = __sock_search_ti_entry();
 
     if (!func) {
       errno = ENOSYS;

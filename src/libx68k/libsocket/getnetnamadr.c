@@ -10,7 +10,7 @@
 
 struct netent *getnetbyname(const char *name)
 {
-    _ti_func func = _search_ti_entry();
+    _ti_func func = __sock_search_ti_entry();
 
     if (!func) {
         return NULL;
@@ -21,7 +21,7 @@ struct netent *getnetbyname(const char *name)
 
 struct netent *getnetbyaddr(unsigned long net, int type)
 {
-    _ti_func func = _search_ti_entry();
+    _ti_func func = __sock_search_ti_entry();
 
     if (!func) {
         return NULL;

@@ -1,5 +1,5 @@
 diff --git a/src/libx68k/libsocket/gethostnamadr.c b/src/libx68k/libsocket/gethostnamadr.c
-index 0784ef4aa..01804a01f 100644
+index 0784ef4aa..04f4c7ea8 100644
 --- a/src/libx68k/libsocket/gethostnamadr.c
 +++ b/src/libx68k/libsocket/gethostnamadr.c
 @@ -4,14 +4,37 @@
@@ -32,7 +32,7 @@ index 0784ef4aa..01804a01f 100644
 +res_search (char *dname, int class, int type, unsigned char *answer, int anslen)
 +{
 +  long args[5];
-+  _ti_func func = _search_ti_entry ();
++  _ti_func func = __sock_search_ti_entry ();
 +
 +  args[0] = (long)dname;
 +  args[1] = (long)class;
@@ -101,7 +101,7 @@ index 0784ef4aa..01804a01f 100644
  _gethostbyname (unsigned char *name)
  {
 -  _ti_func func = search_ti_entry ();
-+  _ti_func func = _search_ti_entry ();
++  _ti_func func = __sock_search_ti_entry ();
    if (func)
      return (struct hostent *)func (_TI_gethostbyname, (long *)name);
    return NULL;
@@ -110,7 +110,7 @@ index 0784ef4aa..01804a01f 100644
  _gethostbyaddr (unsigned char *addr, int len, int type)
  {
 -  _ti_func func = search_ti_entry ();
-+  _ti_func func = _search_ti_entry ();
++  _ti_func func = __sock_search_ti_entry ();
    if (func)
      {
        long argv[3];
@@ -346,7 +346,7 @@ index c613dc806..d7194d93a 100644
 -int rip_set (int);
  #endif
 diff --git a/src/libx68k/libsocket/search_ti_entry.c b/src/libx68k/libsocket/search_ti_entry.c
-index 4b1eab407..217cf7b6d 100644
+index 4b1eab407..b911fb9d1 100644
 --- a/src/libx68k/libsocket/search_ti_entry.c
 +++ b/src/libx68k/libsocket/search_ti_entry.c
 @@ -4,21 +4,22 @@
@@ -385,7 +385,7 @@ index 4b1eab407..217cf7b6d 100644
  */
  _ti_func
 -search_ti_entry (void)
-+_search_ti_entry (void)
++__sock_search_ti_entry (void)
  {
    long ssp;
  
@@ -562,13 +562,15 @@ index 4b1eab407..217cf7b6d 100644
  		: "d0", "d1", "d2", "a0", "a1", "a2");
  
 diff --git a/src/libx68k/libsocket/tcpipdrv.h b/src/libx68k/libsocket/tcpipdrv.h
-index 37fea644d..c4fb91f8f 100644
+index 37fea644d..ef05e48e5 100644
 --- a/src/libx68k/libsocket/tcpipdrv.h
 +++ b/src/libx68k/libsocket/tcpipdrv.h
-@@ -84,4 +84,6 @@ typedef enum
+@@ -83,5 +83,8 @@ typedef enum
+ } cmd;
  
  typedef long (*_ti_func) (long, void *);
- 
-+_ti_func _search_ti_entry (void);
++extern _ti_func __sock_func;
 +
++_ti_func __sock_search_ti_entry (void);
+ 
  #endif

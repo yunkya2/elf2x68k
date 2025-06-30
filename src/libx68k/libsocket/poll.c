@@ -20,7 +20,7 @@ static int socklen(_ti_func func, int fd, int mode)
 
 int poll(struct pollfd *fds, nfds_t nfds, int timeout)
 {
-    _ti_func func = _search_ti_entry();
+    _ti_func func = __sock_search_ti_entry();
 
     if (!func) {
         errno = ENOSYS;
