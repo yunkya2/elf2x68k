@@ -36,7 +36,6 @@ LIB_SOURCES = \
     getprotonamnum.c \
     getaddrinfo.c \
     poll.c \
-    _exit.c
 
 OBJ = $(LIB_SOURCES:.c=.o)
 

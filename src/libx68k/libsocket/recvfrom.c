@@ -9,9 +9,7 @@
 
 ssize_t recvfrom(int sockfd, void *buf, size_t len, int flags, struct sockaddr *src_addr, socklen_t *addrlen)
 {
-    _ti_func func = __sock_search_ti_entry();
-
-    if (!func) {
+    if (!__sock_func) {
         errno = ENOSYS;
         return -1;
     }
@@ -26,7 +24,7 @@ ssize_t recvfrom(int sockfd, void *buf, size_t len, int flags, struct sockaddr *
     arg[4] = (long)src_addr;
     arg[5] = (long)addrlen;
 
-    res = func(_TI_recvfrom, arg);
+    res = __sock_func(_TI_recvfrom, arg);
     if (res < 0) {
         errno = EIO;
         return res;

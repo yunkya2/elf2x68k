@@ -8,9 +8,7 @@
 
 int bind(int sockfd, const struct sockaddr *addr, socklen_t addrlen)
 {
-    _ti_func func = __sock_search_ti_entry();
-
-    if (!func) {
+    if (!__sock_func) {
         errno = ENOSYS;
         return -1;
     }
@@ -22,7 +20,7 @@ int bind(int sockfd, const struct sockaddr *addr, socklen_t addrlen)
     arg[1] = (long)addr;
     arg[2] = addrlen;
 
-    res = func(_TI_bind, arg);
+    res = __sock_func(_TI_bind, arg);
     if (res < 0) {
         errno = EIO;
         return res;

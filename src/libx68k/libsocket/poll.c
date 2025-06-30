@@ -8,21 +8,19 @@
 #include "tcpipdrv.h"
 #include <x68k/dos.h>
 
-static int socklen(_ti_func func, int fd, int mode)
+static int socklen(int fd, int mode)
 {
     long arg[2];
 
     arg[0] = fd;
     arg[1] = mode;
 
-    return func(_TI_socklen, arg);
+    return __sock_func(_TI_socklen, arg);
 }
 
 int poll(struct pollfd *fds, nfds_t nfds, int timeout)
 {
-    _ti_func func = __sock_search_ti_entry();
-
-    if (!func) {
+    if (!__sock_func) {
         errno = ENOSYS;
         return -1;
     }
@@ -39,7 +37,7 @@ int poll(struct pollfd *fds, nfds_t nfds, int timeout)
         for (nfds_t i = 0; i < nfds; i++) {
             fds[i].revents = 0;
             if (fds[i].events & POLLIN) {
-                int r = socklen(func, fds[i].fd, 0);
+                int r = socklen(fds[i].fd, 0);
                 if (r > 0) {
                     fds[i].revents |= POLLIN;
                 } else if (r < 0) {
@@ -47,7 +45,7 @@ int poll(struct pollfd *fds, nfds_t nfds, int timeout)
                 }
             }
             if (fds[i].events & POLLOUT) {
-                int r = socklen(func, fds[i].fd, 1);
+                int r = socklen(fds[i].fd, 1);
                 if (r == 0) {
                     fds[i].revents |= POLLOUT;
                 } else if (r < 0) {

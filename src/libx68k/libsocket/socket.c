@@ -6,14 +6,46 @@
 #include <stdint.h>
 #include <errno.h>
 #include "tcpipdrv.h"
+#include "_at_exit.h"
 
-extern uint32_t __sock_fds;
+uint32_t __sock_fds;
+_ti_func __sock_func;
+
+static void socket_at_exit(int type)
+{
+    if (__sock_func == 0) {
+        return;
+    }
+
+    for (int i = 31; i >= 0; i--) {
+        if (__sock_fds & (1 << i)) {
+        __sock_func(_TI_close_s, (long *)(128 + i));
+        __sock_fds &= ~(1 << i);
+        }
+    }
+}
+
+static void socket_api_init(void)
+{
+    static int at_exit_registered = 0;
+
+    if (at_exit_registered) {
+        return;
+    }
+    at_exit_registered = 1;
+
+    __sock_func = __sock_search_ti_entry();
+    if (__sock_func == 0) {
+        return;
+    }
+    __at_exit(socket_at_exit);
+}
 
 int socket(int domain, int type, int protocol)
 {
-    _ti_func func = __sock_search_ti_entry ();
+    socket_api_init();
 
-    if (!func) {
+    if (!__sock_func) {
         errno = ENOSYS;
         return -1;
     }
@@ -25,7 +57,7 @@ int socket(int domain, int type, int protocol)
     arg[1] = type;
     arg[2] = protocol;
 
-    res = func(_TI_socket, arg);
+    res = __sock_func(_TI_socket, arg);
     if (res < 0) {
         errno = EIO;
         return res;

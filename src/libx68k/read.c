@@ -19,9 +19,7 @@ ssize_t read(int fd, void *buf, size_t count)
 
 #ifdef LIBSOCKET
   if (fd >= 128) {
-    _ti_func func = __sock_search_ti_entry();
-
-    if (!func) {
+    if (!__sock_func) {
       errno = ENOSYS;
       return -1;
     }
@@ -33,7 +31,7 @@ ssize_t read(int fd, void *buf, size_t count)
     arg[1] = (long)buf;
     arg[2] = count;
 
-    res = func(_TI_read_s, arg);
+    res = __sock_func(_TI_read_s, arg);
     if (res < 0) {
         errno = EIO;
         return res;

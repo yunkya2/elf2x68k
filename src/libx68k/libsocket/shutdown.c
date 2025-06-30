@@ -8,9 +8,7 @@
 
 int shutdown(int sockfd, int how)
 {
-    _ti_func func = __sock_search_ti_entry ();
-
-    if (!func) {
+    if (!__sock_func) {
         errno = ENOSYS;
         return -1;
     }
@@ -21,7 +19,7 @@ int shutdown(int sockfd, int how)
     arg[0] = sockfd;
     arg[1] = how;
 
-    res = func(_TI_shutdown, arg);
+    res = __sock_func(_TI_shutdown, arg);
     if (res < 0) {
         errno = EIO;
         return res;

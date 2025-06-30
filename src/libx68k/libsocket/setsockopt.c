@@ -9,9 +9,7 @@
 
 int setsockopt(int sockfd, int level, int optname, const void *optval, socklen_t optlen)
 {
-    _ti_func func = __sock_search_ti_entry();
-
-    if (!func) {
+    if (!__sock_func) {
         errno = ENOSYS;
         return -1;
     }
@@ -27,7 +25,7 @@ int setsockopt(int sockfd, int level, int optname, const void *optval, socklen_t
         }
         arg[0] = sockfd;
         arg[1] = *(const int *)optval;
-        res = func(_TI_sockmode, arg);
+        res = __sock_func(_TI_sockmode, arg);
         if (res < 0) {
             errno = EBADF;
             return -1;
@@ -40,7 +38,7 @@ int setsockopt(int sockfd, int level, int optname, const void *optval, socklen_t
             errno = EINVAL;
             return -1;
         }
-        res = func(optname == SO_SOCKKICK ? _TI_sockkick : _TI_usflush,
+        res = __sock_func(optname == SO_SOCKKICK ? _TI_sockkick : _TI_usflush,
                    (long *)sockfd);
         if (res < 0) {
             errno = EBADF;

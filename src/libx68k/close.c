@@ -20,16 +20,14 @@ int close(int fd)
 
 #ifdef LIBSOCKET
   if (fd >= 128) {
-    _ti_func func = __sock_search_ti_entry();
-
-    if (!func) {
+    if (!__sock_func) {
       errno = ENOSYS;
       return -1;
     }
 
     int res;
 
-    res = func(_TI_close_s, (long *)fd);
+    res = __sock_func(_TI_close_s, (long *)fd);
     if (res < 0) {
         errno = EIO;
         return res;

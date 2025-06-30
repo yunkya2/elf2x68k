@@ -8,9 +8,7 @@
 
 int listen(int sockfd, int backlog)
 {
-    _ti_func func = __sock_search_ti_entry();
-
-    if (!func) {
+    if (!__sock_func) {
         errno = ENOSYS;
         return -1;
     }
@@ -21,7 +19,7 @@ int listen(int sockfd, int backlog)
     arg[0] = sockfd;
     arg[1] = backlog;
 
-    res = func(_TI_listen, arg);
+    res = __sock_func(_TI_listen, arg);
     if (res < 0) {
         errno = EIO;
         return res;
