@@ -19,10 +19,6 @@ int setsockopt(int sockfd, int level, int optname, const void *optval, socklen_t
 
     switch (optname) {
     case SO_SOCKMODE:
-        if (optlen != sizeof(int)) {
-            errno = EINVAL;
-            return -1;
-        }
         arg[0] = sockfd;
         arg[1] = *(const int *)optval;
         res = __sock_func(_TI_sockmode, arg);
@@ -34,10 +30,6 @@ int setsockopt(int sockfd, int level, int optname, const void *optval, socklen_t
 
     case SO_SOCKKICK:
     case SO_SOCKFLUSH:
-        if (optlen != 0) {
-            errno = EINVAL;
-            return -1;
-        }
         res = __sock_func(optname == SO_SOCKKICK ? _TI_sockkick : _TI_usflush,
                    (long *)sockfd);
         if (res < 0) {

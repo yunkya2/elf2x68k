@@ -23,10 +23,6 @@ int getsockopt(int sockfd, int level, int optname, void *optval, socklen_t *optl
 
     switch (optname) {
     case SO_GETVERSION:
-        if (*optlen != sizeof(int)) {
-            errno = EINVAL;
-            return -1;
-        }
         res = func(_TI_get_version, NULL);
         if (res < 0) {
             errno = EBADF;
@@ -36,10 +32,6 @@ int getsockopt(int sockfd, int level, int optname, void *optval, socklen_t *optl
         return 0;
 
     case SO_SOCKMODE:
-        if (*optlen != sizeof(int)) {
-            errno = EINVAL;
-            return -1;
-        }
         arg[0] = sockfd;
         arg[1] = SOCK_QUERY;
         res = func(_TI_sockmode, arg);
@@ -52,13 +44,9 @@ int getsockopt(int sockfd, int level, int optname, void *optval, socklen_t *optl
 
     case SO_SOCKLENRECV:
     case SO_SOCKLENSEND:
-        if (*optlen != sizeof(int)) {
-            errno = EINVAL;
-            return -1;
-        }
         arg[0] = sockfd;
         arg[1] = optname - SO_SOCKLENRECV; // 0 for SO_SOCKLENRECV, 1 for SO_SOCKLENSEND
-        res = func(_TI_sockmode, arg);
+        res = func(_TI_socklen, arg);
         if (res < 0) {
             errno = EBADF;
             return -1;
