@@ -2,6 +2,7 @@ TARGET =  libx68k.a libx68knodos.a
 TARGET += libiocs/libx68kiocs.a
 TARGET += libdos/libx68kdos.a
 TARGET += libsocket/libsocket.a
+TARGET += libpthread/libpthread.a
 
 include Common.mk
 
@@ -31,6 +32,9 @@ libdos/libx68kdos.a:
 libsocket/libsocket.a:
 	make -C libsocket all
 
+libpthread/libpthread.a:
+	make -C libpthread all
+
 libx68k.a: $(OBJS)
 	$(AR) $(ARFLAGS) $@ $^
 	$(RANLIB) $@
@@ -48,9 +52,12 @@ libx68knodos.a: $(OBJS_NODOS)
 clean:
 	make -C libiocs clean
 	make -C libdos clean
+	make -C libsocket clean
+	make -C libpthread clean
 	-rm -f *.o $(TARGET)
 
 .PHONY: all clean
 .PHONY: libiocs/libx68kiocs.a
 .PHONY: libdos/libx68kdos.a
 .PHONY: libsocket/libsocket.a
+.PHONY: libpthread/libpthread.a

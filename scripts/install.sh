@@ -59,6 +59,7 @@ cp src/libx68k/libx68knodos.a ${INSTALL_DIR}/m68k-elf/lib
 cp src/libx68k/libiocs/libx68kiocs.a ${INSTALL_DIR}/m68k-elf/lib
 cp src/libx68k/libdos/libx68kdos.a ${INSTALL_DIR}/m68k-elf/lib
 cp src/libx68k/libsocket/libsocket.a ${INSTALL_DIR}/m68k-elf/lib
+cp src/libx68k/libpthread/libpthread.a ${INSTALL_DIR}/m68k-elf/lib
 cp src/libx68k/crt0.o ${INSTALL_DIR}/m68k-elf/lib/x68kcrt0.o
 cp src/libx68k/crt0nodos.o ${INSTALL_DIR}/m68k-elf/lib/x68kcrt0nodos.o
 
@@ -68,7 +69,9 @@ cp -r src/libx68k/x68k ${INSTALL_DIR}/m68k-elf/include
 mkdir -p ${INSTALL_DIR}/m68k-elf/sys-include/sys
 cp src/_default_fcntl.h ${INSTALL_DIR}/m68k-elf/sys-include/sys
 cp src/dirent.h ${INSTALL_DIR}/m68k-elf/sys-include/sys
+cp src/features.h ${INSTALL_DIR}/m68k-elf/sys-include/sys
 cp -r src/libx68k/libsocket/include/* ${INSTALL_DIR}/m68k-elf/sys-include
+cp -r src/libx68k/libpthread/include/* ${INSTALL_DIR}/m68k-elf/sys-include
 
 GIT_REPO_VERSION=`git describe --tags --always`
 cat > ${INSTALL_DIR}/README << EOF
