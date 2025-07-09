@@ -9,7 +9,7 @@
 #------------------------------------------------------------------------------
 #
 #	Copyright (C) 2022 Yosshin(@yosshin4004)
-#	Copyright (C) 2023,2024 Yuichi Nakamura (@yunkya2)
+#	Copyright (C) 2023-2025 Yuichi Nakamura (@yunkya2)
 #
 #	Licensed under the Apache License, Version 2.0 (the "License");
 #	you may not use this file except in compliance with the License.
@@ -45,10 +45,6 @@ export LD_FOR_TARGET=${PROGRAM_PREFIX}ld
 export AS_FOR_TARGET=${PROGRAM_PREFIX}as
 export AR_FOR_TARGET=${PROGRAM_PREFIX}ar
 export RANLIB_FOR_TARGET=${PROGRAM_PREFIX}ranlib
-
-#	newlib-4.4.0のビルドに失敗する問題の修正
-cd ${SRC_DIR}/${NEWLIB_DIR}
-patch -p1 < ${PATCH_DIR}/newlib-4.4.0-libgloss.patch
 
 cd ${BUILD_DIR}/${NEWLIB_DIR}
 ${SRC_DIR}/${NEWLIB_DIR}/configure \

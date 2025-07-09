@@ -9,7 +9,7 @@
 #------------------------------------------------------------------------------
 #
 #	Copyright (C) 2022 Yosshin(@yosshin4004)
-#	Copyright (C) 2023,2024 Yuichi Nakamura (@yunkya2)
+#	Copyright (C) 2023-2025 Yuichi Nakamura (@yunkya2)
 #
 #	Licensed under the Apache License, Version 2.0 (the "License");
 #	you may not use this file except in compliance with the License.
@@ -35,7 +35,7 @@
 cd ${DOWNLOAD_DIR}
 mkdir -p ${BUILD_DIR}/${BINUTILS_DIR}
 rm -rf ${SRC_DIR}/${BINUTILS_DIR}
-tar jxvf ${BINUTILS_ARCHIVE} -C ${SRC_DIR}
+tar xvf ${BINUTILS_ARCHIVE} -C ${SRC_DIR}
 
 #	objdumpでX68000のIOCS/DOSコール命令を表示させるためのパッチ
 cd ${SRC_DIR}/${BINUTILS_DIR}
