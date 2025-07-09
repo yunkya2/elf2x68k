@@ -1,6 +1,0 @@
-#!/bin/bash
-if [[ -z "$(command -v socat)" ]]; then
-    echo "socat not found. Run 'brew install socat' to install it."
-    exit 1
-fi
-nohup socat PTY,link=/tmp/ttyv0,rawer PTY,link=/tmp/ttyv1,rawer >/dev/null &

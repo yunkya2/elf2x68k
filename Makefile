@@ -2,7 +2,7 @@
 #
 #	Makefile for elf2x68k
 #
-#	Copyright (C) 2023,2024 Yuichi Nakamura (@yunkya2)
+#	Copyright (C) 2023-2025 Yuichi Nakamura (@yunkya2)
 #
 #	Licensed under the Apache License, Version 2.0 (the "License");
 #	you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ help:
 
 all: m68k-xelf install
 
-m68k-xelf: binutils gcc-stage1 newlib gcc-stage2
+m68k-xelf: binutils gcc-stage1 newlib gcc-stage2 gdb
 
 binutils: download
 	scripts/binutils.sh
@@ -43,6 +43,9 @@ newlib: download
 
 gcc-stage2: download
 	scripts/gcc-stage2.sh
+
+gdb: download
+	scripts/gdb.sh
 
 download:
 	scripts/download.sh
@@ -75,5 +78,5 @@ release: uninstall install
 	tar -c -v -j -f ${ARCHIVE}.tar.bz2 --${UID}=0 --${GID}=0 m68k-xelf
 
 .PHONY:	all clean pristine help
-.PHONY:	download toolchain binutils gcc-stage1 newlib gcc-stage2
+.PHONY:	download toolchain binutils gcc-stage1 newlib gcc-stage2 gdb
 .PHONY:	install uninstall release

@@ -1,25 +1,25 @@
 #!/bin/bash
-if [[ -z "$(command -v m68k-elf-gdb)" ]]; then
-    echo "m68k-elf-gdb not found. Run 'brew install yunkya2/tap/m68k-gdb' to install it."
-    exit 1
-fi
-if [[ ! -c /tmp/ttyv1 ]]; then
-    echo "ttyv1 not found. Run 'm68k-xelf-gdb-init' to initialize it."
-    exit 1
-fi
+
+set -e -o pipefail
 
 interp=""
+remote=""
 param=("$@")
 for ((i=0; i<${#param[@]}; i++)); do
   case ${param[$i]} in
     --interpreter=*)
       interp=${param[$i]#--interpreter=}
       ;;
+    -ex)
+      case ${param[$i+1]} in
+        'target '*)
+          remote=${param[$i+1]}
+      esac
   esac
 done
 
-if [[ -z "${interp}" ]]; then
-  m68k-elf-gdb -ex 'target remote /tmp/ttyv1' $@
+if [[ -z "${interp}" && -z "${remote}" && $# -gt 0 ]]; then
+  m68k-elf-gdb -ex 'target remote :54321' $@
 else
   m68k-elf-gdb $@
 fi

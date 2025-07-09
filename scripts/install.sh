@@ -7,7 +7,7 @@
 #
 #------------------------------------------------------------------------------
 #
-#	Copyright (C) 2023,2024 Yuichi Nakamura (@yunkya2)
+#	Copyright (C) 2023-2025 Yuichi Nakamura (@yunkya2)
 #
 #	Licensed under the Apache License, Version 2.0 (the "License");
 #	you may not use this file except in compliance with the License.
@@ -34,9 +34,7 @@ cp src/m68k-xelf-bas ${INSTALL_DIR}/bin
 cp bas2c/bas2c.py ${INSTALL_DIR}/bin
 cp bas2c/bas2c.def ${INSTALL_DIR}/bin
 cp unlha/unlha.py ${INSTALL_DIR}/bin
-if [ "$(uname)" = "Darwin" ]; then
-  cp src/m68k-xelf-gdb* ${INSTALL_DIR}/bin
-fi
+cp src/m68k-xelf-gdb ${INSTALL_DIR}/bin
 
 cp src/elf2x68k.py ${INSTALL_DIR}/bin
 cp src/x68k2elf.py ${INSTALL_DIR}/bin

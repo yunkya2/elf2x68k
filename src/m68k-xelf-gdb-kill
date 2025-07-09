@@ -1,2 +1,0 @@
-#!/bin/bash
-killall -q m68k-elf-gdb socat

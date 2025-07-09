@@ -8,7 +8,7 @@
 #------------------------------------------------------------------------------
 #
 #	Copyright (C) 2022 Yosshin(@yosshin4004)
-#	Copyright (C) 2023,2024 Yuichi Nakamura (@yunkya2)
+#	Copyright (C) 2023-2025 Yuichi Nakamura (@yunkya2)
 #
 #	Licensed under the Apache License, Version 2.0 (the "License");
 #	you may not use this file except in compliance with the License.
@@ -72,6 +72,16 @@ fi
 wget -nc ${NEWLIB_URL}
 if [ $(eval "${SHA512SUM} ${NEWLIB_ARCHIVE}" | awk '{print $1}') != ${NEWLIB_SHA512SUM} ]; then
 	echo "SHA512SUM verification of ${NEWLIB_ARCHIVE} failed!"
+	exit 1
+fi
+
+#-----------------------------------------------------------------------------
+# gdb のダウンロード
+#-----------------------------------------------------------------------------
+
+wget -nc ${GDB_URL}
+if [ $(eval "${SHA512SUM} ${GDB_ARCHIVE}" | awk '{print $1}') != ${GDB_SHA512SUM} ]; then
+	echo "SHA512SUM verification of ${GDB_ARCHIVE} failed!"
 	exit 1
 fi
 

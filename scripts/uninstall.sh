@@ -7,7 +7,7 @@
 #
 #------------------------------------------------------------------------------
 #
-#	Copyright (C) 2023,2024 Yuichi Nakamura (@yunkya2)
+#	Copyright (C) 2023-2025 Yuichi Nakamura (@yunkya2)
 #
 #	Licensed under the Apache License, Version 2.0 (the "License");
 #	you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ rm -f ${INSTALL_DIR}/bin/m68k-xelf-bas
 rm -f ${INSTALL_DIR}/bin/bas2c.py
 rm -f ${INSTALL_DIR}/bin/bas2c.def
 rm -f ${INSTALL_DIR}/bin/unlha.py
-rm -f ${INSTALL_DIR}/bin/m68k-xelf-gdb*
+rm -f ${INSTALL_DIR}/bin/m68k-xelf-gdb
 
 rm -f ${INSTALL_DIR}/bin/elf2x68k.py
 rm -f ${INSTALL_DIR}/bin/x68k2elf.py
