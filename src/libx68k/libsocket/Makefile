@@ -9,6 +9,9 @@ CFLAGS += -I.. -Iinclude -DLIBSOCKET
 TCPPACK_SOURCES = \
     search_ti_entry.c \
     gethostnamadr.c
+TCPPACK_HEADERS = \
+    network.h \
+    tcpipdrv.h
 
 LIB_SOURCES = \
     $(TCPPACK_SOURCES) \
@@ -51,12 +54,10 @@ tcppack-copy: tcppack
 	cat tcppack/src/libnetwork/search_ti_entry.c | tr -d \\r > search_ti_entry.c
 	cat tcppack/src/libnetwork/gethostnamadr.c | tr -d \\r > gethostnamadr.c
 
-patch: tcppack
-	$(MAKE) tcppack-copy
+patch: tcppack-copy
 	patch -p4 < tcppack.patch
 
-$(TCPPACK_SOURCES):
-	$(MAKE) patch
+$(TCPPACK_SOURCES) $(TCPPACK_HEADERS): patch
 
 update-patch: tcppack
 	git checkout -B libpsocket-temp
@@ -75,11 +76,11 @@ $(TARGET): $(OBJ)
 	$(AR) $(ARFLAGS) $@ $^
 	$(RANLIB) $@
 
-%.o: %.c
+%.o: %.c $(TCPPACK_HEADERS)
 	$(CC) $(CFLAGS) -c $<
 
 clean:
 	-rm -f *.o $(TARGET)
-	-rm -fr tcppack $(TCPPACK_SOURCES)
+	-rm -fr tcppack $(TCPPACK_SOURCES) $(TCPPACK_HEADERS)
 
 .PHONY: all clean patch tcppack-copy update-patch
