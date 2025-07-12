@@ -7,7 +7,7 @@
   * Cygwin (Makoto Kamada さん)
     * https://x.com/kamadox/status/1802555953600213313
 * [Releases](https://github.com/yunkya2/elf2x68k/releases) にはバイナリリリースとともにソースコードの tarball が置かれていますが、ビルドの際は基本的には git リポジトリから clone してビルドすることを推奨します。
-* elf2x68k は git のサブモジュールに bas2c を含んでいるため、git clone 時には `--recursive` オプションを指定して以下のように行ってください。
+* elf2x68k は複数の git のサブモジュールを含んでいるため、git clone 時には `--recursive` オプションを指定して以下のように行ってください。
   ```
   git clone --recursive https://github.com/yunkya2/elf2x68k.git
   ```
@@ -43,7 +43,9 @@ m68k-xelf/ 内に追加される、X68k 対応のためのファイル一覧で�
 * bin/bas2c.def
   * [X-BASIC to Cコンバータ](https://github.com/yunkya2/bas2c-x68k) の python スクリプトです
 * bin/m68k-xelf-bas
-  * bas2c.py を用いて X-BASIC プログラムを C に変換し、m68k-xelf-gcc でコンパイルするスク
+  * bas2c.py を用いて X-BASIC プログラムを C に変換し、m68k-xelf-gcc でコンパイルするスクリプトです
+* bin/m68k-xelf-gdb
+  * GDB (m68k-elf-gdb) で [XEiJ](https://stdkmd.net/xeij) の提供する TCP/IP ポートに接続してリモートデバッグを行うスクリプトです
 * bin/unlha.py
   * [LZH アーカイブ展開ツール](https://github.com/yunkya2/unlha) の python スクリプトです
 * lib/gcc/m68k-elf/\<gcc version\>/specs
@@ -65,6 +67,9 @@ m68k-xelf/ 内に追加される、X68k 対応のためのファイル一覧で�
 * m68k-elf/lib/libx68kiocs.a
 * m68k-elf/lib/libx68kdos.a
   * IOCSコール、DOSコールを提供するライブラリです
+* m68k-elf/lib/libsocket.a
+* m68k-elf/lib/libpthread.a
+  * ソケットAPI、POSIXスレッドAPIを提供するライブラリです
 * m68k-elf/lib/x68kcrt0.o
 * m68k-elf/lib/x68kcrt0nodos.o
   * X68k用のC言語スタートアップ処理を行うオブジェクトファイルです。x68kcrt0nodos.o はコマンドライン引数の受け取りなどHuman68kに依存する処理を行いません
@@ -74,6 +79,7 @@ m68k-xelf/ 内に追加される、X68k 対応のためのファイル一覧で�
   * 標準ヘッダファイル m68k-elf/include 内を置き換えるためのヘッダファイルです
   * fcntl.h に O_BINARY, O_TEXT の定義を追加するために使われます
   * dirent.h に DIR, struct dirent の定義を追加するために使われます
+  * ソケットAPI、POSIXスレッドAPIのためのヘッダファイルを追加するために使われます
 * install-xclib.sh
   * [無償公開されている C Compiler PRO-68K v2.1 (XC)](http://retropc.net/x68000/software/sharp/xc21/) をダウンロードし、ライブラリとヘッダファイルをインストールして XC 環境を構築するスクリプトです。
 

@@ -4,11 +4,11 @@
 
 elf2x68k はシャープ X680x0 用実行ファイル(X 形式)を PC の Unix/Linux 系環境や macOS 上で開発するためのクロス開発環境です。m68k 用クロスツールチェイン (gcc, binutils) から出力される ELF ファイルを変換して、 X68k で実行可能な X 形式ファイルを出力します。
 
-更に、X-BASIC から C へのコンバートに対応しました。クロス環境上で X-BASIC プログラムを変換、コンパイルして X 形式ファイルを出力することができます。
+更に、X-BASIC から C へのコンバートにも対応しています。クロス環境上で X-BASIC プログラムを変換、コンパイルして X 形式ファイルを出力することができます。
 
 ## 特徴
 
-* 最新の binutils (2.42)、gcc (13.3.0) を用いた X68k のクロス開発が可能です
+* 最新の binutils (2.44)、gcc (13.4.0) を用いた X68k のクロス開発が可能です
 * binutils, gcc の各コマンド名の頭に `m68k-xelf-` が付いたコマンドがクロスツールチェインとなります (例: `m68k-xelf-gcc`)
 * コンパイラドライバ (`m68k-xelf-gcc`) から直接 X 形式ファイルが出力されます。ネイティブの gcc を使用するのと同様の感覚で X 形式ファイルを得ることができます
 * ツールチェインから出力される ELF ファイルに含まれるデバッグ情報を利用して、[gdbserver-x68k](https://github.com/yunkya2/gdbserver-x68k) を用いたリモートデバッグが可能です
@@ -38,7 +38,7 @@ elf2x68k はシャープ X680x0 用実行ファイル(X 形式)を PC の Unix/L
 
 ### macOS 向け
 
-macOS 向けは Homebrew からインストールできます (M3 Macbook Air / macOS 15.4 (Sequoia) で動作確認)。
+macOS 向けは Homebrew からインストールできます (M3 Macbook Air / macOS 15.5 (Sequoia) で動作確認)。
 Homebrew がインストールされている環境でコマンドラインから
 
 ```
@@ -46,6 +46,13 @@ brew install yunkya2/tap/elf2x68k
 ```
 を実行すると、ソースコードをダウンロードしてビルド、インストールを行います
 (M3 Macbook Air で 30 分程度かかります)。
+
+>[!WARNING]
+> elf2x68k 20250410 以前のバージョンでリモートデバッグに必要だった m68k-gdb パッケージは elf2x68k に統合されたため不要になりました。インストールされている場合は事前に
+> ```
+> brew uninstall m68k-gdb
+> ```
+> を実行してアンインストールしておいてください。
 
 XC ライブラリのインストールも合わせて行いますので、`install-xclib.sh` スクリプトは実行不要です。
 
@@ -103,6 +110,13 @@ m68k-xelf-gcc -o sample.x sample.c
 * X形式実行ファイル名は `a.x`
 
 となります。
+
+## リモートデバッガの利用
+
+elf2x68k には m68k 用 GNU デバッガ `m68k-xelf-gdb` が含まれています。
+デバッガからシリアルポートやネットワークを介して X68k 実機やエミュレータ上の [gdbserver-x68k](https://github.com/yunkya2/gdbserver-x68k) に接続することで、ツールチェインが出力するデバッグ情報を利用したリモートデバッグが可能です。
+
+リモートデバッグの手順は gdbserver-x68k の[ドキュメント](https://github.com/yunkya2/gdbserver-x68k/blob/main/README.md) を参照してください。
 
 ## X-BASIC to C コンバータの利用
 
@@ -208,6 +222,15 @@ X680x0 の IOCS コールをサポートします。
 ヘッダファイル `x68k/iocs.h` を include することで利用できます。
 
 これらのライブラリは、コンパイラドライバ `m68k-xelf-gcc` からリンクを行う際にデフォルトでリンクされます。
+
+更に以下のライブラリを提供しています。
+
+* libsocket  
+(株)計測技研製 Human68k 用 TCP/IP ドライバを用いて、ソケット APIによるネットワーク処理を行うことができます。
+詳しくは、[ソケットライブラリについて](README-socket.md) を参照してください。
+* libpthread  
+Human68k v2.0 以降で追加されたバックグラウンドプロセス機能を用いて、POSIX スレッド APIによるスレッド処理を行うことができます。
+詳しくは、[POSIX スレッドライブラリについて](README-pthread.md) を参照してください。
 
 #### XC 追加ライブラリ
 
