@@ -38,7 +38,8 @@ LIB_SOURCES = \
     getservnamprt.c \
     getprotonamnum.c \
     getaddrinfo.c \
-    poll.c \
+
+#    poll.c \
 
 OBJ = $(LIB_SOURCES:.c=.o)
 

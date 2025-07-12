@@ -37,7 +37,6 @@ m68k-xelf-gcc -o network.x network.c -lsocket
   * <netinet/in.h>
   * <arpa/inet.h>
   * <netdb.h>
-  * <poll.h>
 
 ### ソケット API
 
@@ -131,14 +130,6 @@ m68k-xelf-gcc -o network.x network.c -lsocket
   * struct protoent \***getprotobynumber**(int *proto*);
   * int **getaddrinfo**(const char \**node*, const char \*\**service*, const struct addrinfo \**hints*, struct addrinfo \*\**res*);
   * void **freeaddrinfo**(struct addrinfo \**res*);
-
-### poll() 関数
-
-####  <poll.h>
-
-  * int **poll**(struct pollfd \**fds*, nfds_t *nfds*, int *timeout*);
-    * fds 引数で指定するディスクリプタのいずれかが利用可能(送受信可能)になるのを待ちます
-    * 指定できるのは socket(),accept() で得られるディスクリプタのみです。open() 等でオープンしたファイルディスクリプタを指定することはできません。
 
 ## 仕様と制約事項
 
