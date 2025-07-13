@@ -40,8 +40,9 @@ static void _pthread_delete(pthread_t thread)
     // スレッド内部情報リストから削除する
     for (pthread_internal_t **ths = &threads; *ths != NULL; ths = &((*ths)->next)) {
         if ((*ths)->tid == thread) {
-            free(*ths);  // スレッド内部情報を解放
+            pthread_internal_t *freepi = *ths;
             *ths = (*ths)->next;
+            free(freepi);
             break;
         }
     }
