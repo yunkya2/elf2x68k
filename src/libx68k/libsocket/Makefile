@@ -46,7 +46,8 @@ OBJ = $(LIB_SOURCES:.c=.o)
 all: $(TARGET)
 
 tcppack: TCPPACKB.LZH
-	mkdir $@
+	-rm -rf $@
+	-mkdir $@
 	(cd $@; ../../../../unlha/unlha.py x ../$<)
 
 tcppack-copy: tcppack
@@ -58,7 +59,8 @@ tcppack-copy: tcppack
 patch: tcppack-copy
 	patch -p4 < tcppack.patch
 
-$(TCPPACK_SOURCES) $(TCPPACK_HEADERS): patch
+$(TCPPACK_SOURCES) $(TCPPACK_HEADERS): tcppack.patch
+	$(MAKE) patch
 
 update-patch: tcppack
 	git checkout -B libpsocket-temp
