@@ -108,11 +108,7 @@ static void pthread_api_init(void)
 static void _pthread_start(void)
 {
     pthread_internal_t *pi = __pthread_self_internal();
-    if (pi->start_routine) {
-        pthread_exit(pi->start_routine(pi->arg));
-    } else {
-        pthread_exit((void *)-1);
-    }
+    pthread_exit(pi->start_routine(pi->arg));
 }
 
 //****************************************************************************
@@ -162,6 +158,10 @@ int pthread_create(pthread_t *thread, const pthread_attr_t *attr,
 
     if (count == 0xffffffff) {
         return ENOSYS;      // スレッドが有効になっていない
+    }
+
+    if (thread == NULL || start_routine == NULL) {
+        return EINVAL;
     }
 
     pthread_api_init();
@@ -304,6 +304,11 @@ int pthread_join(pthread_t thread, void **retval)
     if (pi == NULL || mypi == NULL) {
         return ESRCH;
     }
+
+    if (pi == mypi) {
+        return EDEADLK;  // 自分自身をjoinしようとした
+    }
+
 
     if (pi->stat & PTH_STAT_DETACHED) {
         return EINVAL;  // スレッドはデタッチされているためjoinできない
