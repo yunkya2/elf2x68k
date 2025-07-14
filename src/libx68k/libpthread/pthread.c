@@ -122,6 +122,8 @@ static void _pthread_start(void)
 /* 現在実行中のスレッドの内部情報を取得する */
 pthread_internal_t *__pthread_self_internal(void)
 {
+    pthread_api_init();
+
     struct dos_prcptr prc;
     int tid = _dos_get_pr(-2, &prc);
     if (tid == main_pi.tid) {
@@ -135,6 +137,8 @@ pthread_internal_t *__pthread_self_internal(void)
 /* 指定したスレッドの内部情報を取得する (メインスレッドならNULL) */
 pthread_internal_t *__pthread_tid_internal(pthread_t thread)
 {
+    pthread_api_init();
+
     struct dos_prcptr prc;
     if (thread == main_pi.tid || _dos_get_pr(thread, &prc) < 0) {
         return NULL;
