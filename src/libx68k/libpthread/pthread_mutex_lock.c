@@ -11,6 +11,9 @@ int pthread_mutex_lock(pthread_mutex_t *mutex)
     }
 
     pthread_internal_t *pi = __pthread_self_internal();
+    if (pi == NULL) {
+        return ESRCH;  // Current thread not found
+    }
 
     int ssp = _pthread_enter_critical();
     if (mutex->mutex != 0x00) {

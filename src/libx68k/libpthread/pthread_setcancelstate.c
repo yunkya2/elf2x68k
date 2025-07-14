@@ -7,7 +7,6 @@
 int pthread_setcancelstate(int state, int *oldstate)
 {
     pthread_internal_t *pi = __pthread_self_internal();
-
     if (pi == NULL) {
         return ESRCH;  // Current thread not found
     }

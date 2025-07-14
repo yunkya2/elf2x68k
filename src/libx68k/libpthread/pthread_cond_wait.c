@@ -11,6 +11,9 @@ int	pthread_cond_wait(pthread_cond_t *cond, pthread_mutex_t *mutex)
     }
 
     pthread_internal_t *pi = __pthread_self_internal();
+    if (pi == NULL) {
+        return ESRCH;  // Current thread not found
+    }
 
     __pthread_testcancel(pi);
 
