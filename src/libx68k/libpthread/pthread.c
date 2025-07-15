@@ -13,7 +13,7 @@
 //****************************************************************************
 
 static pthread_internal_t main_pi;          // メインスレッドのスレッド内部情報 (メインスレッドを待ちに入れる際に使用)
-static pthread_internal_t *threads = NULL;  // これまで生成したスレッド内部情報のリスト
+                                            // main_pi.next = これまで生成したスレッド内部情報のリスト
 
 static int terminate_tid;                   // pthread_exit()で終了するスレッドのID
 static void *terminate_oldvect;             // 終了のために使用するDOS _CHANGE_PRの旧ベクタ
@@ -38,7 +38,7 @@ static void _pthread_delete(pthread_t thread)
     (*(uint16_t  *)0x1c5a)--;
 
     // スレッド内部情報リストから削除する
-    for (pthread_internal_t **ths = &threads; *ths != NULL; ths = &((*ths)->next)) {
+    for (pthread_internal_t **ths = &main_pi.next; *ths != NULL; ths = &((*ths)->next)) {
         if ((*ths)->tid == thread) {
             pthread_internal_t *freepi = *ths;
             *ths = (*ths)->next;
@@ -79,8 +79,8 @@ static void pthread_at_exit(int type)
         }
     } else {
         // 停止するのがメインスレッドなら全ての子スレッドを削除
-        while (threads != NULL) {
-            _pthread_delete(threads->tid);
+        while (main_pi.next != NULL) {
+            _pthread_delete(main_pi.next->tid);
         }
     }
     _pthread_leave_critical(ssp);
@@ -101,6 +101,7 @@ static void pthread_api_init(void)
     struct dos_prcptr prc;
     main_pi.magic = PTH_MAGIC;
     main_pi.tid = _dos_get_pr(-2, &prc);
+    main_pi.main_pi = &main_pi;
     main_pi.priority = prc.max_counter;
 }
 
@@ -189,6 +190,7 @@ int pthread_create(pthread_t *thread, const pthread_attr_t *attr,
     // スレッドの内部情報を初期化
     pi->magic = PTH_MAGIC;
     pi->stat = 0;
+    pi->main_pi = &main_pi;
     pi->next = NULL;
     pi->waitnext = NULL;
     pi->start_routine = start_routine;
@@ -245,8 +247,8 @@ int pthread_create(pthread_t *thread, const pthread_attr_t *attr,
                            (int)&((char *)pi->systemstackaddr)[pi->systemstacksize],
                            0x0000, (int)_pthread_start, &pi->com, 0);
         if (tid > 0) {
-            pi->next = threads; // 既存のスレッドリストの先頭に追加
-            threads = pi;
+            pi->next = main_pi.next; // 既存のスレッドリストの先頭に追加
+            main_pi.next = pi;
             pi->tid = tid;      // スレッドIDを設定
             break;
         } else if (tid != -27) {

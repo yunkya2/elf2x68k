@@ -14,7 +14,7 @@
 #define PTH_DEFAULT_SYSTEMSTACKSIZE (8 * 1024)
 #define PTH_DEFAULT_PRIORITY        256
 
-#define PTH_MAGIC                   0x50746872  // 'Pthr'
+#define PTH_MAGIC                   0x50746831  // 'Pth1'
 
 /* スレッド状態フラグ */
 #define PTH_STAT_DETACHED           0x01    // スレッドはデタッチされている
@@ -30,10 +30,11 @@
 typedef struct pthread_internal {
     struct dos_prcctrl com;             // タスク間通信バッファ
 
-    uint32_t magic;                     // 'Pthr'
+    uint32_t magic;                     // 'Pth1'
     pthread_t tid;                      // スレッドID
     uint32_t stat;                      // スレッド状態 (PTH_STAT_*)
 
+    struct pthread_internal *main_pi;   // メインスレッドのスレッド内部情報へのポインタ
     struct pthread_internal *next;      // 次のスレッド内部情報へのポインタ
     struct pthread_internal *waitnext;  // 同じ待ち状態の次のスレッドへのポインタ
 
