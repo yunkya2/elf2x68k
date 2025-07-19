@@ -80,10 +80,13 @@ static inline void _pthread_leave_critical(int ssp)
 {
     __asm__ volatile(
         "andi.w  #0xf8ff,%%sr\n"
+        "tst.l   %0\n"      // 既にスーパーバイザモードだった際に_pthread_enter_critical()を
+        "bmi     1f\n"      // 呼ぶと -1 を返されるので、その場合は何もしない
         "movea.l %0,%%a1\n"
         "move.l  %%sp,%%usp\n"
         "moveq.l #0xffffff81,%%d0\n" // IOCS _B_SUPER
         "trap    #15\n"
+        "1:\n"
     : : "d"(ssp) : "d0", "a1", "memory");
 }
 
