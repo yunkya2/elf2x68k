@@ -1,5 +1,5 @@
 diff --git a/src/libx68k/libsocket/gethostnamadr.c b/src/libx68k/libsocket/gethostnamadr.c
-index 0784ef4aa..04f4c7ea8 100644
+index 81ca37586..44ea5283d 100644
 --- a/src/libx68k/libsocket/gethostnamadr.c
 +++ b/src/libx68k/libsocket/gethostnamadr.c
 @@ -4,14 +4,37 @@
@@ -346,7 +346,7 @@ index c613dc806..d7194d93a 100644
 -int rip_set (int);
  #endif
 diff --git a/src/libx68k/libsocket/search_ti_entry.c b/src/libx68k/libsocket/search_ti_entry.c
-index 4b1eab407..b911fb9d1 100644
+index 32f42c6ff..b911fb9d1 100644
 --- a/src/libx68k/libsocket/search_ti_entry.c
 +++ b/src/libx68k/libsocket/search_ti_entry.c
 @@ -4,21 +4,22 @@
@@ -404,15 +404,6 @@ index 4b1eab407..b911fb9d1 100644
  
      psp = _dos_getpdb ();
      addr = 0;
-@@ -132,7 +133,7 @@ search_ti_sub (void)
- 	  }
-       }
- 
--    /* addr Çï‘Ç∑ */
-+    /* addr „ÇíËøî„Åô */
-     return addr;
- }
- 
 @@ -144,11 +145,11 @@ _ti_entry (long arg1, void *arg2)
  {
    register long result asm ("d0");

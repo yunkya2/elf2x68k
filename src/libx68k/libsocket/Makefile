@@ -53,14 +53,13 @@ tcppack: TCPPACKB.LZH
 tcppack-copy: tcppack
 	cat tcppack/include/network.h | tr -d \\r > network.h
 	cat tcppack/include/tcpipdrv.h | tr -d \\r > tcpipdrv.h
-	cat tcppack/src/libnetwork/search_ti_entry.c | tr -d \\r > search_ti_entry.c
-	cat tcppack/src/libnetwork/gethostnamadr.c | tr -d \\r > gethostnamadr.c
+	cat tcppack/src/libnetwork/search_ti_entry.c | iconv -f cp932 -t utf-8 | tr -d \\r > search_ti_entry.c
+	cat tcppack/src/libnetwork/gethostnamadr.c | iconv -f cp932 -t utf-8 | tr -d \\r > gethostnamadr.c
 
 patch: tcppack-copy
 	patch -p4 < tcppack.patch
 
-$(TCPPACK_SOURCES) $(TCPPACK_HEADERS): tcppack.patch
-	$(MAKE) patch
+$(TCPPACK_SOURCES) $(TCPPACK_HEADERS): patch
 
 update-patch: tcppack
 	git checkout -B libpsocket-temp
