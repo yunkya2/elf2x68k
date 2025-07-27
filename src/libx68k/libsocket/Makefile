@@ -49,6 +49,7 @@ tcppack: TCPPACKB.LZH
 	-rm -rf $@
 	-mkdir $@
 	(cd $@; ../../../../unlha/unlha.py x ../$<)
+	$(MAKE) patch
 
 tcppack-copy: tcppack
 	cat tcppack/include/network.h | tr -d \\r > network.h
@@ -59,7 +60,7 @@ tcppack-copy: tcppack
 patch: tcppack-copy
 	patch -p4 < tcppack.patch
 
-$(TCPPACK_SOURCES) $(TCPPACK_HEADERS): patch
+$(TCPPACK_SOURCES) $(TCPPACK_HEADERS): tcppack
 
 update-patch: tcppack
 	git checkout -B libpsocket-temp
