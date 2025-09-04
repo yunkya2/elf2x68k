@@ -46,9 +46,9 @@ ${SRC_DIR}/${GDB_DIR}/configure \
     --target=${TARGET} \
     --without-python \
     --with-mpc-include=${SRC_DIR}/${GCC_DIR}/mpc/src/ \
-    --with-mpc-lib=${BUILD_DIR}/${GCC_DIR}_stage1/mpc/.libs/ \
+    --with-mpc-lib=${BUILD_DIR}/${GCC_DIR}_stage1/mpc/src/.libs/ \
     --with-mpfr-include=${SRC_DIR}/${GCC_DIR}/mpfr/src/ \
-    --with-mpfr-lib=${BUILD_DIR}/${GCC_DIR}_stage1/mpfr/.libs/ \
+    --with-mpfr-lib=${BUILD_DIR}/${GCC_DIR}_stage1/mpfr/src/.libs/ \
     --with-gmp-include=${BUILD_DIR}/${GCC_DIR}_stage1/gmp/ \
     --with-gmp-lib=${BUILD_DIR}/${GCC_DIR}_stage1/gmp/.libs/ \
     --with-system-zlib \
