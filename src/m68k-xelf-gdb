@@ -19,7 +19,7 @@ for ((i=0; i<${#param[@]}; i++)); do
 done
 
 if [[ -z "${interp}" && -z "${remote}" && $# -gt 0 ]]; then
-  m68k-elf-gdb -ex 'target remote :54321' $@
+  m68k-elf-gdb -ex 'target remote :54321' "$@"
 else
-  m68k-elf-gdb $@
+  m68k-elf-gdb "$@"
 fi
