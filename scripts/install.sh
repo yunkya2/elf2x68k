@@ -45,9 +45,7 @@ cp src/c++small.specs ${INSTALL_DIR}/m68k-elf/lib
 cp src/xc.specs.tmpl ${INSTALL_DIR}/m68k-elf/lib
 cp src/install-xclib.sh ${INSTALL_DIR}
 
-${INSTALL_DIR}/bin/m68k-xelf-gcc -dumpspecs | \
-  sed '/omit-frame-pointer/s/^/-fcall-used-d2 -fcall-used-a2 -fexec-charset=cp932 /' \
-  > ${INSTALL_DIR}/lib/gcc/m68k-elf/specs
+${INSTALL_DIR}/bin/m68k-xelf-gcc -dumpspecs > ${INSTALL_DIR}/lib/gcc/m68k-elf/specs
 cat src/x68k.specs >> ${INSTALL_DIR}/lib/gcc/m68k-elf/specs
 mv ${INSTALL_DIR}/lib/gcc/m68k-elf/specs ${INSTALL_DIR}/lib/gcc/m68k-elf/[0-9]*
 

@@ -15,3 +15,12 @@ crtend.o%s
 
 *link_gcc_c_sequence:
 --start-group %G %L %(x68k_libgloss) --end-group
+
+*x68k_defines:
+-D__human68k=1 -D__human68k__=1
+
+*cpp_options:
++ %(x68k_defines)
+
+*cc1_options:
++ %(x68k_defines) -fcall-used-d2 -fcall-used-a2 -fexec-charset=cp932
