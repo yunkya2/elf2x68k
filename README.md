@@ -38,7 +38,7 @@ elf2x68k はシャープ X680x0 用実行ファイル(X 形式)を PC の Unix/L
 
 ### macOS 向け
 
-macOS 向けは Homebrew からインストールできます (M3 Macbook Air / macOS 15.5 (Sequoia) で動作確認)。
+macOS 向けは Homebrew からインストールできます (M3 Macbook Air / macOS 15.6.1 (Sequoia) で動作確認)。
 Homebrew がインストールされている環境でコマンドラインから
 
 ```
