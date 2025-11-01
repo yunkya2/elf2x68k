@@ -5,6 +5,7 @@ ENTRY(_start)
 SECTIONS
 {
   .text : {
+    KEEP (*(.header))
     *(.text .text.*)
 
     . = ALIGN(0x4);
