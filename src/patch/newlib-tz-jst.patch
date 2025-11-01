@@ -1,0 +1,23 @@
+diff --git a/newlib/libc/time/tzset_r.c b/newlib/libc/time/tzset_r.c
+index a6f15f6..526a128 100644
+--- a/newlib/libc/time/tzset_r.c
++++ b/newlib/libc/time/tzset_r.c
+@@ -25,14 +25,14 @@ _tzset_unlocked_r (struct _reent *reent_ptr)
+   int i, ch;
+   long offset0, offset1;
+   __tzinfo_type *tz = __gettzinfo ();
+-  struct __tzrule_struct default_tzrule = {'J', 0, 0, 0, 0, (time_t)0, 0L };
++  struct __tzrule_struct default_tzrule = {'J', 0, 0, 0, 0, (time_t)0, (-9L*3600) };
+ 
+   if ((tzenv = _getenv_r (reent_ptr, "TZ")) == NULL)
+       {
+-	_timezone = 0;
++	_timezone = -9L*3600;
+ 	_daylight = 0;
+-	_tzname[0] = "GMT";
+-	_tzname[1] = "GMT";
++	_tzname[0] = "JST";
++	_tzname[1] = "JST";
+ 	tz->__tzrule[0] = default_tzrule;
+ 	tz->__tzrule[1] = default_tzrule;
+ 	free(prev_tzenv);

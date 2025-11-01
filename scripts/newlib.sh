@@ -46,6 +46,10 @@ export AS_FOR_TARGET=${PROGRAM_PREFIX}as
 export AR_FOR_TARGET=${PROGRAM_PREFIX}ar
 export RANLIB_FOR_TARGET=${PROGRAM_PREFIX}ranlib
 
+#	timezoneのデフォルトをJST-9にするためのパッチ
+cd ${SRC_DIR}/${NEWLIB_DIR}
+patch -p1 -N < ${PATCH_DIR}/newlib-tz-jst.patch
+
 cd ${BUILD_DIR}/${NEWLIB_DIR}
 ${SRC_DIR}/${NEWLIB_DIR}/configure \
     --prefix=${INSTALL_DIR} \
