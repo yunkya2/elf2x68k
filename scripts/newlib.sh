@@ -54,6 +54,7 @@ cd ${BUILD_DIR}/${NEWLIB_DIR}
 ${SRC_DIR}/${NEWLIB_DIR}/configure \
     --prefix=${INSTALL_DIR} \
     --target=${TARGET} \
+    --enable-newlib-io-long-long \
 
 make -j${NUM_PROC} 2<&1 | tee build.newlib.1.log
 if [ ${PIPESTATUS[0]} -ne 0 ]; then
