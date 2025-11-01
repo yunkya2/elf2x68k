@@ -72,7 +72,7 @@ _start_1:
 |
 	.data
 	.align	2
-.global enviorn
+.global environ
 environ:
 	.long	0
 
