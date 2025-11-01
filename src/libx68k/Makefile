@@ -14,7 +14,7 @@ OBJS += chown.o close.o creat.o execve.o fcntl.o fork.o fstat.o \
 	chdir.o mkdir.o rmdir.o getentropy.o \
 	opendir.o readdir.o closedir.o telldir.o seekdir.o \
 	sleep.o
-OBJS += crt1.o _sflags.o fds.o _doserror.o _at_exit.o
+OBJS += crt1.o _sflags.o fds.o _doserror.o _at_exit.o _dosinit.o
 OBJS += _stacksize.o _heapsize.o
 
 OBJS_NODOS += write-nodos.o _nodosfnc.o

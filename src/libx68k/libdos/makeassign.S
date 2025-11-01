@@ -8,12 +8,6 @@ _dos_makeassign:
 	move.l	%sp@(10), %sp@-
 	move.l	%sp@(10), %sp@-
 	move.w	#1, %sp@-
-	cmpi.w	#0x200+14, _vernum+2	| 2.14
-	bcss	2f
 	.short	0xff8f
-	bras	3f
-2:
-	.short	0xff5f
-3:
 	lea	%sp@(12), %sp
 	rts
