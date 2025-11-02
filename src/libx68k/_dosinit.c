@@ -11,10 +11,6 @@ void __dosinit(void)
     return; /* Human68k v3.x */
   }
 
-  if (_dos_intvcg(0xff50) == _dos_intvcg(0xff80)) {
-    return; /* Already initialized */
-  }
-
   /* Copy old doscall vectors to new doscall vectors */
   for (int i = 0xff50; i < 0xff80; i++) {
     _dos_intvcs(i + 0x30, _dos_intvcg(i));
