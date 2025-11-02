@@ -25,6 +25,13 @@ static void socket_at_exit(int type)
     }
 }
 
+/* プロセス終了時に実行するハンドラを登録する処理 */
+/* (空の関数で上書きすることで、プロセス終了時にもソケットが開いたままになる) */
+__attribute__((weak)) void __socket_register_at_exit(void)
+{
+    __at_exit(socket_at_exit);
+}
+
 static void socket_api_init(void)
 {
     static int at_exit_registered = 0;
@@ -38,7 +45,7 @@ static void socket_api_init(void)
     if (__sock_func == 0) {
         return;
     }
-    __at_exit(socket_at_exit);
+    __socket_register_at_exit();
 }
 
 int socket(int domain, int type, int protocol)
