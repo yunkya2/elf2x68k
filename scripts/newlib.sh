@@ -33,7 +33,6 @@
 #-----------------------------------------------------------------------------
 
 cd ${DOWNLOAD_DIR}
-mkdir -p ${BUILD_DIR}/${NEWLIB_DIR}
 tar zxvf ${NEWLIB_ARCHIVE} -C ${SRC_DIR}
 
 #	XC 互換の ABI でビルド
@@ -50,21 +49,44 @@ export RANLIB_FOR_TARGET=${PROGRAM_PREFIX}ranlib
 cd ${SRC_DIR}/${NEWLIB_DIR}
 patch -p1 -N < ${PATCH_DIR}/newlib-tz-jst.patch
 
-cd ${BUILD_DIR}/${NEWLIB_DIR}
-${SRC_DIR}/${NEWLIB_DIR}/configure \
-    --prefix=${INSTALL_DIR} \
-    --target=${TARGET} \
-    --enable-newlib-io-long-long \
-    --enable-newlib-io-c99-formats \
+newlib_build () {
+    mkdir -p ${BUILD_DIR}/${NEWLIB_DIR}$1
+    cd ${BUILD_DIR}/${NEWLIB_DIR}$1
+    ${SRC_DIR}/${NEWLIB_DIR}/configure \
+        --prefix=${INSTALL_DIR} \
+        --target=${TARGET} \
+        --enable-newlib-io-long-long \
+        --enable-newlib-io-c99-formats \
+        $2 \
 
-make -j${NUM_PROC} 2<&1 | tee build.newlib.1.log
-if [ ${PIPESTATUS[0]} -ne 0 ]; then
-	exit 1;
-fi
-make install | tee build.newlib.2.log
-if [ ${PIPESTATUS[0]} -ne 0 ]; then
-	exit 1;
-fi
+    make -j${NUM_PROC} 2<&1 | tee build.newlib.1.log
+    if [ ${PIPESTATUS[0]} -ne 0 ]; then
+        exit 1;
+    fi
+    make install | tee build.newlib.2.log
+    if [ ${PIPESTATUS[0]} -ne 0 ]; then
+        exit 1;
+    fi
+}
+
+
+# newlib-nano をビルド、インストールする
+newlib_build "-nano" "\
+    --disable-newlib-io-float \
+    --enable-newlib-nano-malloc \
+    --enable-newlib-reent-small \
+    --disable-newlib-wide-orient \
+    --enable-target-optspace \
+    --disable-newlib-multithread \
+    --enable-newlib-nano-formatted-io \
+"
+# libc-nano.a を移動
+for f in `find ${INSTALL_DIR} -name libc.a`; do
+	mv `dirname $f`/libc.a `dirname $f`/libc-nano.a
+done
+
+# 通常版 newlib をビルド、インストールする
+newlib_build "" ""
 
 cd ${ROOT_DIR}
 
