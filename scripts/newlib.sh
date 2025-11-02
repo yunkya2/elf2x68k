@@ -55,6 +55,7 @@ ${SRC_DIR}/${NEWLIB_DIR}/configure \
     --prefix=${INSTALL_DIR} \
     --target=${TARGET} \
     --enable-newlib-io-long-long \
+    --enable-newlib-io-c99-formats \
 
 make -j${NUM_PROC} 2<&1 | tee build.newlib.1.log
 if [ ${PIPESTATUS[0]} -ne 0 ]; then
