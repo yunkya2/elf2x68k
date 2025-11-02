@@ -87,6 +87,13 @@ static void pthread_at_exit(int type)
     _pthread_leave_critical(ssp);
 }
 
+/* プロセス終了時に実行するハンドラを登録する処理 */
+/* (空の関数で上書きすることで、プロセス終了時にもスレッドが残ったままになる) */
+__attribute__((weak)) void __pthread_register_at_exit(void)
+{
+    __at_exit(pthread_at_exit);
+}
+
 /* pthread APIの初期化 (プロセス終了時に実行するハンドラを登録) */
 static void pthread_api_init(void)
 {
@@ -96,7 +103,7 @@ static void pthread_api_init(void)
         return;
     }
     at_exit_registered = 1;
-    __at_exit(pthread_at_exit);
+    __pthread_register_at_exit();
 
     // メインスレッドの内部情報を初期化
     struct dos_prcptr prc;
