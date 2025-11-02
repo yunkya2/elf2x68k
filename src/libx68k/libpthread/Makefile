@@ -21,10 +21,10 @@ LIB_SOURCES = \
 	pthread_attr_getstack.c \
 	pthread_attr_setstacksize.c \
 	pthread_attr_getstacksize.c \
-	pthread_attr_setsystemstack.c \
-	pthread_attr_getsystemstack.c \
-	pthread_attr_setsystemstacksize.c \
-	pthread_attr_getsystemstacksize.c \
+	pthread_attr_setsystemstack_np.c \
+	pthread_attr_getsystemstack_np.c \
+	pthread_attr_setsystemstacksize_np.c \
+	pthread_attr_getsystemstacksize_np.c \
 	pthread_attr_setdetachstate.c \
 	pthread_attr_getdetachstate.c \
 	pthread_attr_setschedparam.c \

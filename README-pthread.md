@@ -90,10 +90,10 @@ POSIX スレッドライブラリでは、POSIX スレッド API におおむね
 
 以下は POSIX 標準にない elf2x68k libpthread 独自の関数で、スレッドのスーパーバイザスタック領域に関する属性を設定・取得します。デフォルトのスーパーバイザスタックサイズは 8KB です。
 
-  * int **pthread_attr_setsystemstack**(pthread_attr_t \**attr*, void \**stackaddr*, size_t *stacksize*);
-  * int **pthread_attr_getsystemstack**(const pthread_attr_t \**attr*, void \*\**stackaddr*, size_t \**stacksize*);
-  * int **pthread_attr_setsystemstacksize**(pthread_attr_t \**attr*, size_t *stacksize*);
-  * int **pthread_attr_getsystemstacksize**(const pthread_attr_t \**attr*, size_t \**stacksize*);
+  * int **pthread_attr_setsystemstack_np**(pthread_attr_t \**attr*, void \**stackaddr*, size_t *stacksize*);
+  * int **pthread_attr_getsystemstack_np**(const pthread_attr_t \**attr*, void \*\**stackaddr*, size_t \**stacksize*);
+  * int **pthread_attr_setsystemstacksize_np**(pthread_attr_t \**attr*, size_t *stacksize*);
+  * int **pthread_attr_getsystemstacksize_np**(const pthread_attr_t \**attr*, size_t \**stacksize*);
 
 #### ミューテックス (mutex)
   * int **pthread_mutex_init**(pthread_mutex_t \**mutex*, const pthread_mutexattr_t \**attr*);

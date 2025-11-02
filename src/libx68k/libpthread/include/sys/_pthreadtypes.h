@@ -24,10 +24,10 @@ typedef struct {
   int priority;
 } pthread_attr_t;
 
-int	pthread_attr_setsystemstack(pthread_attr_t *attr, void *stackaddr, size_t stacksize);
-int	pthread_attr_getsystemstack(const pthread_attr_t *attr, void **stackaddr, size_t *stacksize);
-int	pthread_attr_setsystemstacksize(pthread_attr_t *attr, size_t stacksize);
-int	pthread_attr_getsystemstacksize(const pthread_attr_t *attr, size_t *stacksize);
+int	pthread_attr_setsystemstack_np(pthread_attr_t *attr, void *stackaddr, size_t stacksize);
+int	pthread_attr_getsystemstack_np(const pthread_attr_t *attr, void **stackaddr, size_t *stacksize);
+int	pthread_attr_setsystemstacksize_np(pthread_attr_t *attr, size_t stacksize);
+int	pthread_attr_getsystemstacksize_np(const pthread_attr_t *attr, size_t *stacksize);
 
 
 /* For mutex APIs */
