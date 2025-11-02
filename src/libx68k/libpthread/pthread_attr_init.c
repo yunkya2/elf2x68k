@@ -14,6 +14,7 @@ int	pthread_attr_init(pthread_attr_t *attr)
 	attr->systemstacksize = PTH_DEFAULT_SYSTEMSTACKSIZE;
 	attr->detachstate = PTHREAD_CREATE_JOINABLE;
 	attr->priority = PTH_DEFAULT_PRIORITY;
+	attr->name[0] = '\0';
 	return 0;
 }
 

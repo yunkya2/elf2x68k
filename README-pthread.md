@@ -95,6 +95,11 @@ POSIX スレッドライブラリでは、POSIX スレッド API におおむね
   * int **pthread_attr_setsystemstacksize_np**(pthread_attr_t \**attr*, size_t *stacksize*);
   * int **pthread_attr_getsystemstacksize_np**(const pthread_attr_t \**attr*, size_t \**stacksize*);
 
+以下は POSIX 標準にない elf2x68k libpthread 独自の関数で、生成するスレッドの名前を設定・取得します。名前は15文字以内の文字列で、`process /b` コマンドなどでスレッドを識別するために使用されます。
+
+  * int **pthread_attr_setname_np**(pthread_attr_t \**attr*, const char \**name*);
+  * int **pthread_attr_getname_np**(const pthread_attr_t \**attr*, char \**name*, size_t *len*);
+
 #### ミューテックス (mutex)
   * int **pthread_mutex_init**(pthread_mutex_t \**mutex*, const pthread_mutexattr_t \**attr*);
   * int **pthread_mutex_destroy**(pthread_mutex_t \**mutex*);

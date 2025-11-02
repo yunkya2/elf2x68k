@@ -29,6 +29,8 @@ LIB_SOURCES = \
 	pthread_attr_getdetachstate.c \
 	pthread_attr_setschedparam.c \
 	pthread_attr_getschedparam.c \
+	pthread_attr_setname_np.c \
+	pthread_attr_getname_np.c \
 	pthread_key.c \
 	pthread_mutex_init.c \
 	pthread_mutex_destroy.c \

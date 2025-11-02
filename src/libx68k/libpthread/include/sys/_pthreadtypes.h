@@ -22,12 +22,16 @@ typedef struct {
   int systemstacksize;
   int detachstate;
   int priority;
+  char name[16];
 } pthread_attr_t;
 
 int	pthread_attr_setsystemstack_np(pthread_attr_t *attr, void *stackaddr, size_t stacksize);
 int	pthread_attr_getsystemstack_np(const pthread_attr_t *attr, void **stackaddr, size_t *stacksize);
 int	pthread_attr_setsystemstacksize_np(pthread_attr_t *attr, size_t stacksize);
 int	pthread_attr_getsystemstacksize_np(const pthread_attr_t *attr, size_t *stacksize);
+
+int	pthread_attr_setname_np(pthread_attr_t *attr, const char *name);
+int	pthread_attr_getname_np(const pthread_attr_t *attr, char *name, size_t len);
 
 
 /* For mutex APIs */

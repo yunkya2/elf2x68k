@@ -5,6 +5,7 @@
  */
 
 #include <stdio.h>
+#include <string.h>
 #include "pthread_internal.h"
 #include "_at_exit.h"
 
@@ -237,10 +238,16 @@ int pthread_create(pthread_t *thread, const pthread_attr_t *attr,
     int tid;
     int ssp = _pthread_enter_critical();
     while (1) {
-        // 現在時刻からスレッド名を決めて生成する
-        // (同名のスレッドが既に存在する場合は名前を変えて再試行)
         char name[16];
-        snprintf(name, sizeof(name), "pthread%d", count++ % 100);
+        if (attr && attr->is_initialized && attr->name[0] != '\0') {
+            // 属性で名前が指定されている場合はそれを使う
+            strncpy(name, attr->name, sizeof(name) - 1);
+            name[sizeof(name) - 1] = '\0';
+        } else {
+            // 現在時刻からスレッド名を決めて生成する
+            // (同名のスレッドが既に存在する場合は名前を変えて再試行)
+            snprintf(name, sizeof(name), "pthread%02u", count++ % 100);
+        }
 
         tid = _dos_open_pr(name, (pi->priority * main_pi.priority >> 8) + 1,
                            (int)&((char *)pi->userstackaddr)[pi->userstacksize],
