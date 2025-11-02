@@ -41,6 +41,7 @@ rm -f ${INSTALL_DIR}/bin/x68k2elf.py
 rm -f ${INSTALL_DIR}/m68k-elf/lib/x68k.ld
 rm -f ${INSTALL_DIR}/m68k-elf/lib/x*.specs*
 rm -f ${INSTALL_DIR}/m68k-elf/lib/c++small.specs
+rm -f ${INSTALL_DIR}/m68k-elf/lib/nano.specs
 rm -f ${INSTALL_DIR}/lib/gcc/m68k-elf/[0-9]*/specs
 rm -f ${INSTALL_DIR}/m68k-elf/lib/libx68k.a
 rm -f ${INSTALL_DIR}/m68k-elf/lib/libx68knodos.a

@@ -42,6 +42,7 @@ cp src/x68k.ld ${INSTALL_DIR}/m68k-elf/lib
 cp src/x68k.specs ${INSTALL_DIR}/m68k-elf/lib
 cp src/x68knodos.specs ${INSTALL_DIR}/m68k-elf/lib
 cp src/c++small.specs ${INSTALL_DIR}/m68k-elf/lib
+cp src/nano.specs ${INSTALL_DIR}/m68k-elf/lib
 cp src/xc.specs.tmpl ${INSTALL_DIR}/m68k-elf/lib
 cp src/install-xclib.sh ${INSTALL_DIR}
 
