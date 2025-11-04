@@ -20,6 +20,7 @@
 
 help:
 	@echo "make all        - Build m68k-xelf development environment"
+	@echo "make simple     - Build simple environment (without C++, newlib-nano and gdb)"
 	@echo "make m68k-xelf  - Build m68k cross toolchain only"
 	@echo "make download   - Download prerequisite archives only"
 	@echo "make install    - Install X68k support files only"
@@ -30,22 +31,20 @@ help:
 
 all: m68k-xelf install
 
-m68k-xelf: binutils gcc-stage1 newlib gcc-stage2 gdb
+simple: m68k-xelf-simple install
 
-binutils: download
-	scripts/binutils.sh
+TARGETS = binutils gcc-stage1 newlib gcc-stage2 gdb
+TARGETS_SIMPLE = $(addsuffix -simple,$(filter-out gdb,$(TARGETS)))
 
-gcc-stage1: download
-	scripts/gcc-stage1.sh
+m68k-xelf: $(TARGETS)
 
-newlib: download
-	scripts/newlib.sh
+m68k-xelf-simple: $(TARGETS_SIMPLE)
 
-gcc-stage2: download
-	scripts/gcc-stage2.sh
+$(TARGETS): download
+	scripts/$@.sh
 
-gdb: download
-	scripts/gdb.sh
+$(TARGETS_SIMPLE): download
+	SIMPLE=1 BUILD_SUFFIX="-simple" scripts/$(patsubst %-simple,%,$@).sh
 
 download:
 	scripts/download.sh
@@ -58,7 +57,7 @@ uninstall:
 
 clean:
 	-rm -rf build_gcc
-	-rm -rf m68k-xelf
+	-rm -rf m68k-xelf{,-simple}
 	make clean -C src/libx68k
 
 pristine: clean
@@ -77,6 +76,7 @@ endif
 release: uninstall install
 	tar -c -v -j -f ${ARCHIVE}.tar.bz2 --${UID}=0 --${GID}=0 m68k-xelf
 
-.PHONY:	all clean pristine help
-.PHONY:	download toolchain binutils gcc-stage1 newlib gcc-stage2 gdb
-.PHONY:	install uninstall release
+.PHONY:	all help
+.PHONY:	m68k-xelf m68k-xelf-test test
+.PHONY: $(TARGETS)
+.PHONY:	download install uninstall clean pristine release

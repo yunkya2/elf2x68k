@@ -48,7 +48,7 @@ gcc_build () {
         --program-prefix=${PROGRAM_PREFIX} \
         --target=${TARGET} \
         --enable-lto \
-        --enable-languages=c,c++ \
+        --enable-languages=${GCC_LANGUAGES} \
         --with-arch=m68k \
         --with-cpu=${WITH_CPU} \
         --with-newlib \
@@ -70,17 +70,24 @@ gcc_build () {
     fi
 }
 
-#	libstdc++.a のみを縮小版 (-fno-rtti -fno-exceptions) でビルド、インストールする
 
-gcc_build "-small" " -fno-rtti -fno-exceptions" "-target-libstdc++-v3"
+# ビルドで生成する言語を設定
+GCC_LANGUAGES="c,c++"
 
-#	縮小版の libstdc++.a を移動
-for f in `find ${INSTALL_DIR} -name libstdc++.a`; do
-	mv $f `dirname $f`/libstdc++small.a
-done
+if [ "${SIMPLE}" == "" ]; then
+    # libstdc++.a のみを縮小版 (-fno-rtti -fno-exceptions) でビルド、インストールする
+    gcc_build "-small" " -fno-rtti -fno-exceptions" "-target-libstdc++-v3"
 
-#	通常のコンフィグでビルド、インストールする
+    # 縮小版の libstdc++.a を移動
+    for f in `find ${INSTALL_DIR} -name libstdc++.a`; do
+        mv $f `dirname $f`/libstdc++small.a
+    done
+else
+    # シンプル版では C 言語のみビルド
+    GCC_LANGUAGES="c"
+fi
 
+# 通常のコンフィグでビルド、インストールする
 gcc_build "" "" ""
 
 cd ${ROOT_DIR}

@@ -66,19 +66,21 @@ newlib_build () {
 }
 
 
-# newlib-nano をビルド、インストールする
-newlib_build "-nano" "\
-    --enable-newlib-nano-malloc \
-    --enable-newlib-reent-small \
-    --disable-newlib-wide-orient \
-    --enable-target-optspace \
-    --disable-newlib-multithread \
-    --enable-newlib-nano-formatted-io \
-"
-# libc-nano.a を移動
-for f in `find ${INSTALL_DIR} -name libc.a`; do
-	mv `dirname $f`/libc.a `dirname $f`/libc-nano.a
-done
+if [ "${SIMPLE}" = "" ]; then
+    # newlib-nano をビルド、インストールする
+        newlib_build "-nano" "\
+        --enable-newlib-nano-malloc \
+        --enable-newlib-reent-small \
+        --disable-newlib-wide-orient \
+        --enable-target-optspace \
+        --disable-newlib-multithread \
+        --enable-newlib-nano-formatted-io \
+    "
+    # libc-nano.a を移動
+    for f in `find ${INSTALL_DIR} -name libc.a`; do
+    	mv `dirname $f`/libc.a `dirname $f`/libc-nano.a
+    done
+fi
 
 # 通常版 newlib をビルド、インストールする
 newlib_build "" ""

@@ -90,14 +90,10 @@ TARGET=${GCC_ABI}
 PREFIX="m68k-xelf-"
 PROGRAM_PREFIX=${PREFIX}
 
-# コア数の半分+1をビルドに使用する
 if [ -x "$(command -v nproc)" ]; then
 	NUM_PROC=$(nproc)
 else
 	NUM_PROC=$(sysctl -n hw.physicalcpu)
-fi
-if [ ${NUM_PROC} -gt 3 ]; then
-	NUM_PROC=$((${NUM_PROC} / 2 + 1))
 fi
 
 if [ -x "$(command -v sha512sum)" ]; then
@@ -107,13 +103,13 @@ else
 fi
 
 # インストール先ディレクトリ作成 (デフォルトは ./m68k-xelf)
-INSTALL_DIR=${INSTALL_DIR:-"m68k-xelf"}
+INSTALL_DIR=${INSTALL_DIR:-"m68k-xelf${BUILD_SUFFIX}"}
 mkdir -p ${INSTALL_DIR}
 INSTALL_DIR=$(realpath ${INSTALL_DIR})
 
 ROOT_DIR="${PWD}"
 DOWNLOAD_DIR="${ROOT_DIR}/download"
-BUILD_DIR="${ROOT_DIR}/${GCC_BUILD_DIR}/build"
+BUILD_DIR="${ROOT_DIR}/${GCC_BUILD_DIR}/build${BUILD_SUFFIX}"
 SRC_DIR="${ROOT_DIR}/${GCC_BUILD_DIR}/src"
 PATCH_DIR="${ROOT_DIR}/src/patch"
 WITH_CPU=${CPU}
