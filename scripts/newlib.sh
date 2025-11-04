@@ -72,7 +72,6 @@ newlib_build () {
 
 # newlib-nano をビルド、インストールする
 newlib_build "-nano" "\
-    --disable-newlib-io-float \
     --enable-newlib-nano-malloc \
     --enable-newlib-reent-small \
     --disable-newlib-wide-orient \
