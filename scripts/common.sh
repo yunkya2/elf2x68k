@@ -118,6 +118,9 @@ SRC_DIR="${ROOT_DIR}/${GCC_BUILD_DIR}/src"
 PATCH_DIR="${ROOT_DIR}/src/patch"
 WITH_CPU=${CPU}
 
+# XC 互換の ABI でビルド
+export CFLAGS_FOR_TARGET="-g -O2 -fcall-used-d2 -fcall-used-a2"
+
 export LC_ALL="C"
 export LC_CTYPE="C"
 export LANG="en_US.UTF-8"

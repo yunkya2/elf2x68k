@@ -35,10 +35,6 @@
 cd ${DOWNLOAD_DIR}
 tar zxvf ${NEWLIB_ARCHIVE} -C ${SRC_DIR}
 
-#	XC 互換の ABI でビルド
-export CFLAGS_FOR_TARGET="-g -O2 -fcall-used-d2 -fcall-used-a2"
-export CXXFLAGS_FOR_TARGET="-g -O2 -fcall-used-d2 -fcall-used-a2"
-
 export CC_FOR_TARGET=${PROGRAM_PREFIX}gcc
 export LD_FOR_TARGET=${PROGRAM_PREFIX}ld
 export AS_FOR_TARGET=${PROGRAM_PREFIX}as
