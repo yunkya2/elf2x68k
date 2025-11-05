@@ -77,6 +77,15 @@ version: ${GIT_REPO_VERSION}
 URL: https://github.com/yunkya2/elf2x68k/
 EOF
 
+if [ "${HOST_OPTION}" != "" ]; then
+    cp /usr/x86_64-w64-mingw32/bin/libiconv-2.dll ${INSTALL_DIR}/bin
+    cp /usr/x86_64-w64-mingw32/lib/zlib1.dll ${INSTALL_DIR}/bin
+    cp /usr/x86_64-w64-mingw32/lib/libwinpthread-1.dll ${INSTALL_DIR}/bin
+    cp /usr/lib/gcc/x86_64-w64-mingw32/*-posix/libgcc_s_seh-1.dll ${INSTALL_DIR}/bin
+    cp /usr/lib/gcc/x86_64-w64-mingw32/*-posix/libstdc++-6.dll ${INSTALL_DIR}/bin
+
+fi
+
 echo ""
 echo "-----------------------------------------------------------------------------"
 echo "Installed X68k support files into m68k-xelf toolchain."

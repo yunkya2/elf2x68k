@@ -60,6 +60,8 @@ rm -f ${INSTALL_DIR}/m68k-elf/lib/libiocs.a
 rm -f ${INSTALL_DIR}/m68k-elf/lib/libdos.a
 rm -f ${INSTALL_DIR}/m68k-elf/lib/libbas.a
 
+rm -f ${INSTALL_DIR}/bin/*.dll
+
 echo ""
 echo "-----------------------------------------------------------------------------"
 echo "Uninstalled X68k support files from m68k-xelf toolchain."
