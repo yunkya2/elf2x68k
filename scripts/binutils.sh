@@ -46,6 +46,7 @@ ${SRC_DIR}/${BINUTILS_DIR}/configure \
     --prefix=${INSTALL_DIR} \
     --program-prefix=${PROGRAM_PREFIX} \
     --target=${TARGET} \
+    ${HOST_OPTION} \
     --enable-lto \
     --enable-multilib \
     --with-system-zlib \

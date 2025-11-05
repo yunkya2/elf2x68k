@@ -35,12 +35,6 @@
 cd ${DOWNLOAD_DIR}
 tar zxvf ${NEWLIB_ARCHIVE} -C ${SRC_DIR}
 
-export CC_FOR_TARGET=${PROGRAM_PREFIX}gcc
-export LD_FOR_TARGET=${PROGRAM_PREFIX}ld
-export AS_FOR_TARGET=${PROGRAM_PREFIX}as
-export AR_FOR_TARGET=${PROGRAM_PREFIX}ar
-export RANLIB_FOR_TARGET=${PROGRAM_PREFIX}ranlib
-
 #	timezoneのデフォルトをJST-9にするためのパッチ
 cd ${SRC_DIR}/${NEWLIB_DIR}
 patch -p1 -N < ${PATCH_DIR}/newlib-tz-jst.patch

@@ -44,6 +44,7 @@ cd ${BUILD_DIR}/${GDB_DIR}
 ${SRC_DIR}/${GDB_DIR}/configure \
     --prefix=${INSTALL_DIR} \
     --target=${TARGET} \
+    ${HOST_OPTION} \
     --without-python \
     --with-mpc-include=${SRC_DIR}/${GCC_DIR}/mpc/src/ \
     --with-mpc-lib=${BUILD_DIR}/${GCC_DIR}_stage1/mpc/src/.libs/ \

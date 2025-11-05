@@ -46,7 +46,7 @@ cp src/nano.specs ${INSTALL_DIR}/m68k-elf/lib
 cp src/xc.specs.tmpl ${INSTALL_DIR}/m68k-elf/lib
 cp src/install-xclib.sh ${INSTALL_DIR}
 
-${INSTALL_DIR}/bin/m68k-xelf-gcc -dumpspecs > ${INSTALL_DIR}/lib/gcc/m68k-elf/specs
+m68k-xelf-gcc -dumpspecs > ${INSTALL_DIR}/lib/gcc/m68k-elf/specs
 cat src/x68k.specs >> ${INSTALL_DIR}/lib/gcc/m68k-elf/specs
 mv ${INSTALL_DIR}/lib/gcc/m68k-elf/specs ${INSTALL_DIR}/lib/gcc/m68k-elf/[0-9]*
 

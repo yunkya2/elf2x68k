@@ -9,7 +9,7 @@
 #------------------------------------------------------------------------------
 #
 #	Copyright (C) 2022 Yosshin(@yosshin4004)
-#	Copyright (C) 2023,2024 Yuichi Nakamura (@yunkya2)
+#	Copyright (C) 2023-2025 Yuichi Nakamura (@yunkya2)
 #
 #	Licensed under the Apache License, Version 2.0 (the "License");
 #	you may not use this file except in compliance with the License.
@@ -51,6 +51,7 @@ cd ${BUILD_DIR}/${GCC_DIR}_stage1
     --prefix=${INSTALL_DIR} \
     --program-prefix=${PROGRAM_PREFIX} \
     --target=${TARGET} \
+    ${HOST_OPTION} \
     --enable-lto \
     --enable-languages=c \
     --without-headers \

@@ -47,6 +47,7 @@ gcc_build () {
         --prefix=${INSTALL_DIR} \
         --program-prefix=${PROGRAM_PREFIX} \
         --target=${TARGET} \
+        ${HOST_OPTION} \
         --enable-lto \
         --enable-languages=${GCC_LANGUAGES} \
         --with-arch=m68k \

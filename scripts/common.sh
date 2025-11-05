@@ -114,14 +114,29 @@ SRC_DIR="${ROOT_DIR}/${GCC_BUILD_DIR}/src"
 PATCH_DIR="${ROOT_DIR}/src/patch"
 WITH_CPU=${CPU}
 
-# XC 互換の ABI でビルド
+# ライブラリビルド用のコマンド設定
+export CC_FOR_TARGET=${PROGRAM_PREFIX}gcc
+export CXX_FOR_TARGET=${PROGRAM_PREFIX}g++
+export LD_FOR_TARGET=${PROGRAM_PREFIX}ld
+export AS_FOR_TARGET=${PROGRAM_PREFIX}as
+export AR_FOR_TARGET=${PROGRAM_PREFIX}ar
+export RANLIB_FOR_TARGET=${PROGRAM_PREFIX}ranlib
+
+# ライブラリを XC 互換の ABI でビルド
 export CFLAGS_FOR_TARGET="-g -O2 -fcall-used-d2 -fcall-used-a2"
+export CXXFLAGS_FOR_TARGET=${CFLAGS_FOR_TARGET}
+
+# ライブラリビルド用のパスを設定
+# (クロスビルドの場合はm68k-xelfツールチェインを使用する)
+if [ "${HOST_OPTION}" = "" ]; then
+	export PATH=${INSTALL_DIR}/bin:${PATH}
+else
+	export PATH=${ROOT_DIR}/${GCC_BUILD_DIR}/m68k-xelf/bin:${PATH}
+fi
 
 export LC_ALL="C"
 export LC_CTYPE="C"
 export LANG="en_US.UTF-8"
-
-export PATH=${INSTALL_DIR}/bin:${PATH}
 
 # ディレクトリ作成
 mkdir -p ${BUILD_DIR}
