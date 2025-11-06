@@ -8,9 +8,10 @@ elf2x68k はソケット API によるネットワーク処理を行うソケッ
 
 ソケットライブラリを利用するためには、
 http://retropc.net/x68000/software/internet/kg/tcppacka/
-で無償配布されている (株)計測技研製 Human68k 用 TCP/IP ドライバと、このドライバに対応したネットワークアダプタ、およびそのドライバが必要になります。以下のようなネットワークアダプタが利用できます(動作は ZUSB のみで確認)。
+で無償配布されている (株)計測技研製 Human68k 用 TCP/IP ドライバと、このドライバに対応したネットワークアダプタ、およびそのドライバが必要になります。以下のようなネットワークアダプタが利用できます(動作は XM6 TypeG, ZUSB で確認)。
 
   * X680x0 実機向け: Neptune-X, Nereid, RaSCSI 等
+  * X68000 エミュレータ向け: XM6 TypeG (Nereidエミュレーション機能)
   * X68000 Z 向け: [ZUSB](https://github.com/yunkya2/x68kz-zusb) ([zusbether](https://github.com/yunkya2/x68kz-zusb/blob/master/zusbether/README.md)) + BUFFALO LUA3-U2_ATX
 
 ソケットライブラリの使用前に、利用するネットワークアダプタ用ドライバのドキュメントに従って設定を行い、TCPPACKA 付属のコマンドでネットワーク接続ができることを確認してください。

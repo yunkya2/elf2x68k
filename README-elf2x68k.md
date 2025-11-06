@@ -19,14 +19,38 @@
   で、必要なファイルをダウンロードしてビルドしたツールチェインと X68k 対応ファイルを `m68k-xelf` にインストールします。バイナリ配布同様に、`m68k-xelf/bin` にパスを通すと使用できるようになります。
 * その他、Makefile で以下のターゲットを指定することができます。
   ```
-  make m68k-xelf - m68k-xelf ツールチェインのビルドのみを行います
-  make download  - ツールチェインビルドに必要なファイルのダウンロードのみを行います
-  make install   - m68k-xelf に X68k 対応ファイルのインストールのみ行います
-  make uninstall - m68k-xelf の X68k 対応ファイルを削除します
-  make clean     - ビルドの生成物を削除します (ダウンロードしたアーカイブは削除しません)
-  make pristine  - ダウンロードアーカイブも含めて削除
-  make help      - 指定可能なターゲットを表示します
+  make simple       - シンプル環境 (C++、newlib-nano、gdb無し) のビルドを行います
+  make mingw        - MinGW 向けバイナリを Linux 環境でビルドします
+  make mingw-simple - mingw + simple の組み合わせでビルドします
+  make m68k-xelf    - m68k-xelf ツールチェインのビルドのみを行います
+  make download     - ツールチェインビルドに必要なファイルのダウンロードのみを行います
+  make install      - m68k-xelf に X68k 対応ファイルのインストールのみ行います
+  make uninstall    - m68k-xelf の X68k 対応ファイルを削除します
+  make clean        - ビルドの生成物を削除します (ダウンロードしたアーカイブは削除しません)
+  make pristine     - ダウンロードアーカイブも含めて削除
+  make help         - 指定可能なターゲットを表示します
   ```
+
+### MinGW 向けバイナリのクロスビルドについて
+
+`make mingw` では、MinGW クロスコンパイラを用いて Linux 環境上で MinGW 向けのバイナリをビルドすることができます。
+クロスビルドを行うためには、以下の準備が必要です (Ubuntu 24.04LTS で確認)。
+
+1. MinGW クロスコンパイラと MinGW 用 zlib をインストールします。
+    ```
+    sudo apt install mingw-w64 libz-mingw-w64-dev
+    ```
+2. gcc のビルドに libiconv が必要ですが、Ubuntu のパッケージには MinGW 用の libiconv が無いため、ソースコードからビルドしてインストールします。
+    ```
+    wget https://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.18.tar.gz
+    tar zxvf libiconv-1.18.tar.gz
+    cd libiconv-1.18
+    ./configure --host=x86_64-w64-mingw32 --prefix=/usr/x86_64-w64-mingw32 --enable-shared --disable-static
+    make
+    sudo make install
+    ```
+
+ビルドの際には、ライブラリのコンパイルのため Linux ネイティブの m68k-xelf ツールチェインも必要となります。そのため、`make mingw` を実行すると、まず `make m68k-xelf` でツールチェインをビルドしてから MinGW 向けバイナリのビルドが行われます。
 
 ## X68k 対応ファイル
 
@@ -55,10 +79,12 @@ m68k-xelf/ 内に追加される、X68k 対応のためのファイル一覧で�
 * m68k-elf/lib/x68k.ld
   * X68k向けリンクの際に使用するリンカスクリプトです
 * m68k-elf/lib/x68k{nodos,}.specs
+* m68k-elf/lib/nano.specs
 * m68k-elf/lib/c++small.specs
   * m68k-elf-gcc の挙動を修正するspecsファイルです
     * x68k.specs は上記 lib/gcc/m68k-elf/specs と同じものです
     * x68knodos.specs はリンクされるライブラリからHuman68k関連のものを外してIOCSコールのみを利用可能にしてあるものです。ディスクのブートセクタからHuman68k抜きで起動するバイナリを開発できるようになります
+    * nano.specs は標準Cライブラリとして libc.a の代わりに libc-nano.a をリンクします。printf() などに軽量版を用いた Newlib-nano を使用します
     * c++small.specs はC++プログラムのコンパイル、リンクで例外処理とRTTIを無効にします (-fno-exceptions -fno-rtti)。リンクで使用するC++標準ライブラリもこれらの機能を無効にしたものが使われます。
 * m68k-elf/lib/libx68k.a
   * newlibの下回りのシステムコール処理を提供するライブラリです
