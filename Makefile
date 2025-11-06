@@ -80,10 +80,12 @@ build_gcc/m68k-xelf:
 download:
 	scripts/download.sh
 
-clean:
+clean: libclean
 	-rm -rf build_gcc
 	-rm -rf m68k-xelf
 	-rm -rf $(foreach s, -simple -mingw -mingw-simple,$(addsuffix $s, m68k-xelf))
+
+libclean:
 	make clean -C src/libx68k
 
 pristine: clean
@@ -91,6 +93,7 @@ pristine: clean
 
 GIT_REPO_VERSION=$(shell git describe --tags --always)
 ARCHIVE="elf2x68k-`uname -s|sed 's/_.*//'`-${GIT_REPO_VERSION}"
+ARCHIVE_MINGW="elf2x68k-MINGW64-${GIT_REPO_VERSION}"
 ifeq ("$(shell tar --version|grep bsdtar)","")
 UID=owner
 GID=group
@@ -99,10 +102,17 @@ UID=uid
 GID=gid
 endif
 
-release: uninstall install
+release: uninstall libclean install
 	tar -c -v -j -f ${ARCHIVE}.tar.bz2 --${UID}=0 --${GID}=0 m68k-xelf
 
+release-mingw: uninstall-mingw libclean install-mingw
+	-mv m68k-xelf m68k-xelf-full
+	-mv m68k-xelf-mingw m68k-xelf
+	tar -c -v -j -f ${ARCHIVE_MINGW}.tar.bz2 --${UID}=0 --${GID}=0 m68k-xelf
+	-mv m68k-xelf m68k-xelf-mingw
+	-mv m68k-xelf-full m68k-xelf
+
 .PHONY:	all help
-.PHONY:	download clean pristine release
+.PHONY:	download clean pristine libclean release release-mingw
 .PHONY:	m68k-xelf $(TARGETS) install uninstall
 .PHONY:	$(foreach s, -simple -mingw -mingw-simple,$(addsuffix $s, m68k-xelf $(TARGETS) install uninstall))
