@@ -1,5 +1,5 @@
 diff --git a/src/libx68k/libsocket/gethostnamadr.c b/src/libx68k/libsocket/gethostnamadr.c
-index 81ca37586..e300c748a 100644
+index 81ca37586..c9fd7b07f 100644
 --- a/src/libx68k/libsocket/gethostnamadr.c
 +++ b/src/libx68k/libsocket/gethostnamadr.c
 @@ -4,14 +4,37 @@
@@ -47,7 +47,7 @@ index 81ca37586..e300c748a 100644
  
  #define MAXHOSTADDR (15)
  #define MAXHOSTALIAS (15)
-@@ -34,13 +57,11 @@ static unsigned short get16 (unsigned char *);
+@@ -34,29 +57,47 @@ static unsigned short get16 (unsigned char *);
  static unsigned long get32 (unsigned char *);
  static unsigned char * get_dname (unsigned char **, unsigned char *);
  
@@ -62,7 +62,24 @@ index 81ca37586..e300c748a 100644
  {
    struct hostent *hp;
  
-@@ -49,14 +70,18 @@ gethostbyname (char *name)
++  struct in_addr inp;
++  if (inet_aton(name, &inp)) {
++    _host.h_name = (char *)name;
++    _host.h_aliases = (char **)h_aliases;
++    _host.h_addrtype = AF_INET;
++    _host.h_length = sizeof (long);
++    _host.h_addr_list = (char **)h_addr_list;
++
++    free_hostent ();
++    if (add_addrs(inp.s_addr)) {
++      free_hostent ();
++      return NULL;
++    }
++    return &_host;
++  }
++
+   hp = __gethostbyname ((unsigned char *)name);
+   if (hp)
      return hp;
  
    hp = _gethostbyname ((unsigned char *)name);
@@ -83,7 +100,7 @@ index 81ca37586..e300c748a 100644
  {
    struct hostent *hp;
  
-@@ -65,7 +90,11 @@ gethostbyaddr (char *adr, int len, int type)
+@@ -65,7 +106,11 @@ gethostbyaddr (char *adr, int len, int type)
      return hp;
  
    hp = _gethostbyaddr ((unsigned char *)adr, len, type);
@@ -96,7 +113,7 @@ index 81ca37586..e300c748a 100644
  }
  
  /************************************************
-@@ -74,7 +103,7 @@ gethostbyaddr (char *adr, int len, int type)
+@@ -74,7 +119,7 @@ gethostbyaddr (char *adr, int len, int type)
  static struct hostent *
  _gethostbyname (unsigned char *name)
  {
@@ -105,7 +122,7 @@ index 81ca37586..e300c748a 100644
    if (func)
      return (struct hostent *)func (_TI_gethostbyname, (long *)name);
    return NULL;
-@@ -86,7 +115,7 @@ _gethostbyname (unsigned char *name)
+@@ -86,7 +131,7 @@ _gethostbyname (unsigned char *name)
  static struct hostent *
  _gethostbyaddr (unsigned char *addr, int len, int type)
  {
@@ -114,7 +131,7 @@ index 81ca37586..e300c748a 100644
    if (func)
      {
        long argv[3];
-@@ -174,6 +203,8 @@ make_hostent (unsigned char *answer, int len)
+@@ -174,6 +219,8 @@ make_hostent (unsigned char *answer, int len)
  
    _host.h_name = _hostname;
    _host.h_aliases = (char **)h_aliases;
