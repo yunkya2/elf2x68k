@@ -244,12 +244,16 @@ int pthread_create(pthread_t *thread, const pthread_attr_t *attr,
     // スレッドを生成する
     int tid;
     int ssp = _pthread_enter_critical();
+    const char *attrname = NULL;
+    if (attr && attr->is_initialized && attr->name[0] != '\0') {
+        attrname = attr->name;  // 属性で名前が指定されている場合はそれを使う
+    }
     while (1) {
         char name[16];
-        if (attr && attr->is_initialized && attr->name[0] != '\0') {
-            // 属性で名前が指定されている場合はそれを使う
-            strncpy(name, attr->name, sizeof(name) - 1);
+        if (attrname) {
+            strncpy(name, attrname, sizeof(name) - 1);
             name[sizeof(name) - 1] = '\0';
+            attrname = NULL;    // 名前が重複した場合はデフォルトの名前に切り替える
         } else {
             // 現在時刻からスレッド名を決めて生成する
             // (同名のスレッドが既に存在する場合は名前を変えて再試行)
