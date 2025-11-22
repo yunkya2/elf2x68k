@@ -1,5 +1,5 @@
 diff --git a/src/libx68k/libsocket/gethostnamadr.c b/src/libx68k/libsocket/gethostnamadr.c
-index 81ca37586..44ea5283d 100644
+index 81ca37586..e300c748a 100644
 --- a/src/libx68k/libsocket/gethostnamadr.c
 +++ b/src/libx68k/libsocket/gethostnamadr.c
 @@ -4,14 +4,37 @@
@@ -79,7 +79,7 @@ index 81ca37586..44ea5283d 100644
   ************************************************/
  struct hostent *
 -gethostbyaddr (char *adr, int len, int type)
-+gethostbyaddr (const char *adr, socklen_t len, int type)
++gethostbyaddr (const void *adr, socklen_t len, int type)
  {
    struct hostent *hp;
  

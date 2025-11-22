@@ -83,7 +83,7 @@ extern int h_errno;
 #define NO_DATA           4
 
 struct hostent *gethostbyname(const char *);
-struct hostent *gethostbyaddr(const char *, socklen_t, int);
+struct hostent *gethostbyaddr(const void *, socklen_t, int);
 struct netent *getnetbyname(const char *);
 struct netent *getnetbyaddr(unsigned long, int);
 struct servent *getservbyname(const char *, const char *);
