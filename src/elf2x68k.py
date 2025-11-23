@@ -84,7 +84,7 @@ class X68kSymbol:
         (self.type, self.value, self.name) = (type, value, name)
 
     def encode(self, base = 0):
-        enname = self.name.encode()
+        enname = self.name.encode('cp932')
         return pack(">HL", self.type, self.value + base) + \
                enname + b'\0' * (2 - (len(enname) & 1))
 
