@@ -7,9 +7,16 @@
 	.extern main
 	.extern exit
 	.extern	atexit
+	.extern _stack_size
+	.extern _heap_size
 
 	.extern __bss_start
 	.extern _end
+
+	.extern _SSTA
+	.extern _SEND
+	.extern _HSTA
+	.extern _HEND
 
 	.global _start
 _start:
@@ -21,14 +28,14 @@ _start_1:
 | Setup stack
 	lea.l	_end, %a0
 	move.l	%a0, _SSTA
-	add.l	#STACK_SIZE, %a0
+	add.l	_stack_size, %a0
 	move.l	%a0, _SEND
 
 	move.l	%a0, %sp
 
 | Setup heap
 	move.l	%a0, _HSTA		| HEAP Start
-	add.l	#HEAP_SIZE, %a0
+	add.l	_heap_size, %a0
 	move.l	%a0, _HEND		| HEAP End
 
 | Clear bss section
@@ -75,11 +82,3 @@ _start_1:
 .global environ
 environ:
 	.long	0
-
-| Variables
-|
-
-	.comm	_SSTA, 4
-	.comm	_SEND, 4
-	.comm	_HSTA, 4
-	.comm	_HEND, 4

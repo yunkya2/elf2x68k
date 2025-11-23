@@ -17,13 +17,26 @@
 
 #include "config.h"
 
-.extern __crt1_startup
-.extern _exit
-.extern _stack_size
-.extern _heap_size
+	.extern __crt1_startup
+	.extern _exit
+	.extern _stack_size
+	.extern _heap_size
 
-.global _start
+	.extern _MCB
+	.extern _PSP
+	.extern _PSTA
+	.extern _PEND
+	.extern _BSTA
+	.extern _BEND
+	.extern _SSTA
+	.extern _SEND
+	.extern _HSTA
+	.extern _HEND
+	.extern _HMAX
+	.extern _ENV0
+	.extern _cmdline
 
+	.global _start
 _start:
 	bra	_start_1
 #ifdef SUPPORT_HUPAIR
@@ -144,25 +157,3 @@ oom_msg:
 	.ascii	"Out of memory. Program terminated."
 	.byte	13,10,0
 	.even
-
-|
-| Variables
-|
-
-	.comm	_MCB, 4
-	.comm	_PSP, 4
-
-	.comm	_PSTA, 4
-	.comm	_PEND, 4
-	.comm	_BSTA, 4
-	.comm	_BEND, 4
-	.comm	_SSTA, 4
-	.comm	_SEND, 4
-	.comm	_HSTA, 4
-	.comm	_HEND, 4
-	.comm	_HMAX, 4
-
-	.comm	_ENV0, 4
-
-	.comm	_cmdline, 4
-
