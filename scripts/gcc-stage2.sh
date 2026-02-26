@@ -37,6 +37,9 @@
 #	大量に生成されることを回避している。
 #-----------------------------------------------------------------------------
 
+cd ${SRC_DIR}/${GCC_DIR}
+patch -p1 -N < ${PATCH_DIR}/gcc-x68k.patch
+
 gcc_build () {
     # 必要ならコンパイルオプションを追加
     export CXXFLAGS_FOR_TARGET="${CFLAGS_FOR_TARGET}$2"
