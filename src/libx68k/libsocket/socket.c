@@ -5,6 +5,8 @@
 #include "socket_internal.h"
 #include "_at_exit.h"
 
+int __sock_errno;
+
 uint32_t __sock_fds;
 uint32_t __sock_connect_fds;
 uint32_t __sock_listen_fds;

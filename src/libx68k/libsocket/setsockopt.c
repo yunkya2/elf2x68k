@@ -2,10 +2,7 @@
  *  setsockopt()
  */
 
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <errno.h>
-#include "tcpipdrv.h"
+#include "socket_internal.h"
 
 int setsockopt(int sockfd, int level, int optname, const void *optval, socklen_t optlen)
 {
@@ -18,6 +15,10 @@ int setsockopt(int sockfd, int level, int optname, const void *optval, socklen_t
     int res;
 
     switch (optname) {
+    case SO_REUSEADDR:
+    case SO_BROADCAST:
+        return 0;
+
     case SO_SOCKMODE:
         arg[0] = sockfd;
         arg[1] = *(const int *)optval;
@@ -36,6 +37,10 @@ int setsockopt(int sockfd, int level, int optname, const void *optval, socklen_t
             errno = EBADF;
             return -1;
         }
+        return 0;
+
+    case SO_NONBLOCK:
+        __socket_nonblock(sockfd, *(const int *)optval);
         return 0;
 
     default:

@@ -39,8 +39,13 @@ struct sockaddr_storage
 #define SHUT_WR         1
 #define SHUT_RDWR       2
 
-/* for setsockopt(2) */
+/* for get/setsockopt(2) */
 #define SOL_SOCKET      1
+
+#define SO_REUSEADDR    2
+#define SO_ERROR        4
+#define SO_BROADCAST    6
+#define SO_ACCEPTCONN   30
 
 /* inetd.x specific functions */
 #define SO_GETVERSION   100   /* _get_version() */

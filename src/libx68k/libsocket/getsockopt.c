@@ -2,11 +2,7 @@
  *  getsockopt()
  */
 
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <string.h>
-#include <errno.h>
-#include "tcpipdrv.h"
+#include "socket_internal.h"
 
 int getsockopt(int sockfd, int level, int optname, void *optval, socklen_t *optlen)
 {
@@ -22,6 +18,36 @@ int getsockopt(int sockfd, int level, int optname, void *optval, socklen_t *optl
     char *resc;
 
     switch (optname) {
+    case SO_REUSEADDR:
+    case SO_BROADCAST:
+        *(int *)optval = 1;
+        return 0;
+
+    case SO_ERROR:
+        if (sockfd >= 128 && sockfd < 128 + 32) {
+            int res = __socket_connect_confirm(sockfd);
+            if (res >= 0) {
+                __sock_errno = res;
+                *(int *)optval = __sock_errno;
+                return 0;
+            } else {
+                errno = EBADF;
+                return -1;
+            }
+        } else {
+            errno = EBADF;
+            return -1;
+        }
+
+    case SO_ACCEPTCONN:
+        if (sockfd >= 128 && sockfd < 128 + 32) {
+            *(int *)optval = (__sock_listen_fds & (1 << (sockfd - 128))) ? 1 : 0;
+            return 0;
+        } else {
+            errno = EBADF;
+            return -1;
+        }
+
     case SO_GETVERSION:
         res = func(_TI_get_version, NULL);
         if (res < 0) {
@@ -69,6 +95,10 @@ int getsockopt(int sockfd, int level, int optname, void *optval, socklen_t *optl
         strncpy((char *)optval, resc, *optlen - 1);
         ((char *)optval)[*optlen - 1] = '\0'; // Ensure null termination
         *optlen = strlen((char *)optval);
+        return 0;
+
+    case SO_NONBLOCK:
+        *(int *)optval = __socket_nonblock(sockfd, -1);
         return 0;
 
     default:
