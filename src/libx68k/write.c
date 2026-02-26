@@ -9,6 +9,7 @@
 
 #ifdef LIBSOCKET
 #include "libsocket/tcpipdrv.h"
+extern char *__socket_sockstate(int sockfd);
 #endif
 
 #define TEXTBUFSIZE   256
@@ -36,6 +37,11 @@ ssize_t write(int fd, const void *buf, size_t count)
 
     res = __sock_func(_TI_write_s, arg);
     if (res < 0) {
+        char *state = __socket_sockstate(fd);
+        if (state && *state == 'E') { // ESTABLISHED
+            errno = EAGAIN;
+            return res;
+        }
         errno = EIO;
         return res;
     }

@@ -2,9 +2,7 @@
  *  listen()
  */
 
-#include <sys/socket.h>
-#include <errno.h>
-#include "tcpipdrv.h"
+#include "socket_internal.h"
 
 int listen(int sockfd, int backlog)
 {
@@ -24,5 +22,6 @@ int listen(int sockfd, int backlog)
         errno = EIO;
         return res;
     }
+    __sock_listen_fds |= (1 << (sockfd - 128));
     return res;
 }

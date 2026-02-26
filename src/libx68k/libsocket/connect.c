@@ -2,9 +2,7 @@
  *  connect()
  */
 
-#include <sys/socket.h>
-#include <errno.h>
-#include "tcpipdrv.h"
+#include "socket_internal.h"
 
 int connect(int sockfd, const struct sockaddr *addr, socklen_t addrlen)
 {
@@ -22,6 +20,12 @@ int connect(int sockfd, const struct sockaddr *addr, socklen_t addrlen)
 
     res = __sock_func(_TI_connect, arg);
     if (res < 0) {
+        char *state = __socket_sockstate(sockfd);
+        if (state && (*state == 'S' || *state == 'E')) {   // SYN SENT or ESTABLISHED
+            __sock_connect_fds |= (1 << (sockfd - 128));
+            errno = EINPROGRESS;
+            return res;
+        }
         errno = EIO;
         return res;
     }

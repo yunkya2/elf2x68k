@@ -32,6 +32,7 @@ struct sockaddr_storage
 #define SOCK_STREAM     0
 #define SOCK_DGRAM      1
 #define SOCK_RAW        2
+#define SOCK_NONBLOCK   0x800
 
 /* for shutdown(2) */
 #define SHUT_RD         0
@@ -50,6 +51,7 @@ struct sockaddr_storage
 #define SO_SOCKFLUSH    105   /* usflush(fd) */
 #define SO_SOCKERR      106   /* sockerr(fd) */
 #define SO_SOCKSTATE    107   /* sockstate(fd) */
+#define SO_NONBLOCK     108
 
 /* for SO_SOCKMODE */
 #define	SOCK_BINARY     0

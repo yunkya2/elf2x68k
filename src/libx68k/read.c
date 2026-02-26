@@ -9,6 +9,7 @@
 
 #ifdef LIBSOCKET
 #include "libsocket/tcpipdrv.h"
+extern char *__socket_sockstate(int sockfd);
 #endif
 
 int __doserr2errno(int error);
@@ -33,6 +34,11 @@ ssize_t read(int fd, void *buf, size_t count)
 
     res = __sock_func(_TI_read_s, arg);
     if (res < 0) {
+        char *state = __socket_sockstate(fd);
+        if (state) {
+            errno = EAGAIN;
+            return res;
+        }
         errno = EIO;
         return res;
     }
