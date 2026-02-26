@@ -26,4 +26,7 @@ int __socket_accept_internal(int sockfd, struct sockaddr *addr, socklen_t *addrl
 
 int __socket_connect_confirm(int sockfd);
 
+int __socket_handle_recv_result(int sockfd);
+int __socket_handle_send_result(int sockfd);
+
 #endif /* _SOCKET_INTERNAL_H_ */

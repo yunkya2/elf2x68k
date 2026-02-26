@@ -21,14 +21,14 @@ ssize_t sendto(int sockfd, const void *buf, size_t len, int flags, const struct 
     arg[4] = (long)src_addr;
     arg[5] = addrlen;
 
+retry:
     res = __sock_func(_TI_sendto, arg);
     if (res < 0) {
-        char *state = __socket_sockstate(sockfd);
-        if (state && *state == 'E') { // ESTABLISHED
-            errno = EAGAIN;
-            return res;
+        int stat = __socket_handle_send_result(sockfd);
+        if (stat == 0) {
+            goto retry;
         }
-        errno = EIO;
+        errno = stat;
         return res;
     }
     return res;
