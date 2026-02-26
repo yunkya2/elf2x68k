@@ -24,20 +24,16 @@ int getsockopt(int sockfd, int level, int optname, void *optval, socklen_t *optl
         return 0;
 
     case SO_ERROR:
-        if (sockfd >= 128 && sockfd < 128 + 32) {
-            int res = __socket_connect_confirm(sockfd);
-            if (res >= 0) {
-                __sock_errno = res;
-                *(int *)optval = __sock_errno;
-                return 0;
-            } else {
-                errno = EBADF;
-                return -1;
-            }
-        } else {
+        int res = __socket_connect_confirm(sockfd);
+        if (res == EBADF) {
             errno = EBADF;
             return -1;
         }
+        if (res >= 0) {
+            __sock_errno = res;
+        }
+        *(int *)optval = __sock_errno;
+        return 0;
 
     case SO_ACCEPTCONN:
         if (sockfd >= 128 && sockfd < 128 + 32) {

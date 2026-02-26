@@ -6,20 +6,22 @@
 
 int __socket_connect_confirm(int sockfd)
 {
-    if (sockfd >= 128 && sockfd < 128 + 32 && (__sock_connect_fds & (1 << (sockfd - 128)))) {
-        char *state = __socket_sockstate(sockfd);
-        if (state && *state == 'E') { // ESTABLISHED
-            // 接続が完了したのでソケットをconnect()中状態から外す
-            __sock_connect_fds &= ~(1 << (sockfd - 128));
-            return 0;   // 接続完了
-        } if (state && *state == 'S') { // SYN SENT
-            return EINPROGRESS; // 接続中
-        } else {
-            __sock_connect_fds &= ~(1 << (sockfd - 128));
-            return EIO; // ソケットの状態が取得できない場合はエラー
-        }
+    char *state = __socket_sockstate(sockfd);
+    if (state == NULL) {
+        __sock_connect_fds &= ~(1 << (sockfd - 128));
+        return EBADF;  // ソケットの状態が取得できない
     }
-    return -1; // connect()中でないソケットはエラー
+    if (!(__sock_connect_fds & (1 << (sockfd - 128)))) {
+        return -1;  // connect()中でないソケット
+    }
+    if (state && *state == 'E') { // ESTABLISHED
+        // 接続が完了したのでソケットをconnect()中状態から外す
+        __sock_connect_fds &= ~(1 << (sockfd - 128));
+        return 0;   // 接続完了
+    } if (state && *state == 'S') { // SYN SENT
+        return EINPROGRESS; // 接続中
+    }
+    return EIO;     // ソケットの状態が異常
 }
 
 int connect(int sockfd, const struct sockaddr *addr, socklen_t addrlen)
