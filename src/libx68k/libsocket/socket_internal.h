@@ -18,6 +18,8 @@ extern uint32_t __sock_listen_fds;  // listen()中のsocketのビットマスク
 char *__socket_sockstate(int sockfd);
 int __socket_nonblock(int sockfd, int nonblock);
 
-int __socket_push_accept(int sockfd, struct sockaddr *addr, socklen_t *addrlen);
+int __socket_accept_issaved(void);
+int __socket_accept_save(int sockfd, int newfd, struct sockaddr *addr, socklen_t *addrlen);
+int __socket_accept_internal(int sockfd, struct sockaddr *addr, socklen_t *addrlen);
 
 #endif /* _SOCKET_INTERNAL_H_ */

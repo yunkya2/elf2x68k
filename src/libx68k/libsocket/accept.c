@@ -5,45 +5,45 @@
 #include "socket_internal.h"
 
 static int accept_fd = -1;
+static int accept_newfd;
 static struct sockaddr accept_addr;
 
-int __socket_push_accept(int sockfd, struct sockaddr *addr, socklen_t *addrlen)
+int __socket_accept_issaved(void)
 {
-    accept_fd = sockfd;
-    accept_addr = *addr;
-    return 0;
+    return accept_fd >= 0;
 }
 
-static int __socket_pop_accept(struct sockaddr *addr, socklen_t *addrlen)
+int __socket_accept_save(int sockfd, int newfd, struct sockaddr *addr, socklen_t *addrlen)
 {
-    if (accept_fd < 0) {
+    if (accept_fd >= 0) {
         return -1;
     } else {
-        int fd = accept_fd;
+        accept_fd = sockfd;
+        accept_newfd = newfd;
+        accept_addr = *addr;
+        return 0;
+    }
+}
+
+static int __socket_accept_restore(int sockfd, struct sockaddr *addr, socklen_t *addrlen)
+{
+    if (accept_fd < 0 || accept_fd != sockfd) {
+        return -1;
+    } else {
         accept_fd = -1;
         if (addr && addrlen) {
             socklen_t copy_len = (*addrlen < sizeof(accept_addr)) ? *addrlen : sizeof(accept_addr);
             memcpy(addr, &accept_addr, copy_len);
             *addrlen = copy_len;
         }
-        return fd;
+        return accept_newfd;
     }
 }
 
-int accept(int sockfd, struct sockaddr *addr, socklen_t *addrlen)
+int __socket_accept_internal(int sockfd, struct sockaddr *addr, socklen_t *addrlen)
 {
-    if (!__sock_func) {
-        errno = ENOSYS;
-        return -1;
-    }
-
     long arg[3];
     int res;
-
-    res = __socket_pop_accept(addr, addrlen);
-    if (res >= 0) {
-        return res;
-    }
 
     arg[0] = sockfd;
     arg[1] = (long)addr;
@@ -60,8 +60,27 @@ int accept(int sockfd, struct sockaddr *addr, socklen_t *addrlen)
         return res;
     }
     if (res >= 128 && res < 128 + 32) {
+        // 新たに生成されたソケットをオープン中のソケットのビットマスクに追加する
         __sock_fds |= (1 << (res - 128));
+        // inted.xではノンブロッキングのaccept()で得られるソケットもノンブロッキングになるが、
+        // Linux等の仕様ではブロッキングになるためブロッキングモードを修正する
         __socket_nonblock(res, 0);
     }
     return res;
+}
+
+
+int accept(int sockfd, struct sockaddr *addr, socklen_t *addrlen)
+{
+    if (!__sock_func) {
+        errno = ENOSYS;
+        return -1;
+    }
+
+    int res = __socket_accept_restore(sockfd, addr, addrlen);
+    if (res >= 0) {
+        return res;
+    }
+
+    return __socket_accept_internal(sockfd, addr, addrlen);
 }

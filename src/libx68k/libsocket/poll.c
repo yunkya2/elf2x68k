@@ -41,35 +41,24 @@ int poll(struct pollfd *fds, nfds_t nfds, int timeout)
             } else {
                 if (fds[i].events & POLLIN) {
                     // POLLINでは、listen()中のソケットの接続完了とそれ以外のソケットの受信可否をチェックできる
-                    if (__sock_listen_fds & (1 << (fds[i].fd - 128))) {
-                        // ソケットがlisten()中だった場合、accept()が成功するかで接続完了を判断する
-                        long arg[3];
-                        int res;
+                    if (__sock_listen_fds & (1 << (fds[i].fd - 128)) && !__socket_accept_issaved()) {
+                        // ソケットがlisten()中だった場合
                         struct sockaddr addr;
                         socklen_t addrlen = sizeof(addr);
 
-                        arg[0] = fds[i].fd;
-                        arg[1] = (long)&addr;
-                        arg[2] = (long)&addrlen;
+                        // accept()が成功するかどうかをチェックするため、一旦ノンブロッキングにしてaccept()を呼び出す
+                        int blocking = __socket_nonblock(fds[i].fd, 1);
+                        int res = __socket_accept_internal(fds[i].fd, &addr, &addrlen);
+                        __socket_nonblock(fds[i].fd, blocking);
 
-                        // TBD: ブロッキングのままでlisten()して接続完了をpoll()で待つ場合、
-                        // ここでacceptがブロックしてしまうため一旦ノンブロッキングにすべきか?
-
-                        res = __sock_func(_TI_accept, arg);
-                        if (res >= 128 && res < 128 + 32) {
+                        if (res >= 0) {
                             // acceptに成功して新しいソケットが得られた場合は接続完了
                             fds[i].revents |= POLLIN;
-                            // 新たに生成されたソケットをオープン中のソケットのビットマスクに追加する
-                            __sock_fds |= (1 << (res - 128));
-                            // inted.xではノンブロッキングのaccept()で得られるソケットもノンブロッキングになるが、
-                            // Linux等の仕様ではブロッキングになるためブロッキングモードを修正しておく
-                            __socket_nonblock(res, 0);
                             // 得られたソケットはこの後のaccept()呼び出しで取得するため、その情報を保存しておく
-                            __socket_push_accept(res, &addr, &addrlen);
+                            __socket_accept_save(fds[i].fd, res, &addr, &addrlen);
                         } else {
-                            char *state = __socket_sockstate(fds[i].fd);
-                            if (!(state && *state == 'L')) { // not LISTEN
-                                // ソケットの状態がLISTENでない場合はエラーとみなす
+                            if (errno != EAGAIN) {
+                                // accept()がEAGAIN以外のエラーで失敗した場合はエラーとみなす
                                 fds[i].revents |= POLLERR;
                             }
                         }
@@ -87,7 +76,7 @@ int poll(struct pollfd *fds, nfds_t nfds, int timeout)
                 if (fds[i].events & POLLOUT) {
                     // POLLOUTでは、connect()中のソケットの接続完了とそれ以外のソケットの送信可否をチェックできる
                     if (__sock_connect_fds & (1 << (fds[i].fd - 128))) {
-                        // ソケットがconnect()中だった場合、状態がESTABLISHEDになっているかどうかを確認する
+                        // ソケットがconnect()中だった場合
                         char *state = __socket_sockstate(fds[i].fd);
                         if (state && *state == 'E') { // ESTABLISHED
                             // ソケットの状態がESTABLISHEDになっていれば接続完了
@@ -103,8 +92,7 @@ int poll(struct pollfd *fds, nfds_t nfds, int timeout)
                         }
                     } else {
                         // 通常のソケットの場合は送信可能かどうかをチェックする
-                        // (送信バッファに空きがあるかどうかをチェックする手段がないため、
-                        //  送信バッファが空かどうかで代用している)
+                        // (送信バッファが空かどうか)
                         int r = socklen(fds[i].fd, 1);
                         if (r == 0) {
                             fds[i].revents |= POLLOUT;
@@ -127,7 +115,6 @@ int poll(struct pollfd *fds, nfds_t nfds, int timeout)
             return 0;
         }
 
-//        _dos_sleep_pr(10);
         _dos_change_pr();
     }
 }
