@@ -1,0 +1,176 @@
+diff --git a/gcc/config/m68k/m68kemb.h b/gcc/config/m68k/m68kemb.h
+index 5bb19ede96b..890582c598b 100644
+--- a/gcc/config/m68k/m68kemb.h
++++ b/gcc/config/m68k/m68kemb.h
+@@ -35,6 +35,8 @@
+ #define TARGET_OS_CPP_BUILTINS()		\
+   do						\
+     {						\
++      builtin_define ("__human68k__");		\
++      builtin_define ("__human68k");		\
+       builtin_define ("__embedded__");		\
+     }						\
+   while (0)
+diff --git a/libstdc++-v3/include/bits/fs_path.h b/libstdc++-v3/include/bits/fs_path.h
+index 853c55f0100..c04f87dc862 100644
+--- a/libstdc++-v3/include/bits/fs_path.h
++++ b/libstdc++-v3/include/bits/fs_path.h
+@@ -52,6 +52,8 @@
+ 
+ #if defined(_WIN32) && !defined(__CYGWIN__)
+ # define _GLIBCXX_FILESYSTEM_IS_WINDOWS 1
++#elif defined(__human68k__)
++# define _GLIBCXX_FILESYSTEM_IS_HUMAN68K 1
+ #endif
+ 
+ namespace std _GLIBCXX_VISIBILITY(default)
+@@ -296,6 +298,9 @@ namespace __detail
+ #ifdef _GLIBCXX_FILESYSTEM_IS_WINDOWS
+     using value_type = wchar_t;
+     static constexpr value_type preferred_separator = L'\\';
++#elif defined(_GLIBCXX_FILESYSTEM_IS_HUMAN68K)
++    using value_type = char;
++    static constexpr value_type preferred_separator = '\\';
+ #else
+ # ifdef _GLIBCXX_DOXYGEN
+     /// Windows uses wchar_t for path::value_type, POSIX uses char.
+@@ -1093,6 +1098,13 @@ namespace __detail
+ 	_M_pathname[__pos] = preferred_separator;
+ 	__pos = _M_pathname.find(L'/', __pos);
+       }
++#elif defined(_GLIBCXX_FILESYSTEM_IS_HUMAN68K)
++    auto __pos = _M_pathname.find('/');
++    while (__pos != _M_pathname.npos)
++      {
++	_M_pathname[__pos] = preferred_separator;
++	__pos = _M_pathname.find('/', __pos);
++      }
+ #endif
+     return *this;
+   }
+@@ -1223,7 +1235,7 @@ namespace __detail
+ 	  bool __add_slash = false;
+ 	  for (auto& __elem : *this)
+ 	    {
+-#ifdef _GLIBCXX_FILESYSTEM_IS_WINDOWS
++#if defined(_GLIBCXX_FILESYSTEM_IS_WINDOWS) || defined(_GLIBCXX_FILESYSTEM_IS_HUMAN68K)
+ 	      if (__elem._M_type() == _Type::_Root_dir)
+ 		{
+ 		  __str += __slash;
+@@ -1332,7 +1344,7 @@ namespace __detail
+   inline bool
+   path::is_absolute() const noexcept
+   {
+-#ifdef _GLIBCXX_FILESYSTEM_IS_WINDOWS
++#if defined(_GLIBCXX_FILESYSTEM_IS_WINDOWS) || defined(_GLIBCXX_FILESYSTEM_IS_HUMAN68K)
+     return has_root_name() && has_root_directory();
+ #else
+     return has_root_directory();
+diff --git a/libstdc++-v3/src/c++17/fs_path.cc b/libstdc++-v3/src/c++17/fs_path.cc
+index d65b5482e8b..9fb1872b94a 100644
+--- a/libstdc++-v3/src/c++17/fs_path.cc
++++ b/libstdc++-v3/src/c++17/fs_path.cc
+@@ -43,6 +43,8 @@ static inline bool is_dir_sep(path::value_type ch)
+ {
+ #ifdef _GLIBCXX_FILESYSTEM_IS_WINDOWS
+     return ch == L'/' || ch == path::preferred_separator;
++#elif defined(_GLIBCXX_FILESYSTEM_IS_HUMAN68K)
++    return ch == '/' || ch == path::preferred_separator;
+ #else
+     return ch == '/';
+ #endif
+@@ -53,6 +55,11 @@ static inline bool is_disk_designator(std::wstring_view s)
+ {
+   return s.length() == 2 && s[1] == L':';
+ }
++#elif defined(_GLIBCXX_FILESYSTEM_IS_HUMAN68K)
++static inline bool is_disk_designator(std::string_view s)
++{
++  return s.length() == 2 && s[1] == ':';
++}
+ #endif
+ 
+ struct path::_Parser
+@@ -137,6 +144,19 @@ struct path::_Parser
+ 	  }
+ 	pos = input.find_first_not_of(L"/\\", 2);
+       }
++#elif defined(_GLIBCXX_FILESYSTEM_IS_HUMAN68K)
++    else if (is_disk_designator(input.substr(0, 2)))
++      {
++	// got disk designator
++	root.first.str = input.substr(0, 2);
++	root.first.type = _Type::_Root_name;
++	if (len > 2 && is_dir_sep(input[2]))
++	  {
++	    root.second.str = input.substr(2, 1);
++	    root.second.type = _Type::_Root_dir;
++	  }
++	pos = input.find_first_not_of("/\\", 2);
++      }
+ #endif
+ 
+     if (root.second.valid())
+@@ -151,6 +171,8 @@ struct path::_Parser
+   {
+ #ifdef _GLIBCXX_FILESYSTEM_IS_WINDOWS
+     string_view_type sep = L"/\\";
++#elif defined(_GLIBCXX_FILESYSTEM_IS_HUMAN68K)
++    string_view_type sep = "/\\";
+ #else
+     char sep = '/';
+ #endif
+@@ -477,7 +499,7 @@ path::operator=(const path& p)
+ path&
+ path::operator/=(const path& __p)
+ {
+-#ifdef _GLIBCXX_FILESYSTEM_IS_WINDOWS
++#if defined(_GLIBCXX_FILESYSTEM_IS_WINDOWS) || defined(_GLIBCXX_FILESYSTEM_IS_HUMAN68K)
+   if (__p.is_absolute()
+       || (__p.has_root_name() && __p.root_name() != root_name()))
+     return operator=(__p);
+@@ -669,7 +691,7 @@ path::_M_append(basic_string_view<value_type> s)
+   _Parser parser(s);
+   auto root_path = parser.root_path();
+ 
+-#ifdef _GLIBCXX_FILESYSTEM_IS_WINDOWS
++#if defined(_GLIBCXX_FILESYSTEM_IS_WINDOWS) || defined(_GLIBCXX_FILESYSTEM_IS_HUMAN68K)
+   bool is_absolute = root_path.second.type == _Type::_Root_dir;
+   bool has_root_name = root_path.first.type == _Type::_Root_name;
+   if (is_absolute || (has_root_name && root_path.first.str != root_name()))
+@@ -866,7 +888,7 @@ path::operator+=(const path& p)
+       return *this;
+     }
+ 
+-#if _GLIBCXX_FILESYSTEM_IS_WINDOWS
++#if _GLIBCXX_FILESYSTEM_IS_WINDOWS || _GLIBCXX_FILESYSTEM_IS_HUMAN68K
+   if (_M_type() == _Type::_Root_name
+       || (_M_type() == _Type::_Filename && _M_pathname.size() == 1))
+     {
+@@ -1072,7 +1094,7 @@ path::_M_concat(basic_string_view<value_type> s)
+       return;
+     }
+ 
+-#if _GLIBCXX_FILESYSTEM_IS_WINDOWS
++#if _GLIBCXX_FILESYSTEM_IS_WINDOWS || _GLIBCXX_FILESYSTEM_IS_HUMAN68K
+   if (_M_type() == _Type::_Root_name
+       || (_M_type() == _Type::_Filename && _M_pathname.size() == 1))
+     {
+@@ -1705,7 +1727,7 @@ path::lexically_normal() const
+     return ret;
+   for (auto& p : *this)
+     {
+-#ifdef _GLIBCXX_FILESYSTEM_IS_WINDOWS
++#if defined(_GLIBCXX_FILESYSTEM_IS_WINDOWS) || defined(_GLIBCXX_FILESYSTEM_IS_HUMAN68K)
+       // Replace each slash character in the root-name
+       if (p._M_type() == _Type::_Root_name || p._M_type() == _Type::_Root_dir)
+ 	{
+@@ -1799,7 +1821,7 @@ path::lexically_relative(const path& base) const
+   if (!has_root_directory() && base.has_root_directory())
+     return ret;
+   auto [a, b] = std::mismatch(begin(), end(), base.begin(), base.end());
+-#ifdef _GLIBCXX_FILESYSTEM_IS_WINDOWS
++#if defined(_GLIBCXX_FILESYSTEM_IS_WINDOWS) || defined(_GLIBCXX_FILESYSTEM_IS_HUMAN68K)
+   // _GLIBCXX_RESOLVE_LIB_DEFECTS
+   // 3070. path::lexically_relative causes surprising results if a filename
+   // can also be a root-name
