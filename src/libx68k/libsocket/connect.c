@@ -12,11 +12,12 @@ int __socket_connect_confirm(int sockfd)
             // 接続が完了したのでソケットをconnect()中状態から外す
             __sock_connect_fds &= ~(1 << (sockfd - 128));
             return 0;   // 接続完了
-        } else if (state == NULL) {
+        } if (state && *state == 'S') { // SYN SENT
+            return EINPROGRESS; // 接続中
+        } else {
             __sock_connect_fds &= ~(1 << (sockfd - 128));
             return EIO; // ソケットの状態が取得できない場合はエラー
         }
-        return EINPROGRESS; // 接続中
     }
     return -1; // connect()中でないソケットはエラー
 }

@@ -79,8 +79,10 @@ int poll(struct pollfd *fds, nfds_t nfds, int timeout)
                         // ソケットがconnect()中だった場合、接続完了したかどうかをチェックする
                         // (結果は後で呼び出すgetsockopt(SO_ERROR)で返す)
                         __sock_errno = __socket_connect_confirm(fds[i].fd);
-                        if (__sock_errno != EINPROGRESS) { // 接続完了 or エラー
+                        if (__sock_errno == 0) { // 接続完了
                             fds[i].revents |= POLLOUT;
+                        } else if (__sock_errno != EINPROGRESS) { // エラー
+                            fds[i].revents |= POLLERR;
                         }
                     } else {
                         // 通常のソケットの場合は送信可能かどうかをチェックする
