@@ -78,7 +78,7 @@ retry:
   }
 #endif
 
-  if (!isatty(fd) && !__valid_fd(fd)) {
+  if (!__fd_isvalid(fd)) {
     errno = EBADF;
     return -1;
   }
@@ -86,7 +86,7 @@ retry:
   if (count <= 0)
     return 0;
 
-  if (!isatty(fd) && __fd_flags(fd) & O_BINARY) {
+  if (__fd_flags(fd) & O_BINARY) {
     res = _dos_read(fd, buf, count);
   } else {
     char *p = buf;

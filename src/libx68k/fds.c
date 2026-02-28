@@ -6,7 +6,13 @@
 #include <unistd.h>
 #include "fds.h"
 
-fdent __fd_list[OPEN_MAX];
+fdent __fd_list[OPEN_MAX] = {
+  { NULL, 0 }, /* 0: stdin */
+  { NULL, 0 }, /* 1: stdout */
+  { NULL, 0 }, /* 2: stderr */
+  { NULL, 0 }, /* 3: AUX */
+  { NULL, 0 }, /* 4: PRN */
+};
 
 int
 __fd_assign (int fd, const char *filename, unsigned int flags)
@@ -21,8 +27,6 @@ __fd_assign (int fd, const char *filename, unsigned int flags)
   /* Used fd */
   if (fdptr->filename != NULL)
     return -1;
-
-  memset (fdptr, 0, sizeof (fdent));
 
   fdptr->filename = strdup (filename);
   fdptr->flags = flags;
@@ -45,7 +49,8 @@ __fd_remove (int fd)
     return -1;
 
   free (fdptr->filename);
-  memset (fdptr, 0, sizeof (fdent));
+  fdptr->filename = NULL;
+  fdptr->flags = 0;
 
   return 0;
 }

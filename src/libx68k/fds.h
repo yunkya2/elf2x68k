@@ -1,6 +1,7 @@
 #ifndef _FDS_H
 #define _FDS_H
 
+#include <sys/syslimits.h>
 #include <sys/cdefs.h>
 #include <x68k/dos.h>
 
@@ -20,7 +21,7 @@ struct fdent {
 
 extern fdent __fd_list[];
 
-#define __valid_fd(fd)		(__fd_list[fd].filename != NULL)
+#define __fd_isvalid(fd)	(fd < 5 || ((fd < OPEN_MAX) && (__fd_list[fd].filename != NULL)))
 #define __fd_filename(fd)	(__fd_list[fd].filename)
 #define __fd_flags(fd)		(__fd_list[fd].flags)
 
