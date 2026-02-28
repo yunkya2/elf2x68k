@@ -171,7 +171,7 @@ def elf2x68k(fh, xbase=0, strip=False):
     prevoffset = 0
     oprevoffset = 0
     for r in rellist:
-        if symlist[r.sym].shndx !=0 and r.type < 4:
+        if symlist[r.sym].shndx !=0 and symlist[r.sym].shndx != 0xfff1 and r.type < 4:
             assert r.type == 1          # R_68K_32
             off = r.offset - baseaddr
             val = unpack(">L",body[off:off + 4])[0] - baseaddr + xbase

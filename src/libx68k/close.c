@@ -10,6 +10,8 @@
 #ifdef LIBSOCKET
 #include "libsocket/tcpipdrv.h"
 extern uint32_t __sock_fds;
+extern uint32_t __sock_connect_fds;
+extern uint32_t __sock_listen_fds;
 #endif
 
 int __doserr2errno(int error);
@@ -34,6 +36,8 @@ int close(int fd)
     }
     if (fd >= 128 && fd < 128 + 32) {
         __sock_fds &= ~(1 << (fd - 128));
+        __sock_connect_fds &= ~(1 << (fd - 128));
+        __sock_listen_fds &= ~(1 << (fd - 128));
     }
     return res;
   }

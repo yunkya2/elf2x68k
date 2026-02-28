@@ -32,14 +32,20 @@ struct sockaddr_storage
 #define SOCK_STREAM     0
 #define SOCK_DGRAM      1
 #define SOCK_RAW        2
+#define SOCK_NONBLOCK   0x800
 
 /* for shutdown(2) */
 #define SHUT_RD         0
 #define SHUT_WR         1
 #define SHUT_RDWR       2
 
-/* for setsockopt(2) */
+/* for get/setsockopt(2) */
 #define SOL_SOCKET      1
+
+#define SO_REUSEADDR    2
+#define SO_ERROR        4
+#define SO_BROADCAST    6
+#define SO_ACCEPTCONN   30
 
 /* inetd.x specific functions */
 #define SO_GETVERSION   100   /* _get_version() */
@@ -50,6 +56,7 @@ struct sockaddr_storage
 #define SO_SOCKFLUSH    105   /* usflush(fd) */
 #define SO_SOCKERR      106   /* sockerr(fd) */
 #define SO_SOCKSTATE    107   /* sockstate(fd) */
+#define SO_NONBLOCK     108
 
 /* for SO_SOCKMODE */
 #define	SOCK_BINARY     0

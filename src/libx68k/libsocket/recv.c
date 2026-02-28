@@ -2,10 +2,7 @@
  *  recv()
  */
 
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <errno.h>
-#include "tcpipdrv.h"
+#include "socket_internal.h"
 
 ssize_t recv(int sockfd, void *buf, size_t len, int flags)
 {
@@ -24,9 +21,14 @@ ssize_t recv(int sockfd, void *buf, size_t len, int flags)
     arg[4] = 0;
     arg[5] = 0;
 
+retry:
     res = __sock_func(_TI_recvfrom, arg);
     if (res < 0) {
-        errno = EIO;
+        int stat = __socket_handle_recv_result(sockfd);
+        if (stat == 0) {
+            goto retry;
+        }
+        errno = stat;
         return res;
     }
     return res;

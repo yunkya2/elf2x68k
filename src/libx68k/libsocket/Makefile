@@ -30,6 +30,7 @@ LIB_SOURCES = \
     close.c \
     read.c \
     write.c \
+    fcntl.c \
     getsockopt.c \
     setsockopt.c \
     inet_ntoa.c \
@@ -38,8 +39,7 @@ LIB_SOURCES = \
     getservnamprt.c \
     getprotonamnum.c \
     getaddrinfo.c \
-
-#    poll.c \
+    poll.c \
 
 OBJ = $(LIB_SOURCES:.c=.o)
 

@@ -44,4 +44,5 @@ DIR *opendir(const char *name)
       return dirp;
     }
   }
+  return NULL;
 }

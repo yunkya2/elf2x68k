@@ -8,10 +8,43 @@
 #include "fds.h"
 
 #ifdef LIBSOCKET
-#include "libsocket/tcpipdrv.h"
+#include "socket_internal.h"
 #endif
 
 int __doserr2errno(int error);
+
+#ifdef LIBSOCKET
+int __socket_handle_recv_result(int sockfd)
+{
+  if (__socket_nonblock(sockfd, -1) == 0) {
+    // ブロッキングモードだった場合
+
+    // ノンブロッキングモードのaccept()から得られたソケットはまだ3way handshakeが
+    // 完了していない場合があり、そうしたソケットをブロッキングで利用するとエラー終了してしまう
+    // (inetd.xの挙動)
+    // これを回避するため、ブロッキングモードでもソケットの状態がSYN RECEIVEDだったら
+    // ESTABLISHEDになるまで待つ
+
+    while (1) {
+      char *state = __socket_sockstate(sockfd);
+      if (state == NULL) {
+        return EIO;
+      } else if (*state != 'S') {
+        return 0; // ブロッキングモードでSYN RECEIVED以外の状態になったら待ち終了
+      }
+      _dos_change_pr();
+    }
+  } else {
+    // ノンブロッキングモードだった場合
+    char *state = __socket_sockstate(sockfd);
+    if (state == NULL) {
+      return EIO;
+    } else {
+      return EAGAIN;
+    }
+  }
+}
+#endif
 
 ssize_t read(int fd, void *buf, size_t count)
 {
@@ -31,16 +64,21 @@ ssize_t read(int fd, void *buf, size_t count)
     arg[1] = (long)buf;
     arg[2] = count;
 
+retry:
     res = __sock_func(_TI_read_s, arg);
     if (res < 0) {
-        errno = EIO;
-        return res;
+      int stat = __socket_handle_recv_result(fd);
+      if (stat == 0) {
+        goto retry;
+      }
+      errno = stat;
+      return res;
     }
     return res;
   }
 #endif
 
-  if (!isatty(fd) && !__valid_fd(fd)) {
+  if (!__fd_isvalid(fd)) {
     errno = EBADF;
     return -1;
   }
@@ -48,7 +86,7 @@ ssize_t read(int fd, void *buf, size_t count)
   if (count <= 0)
     return 0;
 
-  if (!isatty(fd) && __fd_flags(fd) & O_BINARY) {
+  if (__fd_flags(fd) & O_BINARY) {
     res = _dos_read(fd, buf, count);
   } else {
     char *p = buf;
