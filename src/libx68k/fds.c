@@ -28,7 +28,7 @@ __fd_assign (int fd, const char *filename, unsigned int flags)
   if (fdptr->filename != NULL)
     return -1;
 
-  fdptr->filename = strdup (filename);
+  fdptr->filename = filename ? strdup (filename) : NULL;
   fdptr->flags = flags;
 
   return 0;
