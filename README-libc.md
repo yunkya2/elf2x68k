@@ -204,8 +204,8 @@ XC の一部のヘッダファイルにはシフト JIS で日本語のコメン
 | 浮動小数点演算処理     | ソースコードはUTF-8        | ソースコードはシフトJIS         |
 |------------------------|----------------------------|---------------------------------|
 | FLOATn.X を利用        | `-specs=xc.specs`          | `-specs=xc.sjis.specs`          |
-| ソフトウェアで実行     | `-specs=xc.floateml.specs` | `-specs=xc.floateml.sjis.specs` |
-| コプロセッサ命令で実行 | `-specs=xc.floatdrv.specs` | `-specs=xc.floatdrv.sjis.specs` |
+| ソフトウェアで実行     | `-specs=xc.floateml.specs` | `-specs=xc.sjis.floateml.specs` |
+| コプロセッサ命令で実行 | `-specs=xc.floatdrv.specs` | `-specs=xc.sjis.floatdrv.specs` |
 
 例: シフトJISのソースコードを、浮動小数点演算をソフトウェア実行するようコンパイル
 ```
