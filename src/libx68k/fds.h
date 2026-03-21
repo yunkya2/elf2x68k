@@ -12,6 +12,8 @@
 #define O_TEXT          0x20000
 #endif
 
+#define F_USED          0x80000000
+
 typedef struct fdent fdent;
 
 struct fdent {
@@ -21,7 +23,7 @@ struct fdent {
 
 extern fdent __fd_list[];
 
-#define __fd_isvalid(fd)	(fd < 5 || ((fd < OPEN_MAX) && (__fd_list[fd].filename != NULL)))
+#define __fd_isvalid(fd)	(fd < 5 || ((fd < OPEN_MAX) && (__fd_list[fd].flags != 0)))
 #define __fd_filename(fd)	(__fd_list[fd].filename)
 #define __fd_flags(fd)		(__fd_list[fd].flags)
 

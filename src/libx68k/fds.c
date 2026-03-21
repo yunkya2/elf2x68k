@@ -25,11 +25,12 @@ __fd_assign (int fd, const char *filename, unsigned int flags)
   fdptr = &__fd_list[fd];
 
   /* Used fd */
-  if (fdptr->filename != NULL)
+  if (fdptr->flags) {
     return -1;
+  }
 
   fdptr->filename = filename ? strdup (filename) : NULL;
-  fdptr->flags = flags;
+  fdptr->flags = flags | F_USED;
 
   return 0;
 }
@@ -44,12 +45,11 @@ __fd_remove (int fd)
 
   fdptr = &__fd_list[fd];
 
-  /* Unused fd */
-  if (fdptr->filename == NULL)
-    return -1;
+  if (fdptr->filename != NULL) {
+    free (fdptr->filename);
+    fdptr->filename = NULL;
+  }
 
-  free (fdptr->filename);
-  fdptr->filename = NULL;
   fdptr->flags = 0;
 
   return 0;
