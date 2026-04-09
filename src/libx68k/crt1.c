@@ -1,3 +1,8 @@
+/*
+ *  crt1.c - C runtime startup code for X68000
+ */
+
+#include "config.h"
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
@@ -66,11 +71,6 @@ setup_environ (void)
 static void
 setup_arguments (void)
 {
-  /* TODO : Allow quoted arguments (ignoring inner space).
-   * Also Hupair shell and TwentyOne together can build
-   * arguments containing quote and space. We have to handle
-   * this as well. */
-
   char *p;
   int len, count = 1;
 
@@ -78,45 +78,91 @@ setup_arguments (void)
   while (*p)
   {
     /* Skip spaces */
-    while ((*p) && (*p == ' '))
+    while ((*p) && ((*p == ' ') || *p == '\t'))
       p++;
 
     if (*p)
       count++;
 
     /* To end of arg */
-    while ((*p) && (*p != ' '))
-      p++;
+    while ((*p) && !((*p == ' ') || *p == '\t')) {
+      if (*p == '"' || *p == '\'') {
+        /* Skip quote */
+        char quote = *p;
+        p++;
+
+        /* Skip until next quote */
+        while (*p && *p != quote)
+          p++;
+
+        if (*p)
+          p++;
+      } else {
+        p++;
+      }
+    }
   }
 
   __argv = (char **) malloc ((count + 1) * sizeof (char *));
-  
-  len = _cmdline->len + strlen (_PSP->exe_path) + strlen (_PSP->exe_name) + 1;
+
+#ifdef SUPPORT_HUPAIR
+  int ishupair = (strcmp((char *)_cmdline - 8, "#HUPAIR") == 0);
+  if (ishupair) {
+    len = strlen(_cmdline->buffer + strlen(_cmdline->buffer) + 1) + 1;
+  } else {
+#endif
+    len = strlen (_PSP->exe_path) + strlen (_PSP->exe_name) + 1;
+#ifdef SUPPORT_HUPAIR
+  }
+#endif
+  len += strlen(_cmdline->buffer) + 1;
   p = (char *) malloc (len);
 
   /* Set program name */
-  strcpy (p, _PSP->exe_path);
-  strcat (p, _PSP->exe_name);
+#ifdef SUPPORT_HUPAIR
+  if (ishupair) {
+    strcpy (p, _cmdline->buffer + strlen(_cmdline->buffer) + 1);
+  } else {
+#endif
+    strcpy (p, _PSP->exe_path);
+    strcat (p, _PSP->exe_name);
+#ifdef SUPPORT_HUPAIR
+  }
+#endif
   __argv[0] = p;
   p += strlen (p);
   *p++ = '\0';
 
-  /* Copy original cmdline */
-  strcpy(p, _cmdline->buffer);
+  char *q = _cmdline->buffer;
 
   count = 1;
-  while (*p)
+  while (*q)
   {
-    /* All space to \0 */
-    while ((*p) && (*p == ' '))
-      *p++ = '\0';
+    /* Skip spaces */
+    while ((*q) && ((*q == ' ') || (*q == '\t')))
+      q++;
 
-    if (*p)
+    if (*q)
       __argv[count++] = p;
 
     /* To end of arg */
-    while ((*p) && (*p != ' '))
-      p++;
+    while ((*q) && !((*q == ' ') || *q == '\t')) {
+      if (*q == '"' || *q == '\'') {
+        /* Skip quote */
+        char quote = *q;
+        q++;
+
+        /* Skip until next quote */
+        while (*q && *q != quote)
+          *p++ = *q++;
+
+        if (*q)
+          q++;
+      } else {
+        *p++ = *q++;
+      }
+    }
+    *p++ = '\0';
   }
 
   __argc = count;

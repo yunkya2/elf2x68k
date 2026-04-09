@@ -38,16 +38,11 @@
 
 	.global _start
 _start:
-	bra	_start_1
+	bra.s	_start_1
 #ifdef SUPPORT_HUPAIR
 	.string "#HUPAIR"
 #endif
-	.string	"X68000 LIBC"
-	.string "crt0-"
-#ifdef SUPPORT_HUPAIR
-	.string "h"
-#endif
-	.string "x"
+	.string	"#NEWLIB"
 
 	.even
 
