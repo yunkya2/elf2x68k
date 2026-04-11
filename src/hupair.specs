@@ -1,0 +1,2 @@
+*startfile:
+x68kcrt0hupair.o%s crtbegin.o%s

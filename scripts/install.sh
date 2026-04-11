@@ -43,6 +43,7 @@ cp src/x68k.specs ${INSTALL_DIR}/m68k-elf/lib
 cp src/x68knodos.specs ${INSTALL_DIR}/m68k-elf/lib
 cp src/c++small.specs ${INSTALL_DIR}/m68k-elf/lib
 cp src/nano.specs ${INSTALL_DIR}/m68k-elf/lib
+cp src/hupair.specs ${INSTALL_DIR}/m68k-elf/lib
 cp src/xc.specs.tmpl ${INSTALL_DIR}/m68k-elf/lib
 cp src/install-xclib.sh ${INSTALL_DIR}
 
@@ -58,6 +59,7 @@ cp src/libx68k/libdos/libx68kdos.a ${INSTALL_DIR}/m68k-elf/lib
 cp src/libx68k/libsocket/libsocket.a ${INSTALL_DIR}/m68k-elf/lib
 cp src/libx68k/libpthread/libpthread.a ${INSTALL_DIR}/m68k-elf/lib
 cp src/libx68k/crt0.o ${INSTALL_DIR}/m68k-elf/lib/x68kcrt0.o
+cp src/libx68k/crt0hupair.o ${INSTALL_DIR}/m68k-elf/lib/x68kcrt0hupair.o
 cp src/libx68k/crt0nodos.o ${INSTALL_DIR}/m68k-elf/lib/x68kcrt0nodos.o
 
 mkdir -p ${INSTALL_DIR}/m68k-elf/include/x68k

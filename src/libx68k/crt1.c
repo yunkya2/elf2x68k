@@ -175,7 +175,11 @@ void __FINI_SECTION__(void);
 __attribute__((weak)) void __at_exit_init (void) {}
 
 void
+#ifdef SUPPORT_HUPAIR
+__crt1_startup_hupair (void)
+#else
 __crt1_startup (void)
+#endif
 {
   __ontime = _iocs_ontime ();
 

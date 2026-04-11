@@ -8,7 +8,7 @@
 #define HEAP_SIZE       65536
 #endif
 
-#undef SUPPORT_HUPAIR
+//#undef SUPPORT_HUPAIR
 
 /* config.h.  Generated from config.h.in by configure.  */
 /* config.h.in.  Generated automatically from configure.in by autoheader.  */

@@ -17,7 +17,11 @@
 
 #include "config.h"
 
+#ifdef SUPPORT_HUPAIR
+	.extern __crt1_startup_hupair
+#else
 	.extern __crt1_startup
+#endif
 	.extern _exit
 	.extern _stack_size
 	.extern _heap_size
@@ -135,7 +139,11 @@ clear_bss:
 	bmi	out_of_memory
 
 	move.l	_SEND, %sp
+#ifdef SUPPORT_HUPAIR
+	jmp	__crt1_startup_hupair	| Human initialization
+#else
 	jmp	__crt1_startup		| Human initialization
+#endif
 
 out_of_memory:
 	pea.l	%pc@(oom_msg)
