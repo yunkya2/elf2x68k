@@ -40,6 +40,9 @@
 	.extern _ENV0
 	.extern _cmdline
 
+	.extern	_mpu_type
+	.extern	_fpu_type
+
 	.global _start
 _start:
 	bra.s	_start_1
@@ -133,11 +136,30 @@ clear_bss:
 	sub.l	%a5, %a1
 	move.l	%a1, %sp@-		| incr
 	move.l	%a5, %sp@-		| ptr
-	.short	0xFF4A			| setblock
+	.short	0xFF4A			| DOS _SETBLOCK
 	addq.l	#8, %sp
 	tst.l	%d0
-	bmi	out_of_memory
+	bmi.s	out_of_memory
 
+	moveq.l	#_mpu_type,%d2
+	beq.s	_start_3		| no MPU type support
+
+	lea.l	0xcbc.w,%a1
+	moveq.l	#0xffffff82,%d0		| IOCS _B_PEEK
+	trap	#15			| get MPU type
+	addq.b	#1, %d0
+	lsr.b	%d0,%d2
+	bcc.s	mpu_mismatch
+
+	moveq.l	#_fpu_type,%d2
+	beq.s	_start_3		| FPU is not needed
+
+	moveq.l	#0xffffff82,%d0		| IOCS _B_PEEK
+	trap	#15			| get FPU flag
+	tst.b	%d0
+	beq.s	mpu_mismatch
+
+_start_3:
 	move.l	_SEND, %sp
 #ifdef SUPPORT_HUPAIR
 	jmp	__crt1_startup_hupair	| Human initialization
@@ -145,18 +167,29 @@ clear_bss:
 	jmp	__crt1_startup		| Human initialization
 #endif
 
+mpu_mismatch:
+	pea.l	%pc@(mmm_msg)
+	.short	0xff09			| DOS _PRINT
+	bra.s	program_terminated
 out_of_memory:
 	pea.l	%pc@(oom_msg)
-	.short	0xff09			| print
-	addq.l	#4, %sp
+	.short	0xff09			| DOS _PRINT
+program_terminated:
+	pea.l	%pc@(term_msg)
+	.short	0xff09			| DOS _PRINT
+	addq.l	#8, %sp
 	move.w	#0x007f, %sp@-
-	.short	0xff4c			| exit2
+	.short	0xff4c			| DOS _EXIT2
 
 	|
 	| No return
 	|
 
 oom_msg:
-	.ascii	"Out of memory. Program terminated."
+	.asciz	"Out of memory."
+mmm_msg:
+	.asciz	"MPU/FPU mismatch."
+term_msg:
+	.ascii	" Program terminated."
 	.byte	13,10,0
 	.even

@@ -1,0 +1,87 @@
+diff --git a/newlib/Makefile.in b/newlib/Makefile.in
+index e364dcddd..41b07295a 100644
+--- a/newlib/Makefile.in
++++ b/newlib/Makefile.in
+@@ -2088,6 +2088,7 @@ am__objects_51 = libc/ssp/libc_a-chk_fail.$(OBJEXT) \
+ @HAVE_LIBC_MACHINE_M68K_TRUE@	libc/machine/m68k/libc_a-strcpy.$(OBJEXT) \
+ @HAVE_LIBC_MACHINE_M68K_TRUE@	libc/machine/m68k/libc_a-strlen.$(OBJEXT) \
+ @HAVE_LIBC_MACHINE_M68K_TRUE@	libc/machine/m68k/libc_a-memcpy.$(OBJEXT) \
++@HAVE_LIBC_MACHINE_M68K_TRUE@	libc/machine/m68k/libc_a-mputype.$(OBJEXT) \
+ @HAVE_LIBC_MACHINE_M68K_TRUE@	libc/machine/m68k/libc_a-memset.$(OBJEXT)
+ @HAVE_LIBC_MACHINE_M88K_TRUE@am__objects_104 = libc/machine/m88k/libc_a-setjmp.$(OBJEXT)
+ @HAVE_LIBC_MACHINE_MEP_TRUE@am__objects_105 = libc/machine/mep/libc_a-setjmp.$(OBJEXT)
+@@ -8819,6 +8820,9 @@ libc/machine/m68k/libc_a-strlen.$(OBJEXT):  \
+ libc/machine/m68k/libc_a-memcpy.$(OBJEXT):  \
+ 	libc/machine/m68k/$(am__dirstamp) \
+ 	libc/machine/m68k/$(DEPDIR)/$(am__dirstamp)
++libc/machine/m68k/libc_a-mputype.$(OBJEXT):  \
++	libc/machine/m68k/$(am__dirstamp) \
++	libc/machine/m68k/$(DEPDIR)/$(am__dirstamp)
+ libc/machine/m68k/libc_a-memset.$(OBJEXT):  \
+ 	libc/machine/m68k/$(am__dirstamp) \
+ 	libc/machine/m68k/$(DEPDIR)/$(am__dirstamp)
+@@ -13067,6 +13071,7 @@ distclean-compile:
+ @AMDEP_TRUE@@am__include@ @am__quote@libc/machine/m32r/$(DEPDIR)/libc_a-setjmp.Po@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@libc/machine/m68hc11/$(DEPDIR)/libc_a-setjmp.Po@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@libc/machine/m68k/$(DEPDIR)/libc_a-memcpy.Po@am__quote@
++@AMDEP_TRUE@@am__include@ @am__quote@libc/machine/m68k/$(DEPDIR)/libc_a-mputype.Po@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@libc/machine/m68k/$(DEPDIR)/libc_a-memset.Po@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@libc/machine/m68k/$(DEPDIR)/libc_a-setjmp.Po@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@libc/machine/m68k/$(DEPDIR)/libc_a-strcpy.Po@am__quote@
+@@ -18705,6 +18710,20 @@ libc/machine/m68k/libc_a-memcpy.obj: libc/machine/m68k/memcpy.S
+ @AMDEP_TRUE@@am__fastdepCCAS_FALSE@	DEPDIR=$(DEPDIR) $(CCASDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+ @am__fastdepCCAS_FALSE@	$(AM_V_CPPAS@am__nodep@)$(CCAS) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CCASFLAGS) $(CCASFLAGS) -c -o libc/machine/m68k/libc_a-memcpy.obj `if test -f 'libc/machine/m68k/memcpy.S'; then $(CYGPATH_W) 'libc/machine/m68k/memcpy.S'; else $(CYGPATH_W) '$(srcdir)/libc/machine/m68k/memcpy.S'; fi`
+ 
++libc/machine/m68k/libc_a-mputype.o: libc/machine/m68k/mputype.S
++@am__fastdepCCAS_TRUE@	$(AM_V_CPPAS)$(CCAS) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CCASFLAGS) $(CCASFLAGS) -MT libc/machine/m68k/libc_a-mputype.o -MD -MP -MF libc/machine/m68k/$(DEPDIR)/libc_a-mputype.Tpo -c -o libc/machine/m68k/libc_a-mputype.o `test -f 'libc/machine/m68k/mputype.S' || echo '$(srcdir)/'`libc/machine/m68k/mputype.S
++@am__fastdepCCAS_TRUE@	$(AM_V_at)$(am__mv) libc/machine/m68k/$(DEPDIR)/libc_a-mputype.Tpo libc/machine/m68k/$(DEPDIR)/libc_a-mputype.Po
++@AMDEP_TRUE@@am__fastdepCCAS_FALSE@	$(AM_V_CPPAS)source='libc/machine/m68k/mputype.S' object='libc/machine/m68k/libc_a-mputype.o' libtool=no @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCCAS_FALSE@	DEPDIR=$(DEPDIR) $(CCASDEPMODE) $(depcomp) @AMDEPBACKSLASH@
++@am__fastdepCCAS_FALSE@	$(AM_V_CPPAS@am__nodep@)$(CCAS) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CCASFLAGS) $(CCASFLAGS) -c -o libc/machine/m68k/libc_a-mputype.o `test -f 'libc/machine/m68k/mputype.S' || echo '$(srcdir)/'`libc/machine/m68k/mputype.S
++
++libc/machine/m68k/libc_a-mputype.obj: libc/machine/m68k/mputype.S
++@am__fastdepCCAS_TRUE@	$(AM_V_CPPAS)$(CCAS) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CCASFLAGS) $(CCASFLAGS) -MT libc/machine/m68k/libc_a-mputype.obj -MD -MP -MF libc/machine/m68k/$(DEPDIR)/libc_a-mputype.Tpo -c -o libc/machine/m68k/libc_a-mputype.obj `if test -f 'libc/machine/m68k/mputype.S'; then $(CYGPATH_W) 'libc/machine/m68k/mputype.S'; else $(CYGPATH_W) '$(srcdir)/libc/machine/m68k/mputype.S'; fi`
++@am__fastdepCCAS_TRUE@	$(AM_V_at)$(am__mv) libc/machine/m68k/$(DEPDIR)/libc_a-mputype.Tpo libc/machine/m68k/$(DEPDIR)/libc_a-mputype.Po
++@AMDEP_TRUE@@am__fastdepCCAS_FALSE@	$(AM_V_CPPAS)source='libc/machine/m68k/mputype.S' object='libc/machine/m68k/libc_a-mputype.obj' libtool=no @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCCAS_FALSE@	DEPDIR=$(DEPDIR) $(CCASDEPMODE) $(depcomp) @AMDEPBACKSLASH@
++@am__fastdepCCAS_FALSE@	$(AM_V_CPPAS@am__nodep@)$(CCAS) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CCASFLAGS) $(CCASFLAGS) -c -o libc/machine/m68k/libc_a-mputype.obj `if test -f 'libc/machine/m68k/mputype.S'; then $(CYGPATH_W) 'libc/machine/m68k/mputype.S'; else $(CYGPATH_W) '$(srcdir)/libc/machine/m68k/mputype.S'; fi`
++
+ libc/machine/m68k/libc_a-memset.o: libc/machine/m68k/memset.S
+ @am__fastdepCCAS_TRUE@	$(AM_V_CPPAS)$(CCAS) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CCASFLAGS) $(CCASFLAGS) -MT libc/machine/m68k/libc_a-memset.o -MD -MP -MF libc/machine/m68k/$(DEPDIR)/libc_a-memset.Tpo -c -o libc/machine/m68k/libc_a-memset.o `test -f 'libc/machine/m68k/memset.S' || echo '$(srcdir)/'`libc/machine/m68k/memset.S
+ @am__fastdepCCAS_TRUE@	$(AM_V_at)$(am__mv) libc/machine/m68k/$(DEPDIR)/libc_a-memset.Tpo libc/machine/m68k/$(DEPDIR)/libc_a-memset.Po
+diff --git a/newlib/libc/machine/m68k/Makefile.inc b/newlib/libc/machine/m68k/Makefile.inc
+index 262e4b4da..f8480e5c7 100644
+--- a/newlib/libc/machine/m68k/Makefile.inc
++++ b/newlib/libc/machine/m68k/Makefile.inc
+@@ -1 +1,2 @@
+ libc_a_SOURCES += %D%/setjmp.S %D%/strcpy.c %D%/strlen.c %D%/memcpy.S %D%/memset.S
++libc_a_SOURCES += %D%/mputype.S
+diff --git a/newlib/libc/machine/m68k/mputype.S b/newlib/libc/machine/m68k/mputype.S
+new file mode 100644
+index 000000000..54111def2
+--- /dev/null
++++ b/newlib/libc/machine/m68k/mputype.S
+@@ -0,0 +1,23 @@
++/*
++ * mputype.S - m68k specific CPU type and FPU type definitions
++ */
++
++#include "m68kasm.h"
++
++	.globl	SYM(_mpu_type)
++#if defined (__mc68020__) || defined (__mc68030__)
++	SYM(_mpu_type) = (1 << 2) + (1 << 3)
++#elif defined (__mc68040__)
++	SYM(_mpu_type) = (1 << 4)
++#elif defined (__mc68060__)
++	SYM(_mpu_type) = (1 << 6)
++#else
++	SYM(_mpu_type) = -1
++#endif
++
++	.globl	SYM(_fpu_type)
++#if defined (__HAVE_68881__)
++	SYM(_fpu_type) = -1
++#else
++	SYM(_fpu_type) = 0
++#endif

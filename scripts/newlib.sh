@@ -43,6 +43,10 @@ patch -p1 -N < ${PATCH_DIR}/newlib-tz-jst.patch
 cd ${SRC_DIR}/${NEWLIB_DIR}
 patch -p1 -N < ${PATCH_DIR}/newlib-memcpy-fix.patch
 
+#	libcに_mpu_type, _fpu_typeを追加するためのパッチ
+cd ${SRC_DIR}/${NEWLIB_DIR}
+patch -p1 -N < ${PATCH_DIR}/newlib-mputype.patch
+
 newlib_build () {
     mkdir -p ${BUILD_DIR}/${NEWLIB_DIR}$1
     cd ${BUILD_DIR}/${NEWLIB_DIR}$1
