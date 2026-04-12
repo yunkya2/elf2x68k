@@ -68,6 +68,12 @@ setup_environ (void)
   environ[count] = 0;
 }
 
+#ifdef SUPPORT_HUPAIR   /* HUPAIR doesn't use TAB for separator */
+#define isseparator(c)  ((c) == ' ')
+#else
+#define isseparator(c)  (((c) == ' ') || ((c) == '\t'))
+#endif
+
 static void
 setup_arguments (void)
 {
@@ -78,14 +84,14 @@ setup_arguments (void)
   while (*p)
   {
     /* Skip spaces */
-    while ((*p) && ((*p == ' ') || *p == '\t'))
+    while ((*p) && isseparator(*p))
       p++;
 
     if (*p)
       count++;
 
     /* To end of arg */
-    while ((*p) && !((*p == ' ') || *p == '\t')) {
+    while ((*p) && !isseparator(*p)) {
       if (*p == '"' || *p == '\'') {
         /* Skip quote */
         char quote = *p;
@@ -139,14 +145,14 @@ setup_arguments (void)
   while (*q)
   {
     /* Skip spaces */
-    while ((*q) && ((*q == ' ') || (*q == '\t')))
+    while ((*q) && isseparator(*q))
       q++;
 
     if (*q)
       __argv[count++] = p;
 
     /* To end of arg */
-    while ((*q) && !((*q == ' ') || *q == '\t')) {
+    while ((*q) && !isseparator(*q)) {
       if (*q == '"' || *q == '\'') {
         /* Skip quote */
         char quote = *q;
