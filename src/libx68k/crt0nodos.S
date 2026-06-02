@@ -39,16 +39,14 @@ _start_1:
 	move.l	%a0, _HEND		| HEAP End
 
 | Clear bss section
-	move.l	#__bss_start, %d1
+	movea.l	#__bss_start, %a0
 	move.l	#_end, %d0
-	cmp.l	%d0, %d1
-	beq	3f
-	move.l	%d1, %a0
-	sub.l	%d1, %d0
-	subq.l	#1, %d0
+	sub.l	%a0, %d0
+	beq.s	3f
 2:
 	clr.b	%a0@+
-	dbra	%d0, 2b
+	subq.l	#1, %d0
+	bne.s	2b
 3:
 
 	pea.l	__FINI_SECTION__
