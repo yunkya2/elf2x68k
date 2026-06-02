@@ -33,6 +33,7 @@
 #-----------------------------------------------------------------------------
 
 cd ${DOWNLOAD_DIR}
+rm -rf ${SRC_DIR}/${NEWLIB_DIR}
 tar zxvf ${NEWLIB_ARCHIVE} -C ${SRC_DIR}
 
 #	timezoneのデフォルトをJST-9にするためのパッチ
