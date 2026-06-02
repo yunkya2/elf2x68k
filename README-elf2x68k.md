@@ -81,11 +81,13 @@ m68k-xelf/ 内に追加される、X68k 対応のためのファイル一覧で�
 * m68k-elf/lib/x68k{nodos,}.specs
 * m68k-elf/lib/nano.specs
 * m68k-elf/lib/c++small.specs
+* m68k-elf/lib/hupair.specs
   * m68k-elf-gcc の挙動を修正するspecsファイルです
     * x68k.specs は上記 lib/gcc/m68k-elf/specs と同じものです
     * x68knodos.specs はリンクされるライブラリからHuman68k関連のものを外してIOCSコールのみを利用可能にしてあるものです。ディスクのブートセクタからHuman68k抜きで起動するバイナリを開発できるようになります
     * nano.specs は標準Cライブラリとして libc.a の代わりに libc-nano.a をリンクします。printf() などに軽量版を用いた Newlib-nano を使用します
     * c++small.specs はC++プログラムのコンパイル、リンクで例外処理とRTTIを無効にします (-fno-exceptions -fno-rtti)。リンクで使用するC++標準ライブラリもこれらの機能を無効にしたものが使われます。
+    * hupair.specs はHUPAIR規格対応版のC言語スタートアップ処理(x68kcrt0hupair.o)を使用します。
 * m68k-elf/lib/libx68k.a
   * newlibの下回りのシステムコール処理を提供するライブラリです
 * m68k-elf/lib/libx68knodos.a
@@ -98,7 +100,8 @@ m68k-xelf/ 内に追加される、X68k 対応のためのファイル一覧で�
   * ソケットAPI、POSIXスレッドAPIを提供するライブラリです
 * m68k-elf/lib/x68kcrt0.o
 * m68k-elf/lib/x68kcrt0nodos.o
-  * X68k用のC言語スタートアップ処理を行うオブジェクトファイルです。x68kcrt0nodos.o はコマンドライン引数の受け取りなどHuman68kに依存する処理を行いません
+* m68k-elf/lib/x68kcrt0hupair.o
+  * X68k用のC言語スタートアップ処理を行うオブジェクトファイルです。x68kcrt0nodos.o はコマンドライン引数の受け取りなどHuman68kに依存する処理を行いません。 x68kcrt0hupair.o はHUPAIR規格に対応したコマンドライン引数受け取り処理を行います
 * m68k-elf/include/x68k/*
   * libiocs.a, libdos.a を利用するためのヘッダファイルです
 * m68k-elf/sys-include/*
