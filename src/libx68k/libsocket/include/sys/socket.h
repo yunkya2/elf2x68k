@@ -32,6 +32,7 @@ struct sockaddr_storage
 #define SOCK_STREAM     0
 #define SOCK_DGRAM      1
 #define SOCK_RAW        2
+#define SOCK_STREAM_TLS 8
 #define SOCK_NONBLOCK   0x800
 
 /* for shutdown(2) */
