@@ -70,6 +70,14 @@ version: ${GIT_REPO_VERSION}
 URL: https://github.com/yunkya2/elf2x68k/
 EOF
 
+ELF2X68K_VERSION=`git describe --tags --abbrev=0`
+cat > ${INSTALL_DIR}/m68k-elf/include/x68k/version.h << EOF
+#ifndef _X68k_VERSION_H_
+#define _X68k_VERSION_H_
+#define ELF2X68K_VERSION ${ELF2X68K_VERSION}
+#endif
+EOF
+
 if [ "${HOST_OPTION}" != "" ]; then
     cp /usr/x86_64-w64-mingw32/bin/libiconv-2.dll ${INSTALL_DIR}/bin
     cp /usr/x86_64-w64-mingw32/lib/zlib1.dll ${INSTALL_DIR}/bin
