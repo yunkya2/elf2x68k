@@ -2,4 +2,4 @@
 -fno-rtti -fno-exceptions
 
 *link:
--z max-page-size=2 -T x68k.ld --wrap __sflags %:replace-outfile(-lstdc++ -lstdc++small)
+-z max-page-size=2 -dT x68k.ld --wrap __sflags %:replace-outfile(-lstdc++ -lstdc++small)

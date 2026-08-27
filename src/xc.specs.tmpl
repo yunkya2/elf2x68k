@@ -5,7 +5,7 @@ ld.x
 -lc -l${FLOAT}
 
 *link:
--z max-page-size=2 -T x68k.ld -e _main -nostdlib -L${TOOLCHAIN_PATH}/xc-elf/lib
+-z max-page-size=2 -dT x68k.ld -e _main -nostdlib -L${TOOLCHAIN_PATH}/xc-elf/lib
 
 *startfile:
 

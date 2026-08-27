@@ -2,7 +2,7 @@
 ld.x
 
 *link:
--z max-page-size=2 -T x68k.ld
+-z max-page-size=2 -dT x68k.ld
 
 *startfile:
 x68kcrt0nodos.o%s crtbegin.o%s
