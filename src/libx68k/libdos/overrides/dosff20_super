@@ -1,0 +1,31 @@
+[lib]
+/* 0xff20 _SUPER: スーパーバイザ/ユーザーモード設定 */
+/* int _dos_super(int stack); */
+
+	.text
+	.even
+	.global _dos_super
+	.type _dos_super, @function
+
+_dos_super:
+    movea.l %sp@+, %a1
+    tst.l   %sp@
+    beq     1f
+    move.l  %sp, %usp
+1:
+    .short  0xff20
+    jmp     %a1@
+
+[inline]
+/* 0xff20 _SUPER: スーパーバイザ/ユーザーモード設定 */
+static __inline__ int _dos_super(int stack) {
+    register long _ret __asm__("d0");
+    __asm__ __volatile__ (
+        "move.l %[stack],%%sp@-\n\t"
+        "move.l %%sp,%%a1\n\t"
+        ".short 0xff20\n\t"
+        "move.l %%a1,%%sp\n\t"
+        "addq.l #4,%%sp\n\t"
+        : [ret]"=r"(_ret) : [stack]"g"(stack) : "cc","memory");
+    return (int)_ret;
+}

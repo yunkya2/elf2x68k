@@ -1,0 +1,200 @@
+﻿0xff00,_EXIT,!void,,,,,,,,,,,,,,,,,,,,,,,,,プログラム終了
+0xff01,_GETCHAR,int,,,,,,,,,,,,,,,,,,,,,,,,,標準入力から1バイト入力(エコーあり)
+0xff02,_PUTCHAR,void,w,int,code,,,,,,,,,,,,,,,,,,,,,,標準出力へ1バイト出力
+0xff03,_COMINP,int,,,,,,,,,,,,,,,,,,,,,,,,,RS-232C 回線 1 バイト入力
+0xff04,_COMOUT,void,w,int,code,,,,,,,,,,,,,,,,,,,,,,RS-232C 回線 1 バイト出力
+0xff05,_PRNOUT,void,w,int,code,,,,,,,,,,,,,,,,,,,,,,プリンタ 1 文字出力
+0xff06,_INPOUT,int,w,int,code,,,,,,,,,,,,,,,,,,,,,,標準入力から1バイト入力、または標準出力へ1バイト出力
+0xff07,_INKEY,int,,,,,,,,,,,,,,,,,,,,,,,,,標準入力から1バイト入力(ブレークチェックなし)
+0xff08,_GETC,int,,,,,,,,,,,,,,,,,,,,,,,,,標準入力から1バイト入力(ブレークチェックあり)
+0xff09,_PRINT,void,l,const char *,mesptr,,,,,,,,,,,,,,,,,,,,,,文字列表示
+0xff0a,_GETS,int,l,struct dos_inpptr *,inpptr,,,,,,,,,,,,,,,,,,,,,,標準入力から文字列入力(ブレークチェックあり)
+0xff0b,_KEYSNS,int,,,,,,,,,,,,,,,,,,,,,,,,,標準入力の入力状態の検査
+0xff0c,_KFLUSH,,,,,,,,,,,,,,,,,,,,,,,,,,バッファフラッシュ後に標準入力から入力
+0xff0c,#_KFLUSHGP,int,c,1,,,,,,,,,,,,,,,,,,,,,,,バッファフラッシュ後に標準入力から1バイト入力(エコーあり)
+0xff0c,#_KFLUSHIO,int,c,6,,w,int,code,,,,,,,,,,,,,,,,,,,バッファフラッシュ後に標準入力から1バイト入力、または標準出力へ1バイト出力
+0xff0c,#_KFLUSHIN,int,c,7,,,,,,,,,,,,,,,,,,,,,,,バッファフラッシュ後に標準入力から1バイト入力(ブレークチェックなし)
+0xff0c,#_KFLUSHGC,int,c,8,,,,,,,,,,,,,,,,,,,,,,,バッファフラッシュ後に標準入力から1バイト入力(ブレークチェックあり)
+0xff0c,#_KFLUSHGS,int,c,10,,l,struct dos_inpptr *,inpptr,,,,,,,,,,,,,,,,,,,バッファフラッシュ後に標準入力から文字列入力(ブレークチェックあり)
+0xff0d,_FFLUSH,void,,,,,,,,,,,,,,,,,,,,,,,,,ディスクリセット
+0xff0e,_CHGDRV,int,w,int,drive,,,,,,,,,,,,,,,,,,,,,,カレントドライブ設定
+0xff0f,_DRVCTRL,int,hb,int,mode,b,int,mb,,,,,,,,,,,,,,,,,,,ドライブ状態検査/設定
+0xff10,_CONSNS,int,,,,,,,,,,,,,,,,,,,,,,,,,標準出力へ出力できるかの検査
+0xff11,_PRNSNS,int,,,,,,,,,,,,,,,,,,,,,,,,,標準プリンター出力へ出力できるかの検査
+0xff12,_CINSNS,int,,,,,,,,,,,,,,,,,,,,,,,,,標準補助入出力から入力ができるかの検査
+0xff13,_COUTSNS,int,,,,,,,,,,,,,,,,,,,,,,,,,標準補助入出力へ出力できるかの検査
+0xff17,_FATCHK,int,l,const char *,file,l,unsigned short *,buffer,,,,,,,,,,,,,,,,,,,ファイル連結状態検査
+0xff17,#_FATCHK2,int,l,const char *,file,l|0x80000000,unsigned int *,buffer,w,int,len,,,,,,,,,,,,,,,,ファイル連結状態検査(ロングワードモード)
+0xff18,_HENDSP,,,,,,,,,,,,,,,,,,,,,,,,,,漢字変換行制御
+0xff18,#_HENDSPMO,int,c,0,,,,,,,,,,,,,,,,,,,,,,,モード表示ウィンドウをオープンする
+0xff18,#_HENDSPMP,int,c,1,,w,int,pos,l,const char *,mesptr,,,,,,,,,,,,,,,,指定位置から文字列をノーマルで表示する
+0xff18,#_HENDSPMR,int,c,2,,w,int,pos,l,const char *,mesptr,,,,,,,,,,,,,,,,指定位置から文字列をリバースで表示する
+0xff18,#_HENDSPMC,void,c,3,,,,,,,,,,,,,,,,,,,,,,,モード表示ウィンドウをクローズする
+0xff18,#_HENDSPIO,int,c,4,,,,,,,,,,,,,,,,,,,,,,,入力ウィンドウをオープンする
+0xff18,#_HENDSPIP,int,c,5,,w,int,pos,l,const char *,mesptr,,,,,,,,,,,,,,,,指定位置から文字列をノーマルで表示する
+0xff18,#_HENDSPIR,int,c,6,,w,int,pos,l,const char *,mesptr,,,,,,,,,,,,,,,,指定位置から文字列をリバースで表示する
+0xff18,#_HENDSPIC,void,c,7,,w,int,pos,,,,,,,,,,,,,,,,,,,指定のポジション以降を元に戻す
+0xff18,#_HENDSPSO,int,c,8,,,,,,,,,,,,,,,,,,,,,,,候補ウィンドウをオープンする
+0xff18,#_HENDSPSP,int,c,9,,w,int,pos,l,const char *,mesptr,,,,,,,,,,,,,,,,指定位置から文字列をノーマルで表示する
+0xff18,#_HENDSPSR,int,c,10,,w,int,pos,l,const char *,mesptr,,,,,,,,,,,,,,,,指定位置から文字列をリバースで表示する
+0xff18,#_HENDSPSC,void,c,11,,,,,,,,,,,,,,,,,,,,,,,候補ウィンドウをクローズする
+0xff19,_CURDRV,int,,,,,,,,,,,,,,,,,,,,,,,,,カレントドライブ収得
+0xff1a,_GETSS,int,l,struct dos_inpptr *,inpptr,,,,,,,,,,,,,,,,,,,,,,文字列入力(ブレークチェックなし)
+0xff1b,_FGETC,int,w,int,fileno,,,,,,,,,,,,,,,,,,,,,,ファイル 1 バイト入力
+0xff1c,_FGETS,int,l,struct dos_inpptr *,buffer,w,int,fileno,,,,,,,,,,,,,,,,,,,ファイル文字列入力
+0xff1d,_FPUTC,void,w,int,code,w,int,fileno,,,,,,,,,,,,,,,,,,,ファイル 1 文字出力
+0xff1e,_FPUTS,void,l,const char *,mesptr,w,int,fileno,,,,,,,,,,,,,,,,,,,ファイル文字列出力
+0xff1f,_ALLCLOSE,void,,,,,,,,,,,,,,,,,,,,,,,,,全ファイルクローズ
+0xff20,_SUPER,int,l,int,stack,,,,,,,,,,,,,,,,,,,,,,スーパーバイザ/ユーザーモード設定
+0xff21,_FNCKEY,,,,,,,,,,,,,,,,,,,,,,,,,,再定義可能キー収得/設定
+0xff21,#_FNCKEYGT,void,w,int,mode,l,char *,buffer,,,,,,,,,,,,,,,,,,,再定義可能なキーの読み出し
+0xff21,#_FNCKEYST,void,w|0x0100,int,mode,l,const char *,buffer,,,,,,,,,,,,,,,,,,,再定義可能なキーの設定
+0xff22,_KNJCTRL,,,,,,,,,,,,,,,,,,,,,,,,,,仮名漢字変換用ファンクションコール
+0xff23,_CONCTRL,,,,,,,,,,,,,,,,,,,,,,,,,,コンソール制御/直接出力
+0xff23,#_C_PUTC,int,c,0,,w,int,code,,,,,,,,,,,,,,,,,,,文字表示
+0xff23,#_C_PRINT,int,c,1,,l,const char *,mesptr,,,,,,,,,,,,,,,,,,,文字列表示
+0xff23,#_C_COLOR,int,c,2,,w,int,atr,,,,,,,,,,,,,,,,,,,表示色設定
+0xff23,#_C_LOCATE,int,c,3,,w,int,x,w,int,y,,,,,,,,,,,,,,,,カーソル移動
+0xff23,#_C_DOWN_S,int,c,4,,,,,,,,,,,,,,,,,,,,,,,カーソルを1行下に移動
+0xff23,#_C_UP_S,int,c,5,,,,,,,,,,,,,,,,,,,,,,,カーソルを1行上に移動
+0xff23,#_C_UP,int,c,6,,w,int,n,,,,,,,,,,,,,,,,,,,カーソルを指定行数だけ上に移動
+0xff23,#_C_DOWN,int,c,7,,w,int,n,,,,,,,,,,,,,,,,,,,カーソルを指定行数だけ下に移動
+0xff23,#_C_RIGHT,int,c,8,,w,int,n,,,,,,,,,,,,,,,,,,,カーソルを指定行数だけ右に移動
+0xff23,#_C_LEFT,int,c,9,,w,int,n,,,,,,,,,,,,,,,,,,,カーソルを指定行数だけ左に移動
+0xff23,#_C_CLS_ED,int,c,10,,c,0,,,,,,,,,,,,,,,,,,,,画面の複数行消去(カーソル位置から最終行右端まで)
+0xff23,#_C_CLS_ST,int,c,10,,c,1,,,,,,,,,,,,,,,,,,,,画面の複数行消去(先頭行左端からカーソル位置まで)
+0xff23,#_C_CLS_AL,int,c,10,,c,2,,,,,,,,,,,,,,,,,,,,画面の複数行消去(画面全体)
+0xff23,#_C_ERA_ED,int,c,11,,c,0,,,,,,,,,,,,,,,,,,,,現在行の複数桁消去(カーソル位置から右端まで)
+0xff23,#_C_ERA_ST,int,c,11,,c,1,,,,,,,,,,,,,,,,,,,,現在行の複数桁消去(左端からカーソル位置まで)
+0xff23,#_C_ERA_AL,int,c,11,,c,2,,,,,,,,,,,,,,,,,,,,現在行の複数桁消去(カーソル行全体)
+0xff23,#_C_INS,int,c,12,,w,int,n,,,,,,,,,,,,,,,,,,,複数行挿入
+0xff23,#_C_DEL,int,c,13,,w,int,n,,,,,,,,,,,,,,,,,,,複数行削除
+0xff23,#_C_FNKMOD,int,c,14,,w,int,mod,,,,,,,,,,,,,,,,,,,ファンクションキー行の表示モードを設定
+0xff23,#_C_WINDOW,int,c,15,,w,int,ys,w,int,yl,,,,,,,,,,,,,,,,スクロール範囲の設定
+0xff23,#_C_WIDTH,int,c,16,,w,int,mod,,,,,,,,,,,,,,,,,,,画面モードの設定
+0xff23,#_C_CURON,int,c,17,,,,,,,,,,,,,,,,,,,,,,,カーソル点滅開始
+0xff23,#_C_CUROFF,int,c,18,,,,,,,,,,,,,,,,,,,,,,,カーソル点滅終了
+0xff24,_KEYCTRL,,,,,,,,,,,,,,,,,,,,,,,,,,コンソール状態検査/直接入力
+0xff24,#_K_KEYINP,int,c,0,,,,,,,,,,,,,,,,,,,,,,,キーを入力する
+0xff24,#_K_KEYSNS,int,c,1,,,,,,,,,,,,,,,,,,,,,,,キーコードを先読みする
+0xff24,#_K_SFTSNS,int,c,2,,,,,,,,,,,,,,,,,,,,,,,シフトキーの状態を調べる
+0xff24,#_K_KEYBIT,int,c,3,,w,int,group,,,,,,,,,,,,,,,,,,,キーコードグループのキー状態を調べる
+0xff24,#_K_INSMOD,void,c,4,,w,int,insmode,,,,,,,,,,,,,,,,,,,INSキーをON/OFFする
+0xff25,_INTVCS,void *,w,int,intno,l,void *,jobadr,,,,,,,,,,,,,,,,,,,ベクタ処理アドレス設定
+0xff26,_PSPSET,void,l,struct dos_psp *,pspadr,,,,,,,,,,,,,,,,,,,,,,プロセス管理ポインタ作成
+0xff27,_GETTIM2,int,,,,,,,,,,,,,,,,,,,,,,,,,時刻収得(ロングワード)
+0xff28,_SETTIM2,int,l,int,time,,,,,,,,,,,,,,,,,,,,,,時刻設定(ロングワード)
+0xff29,_NAMESTS,int,l,const char *,file,l,struct dos_namestbuf *,buffer,,,,,,,,,,,,,,,,,,,ファイル名展開
+0xff2a,_GETDATE,int,,,,,,,,,,,,,,,,,,,,,,,,,日付収得
+0xff2b,_SETDATE,int,w,int,date,,,,,,,,,,,,,,,,,,,,,,日付設定
+0xff2c,_GETTIME,int,,,,,,,,,,,,,,,,,,,,,,,,,時刻収得
+0xff2d,_SETTIME,int,w,int,time,,,,,,,,,,,,,,,,,,,,,,時刻設定
+0xff2e,_VERIFY,void,w,int,flg,,,,,,,,,,,,,,,,,,,,,,ベリファイフラグ設定
+0xff2f,_DUP0,int,w,int,fileno,w,int,newno,,,,,,,,,,,,,,,,,,,ファイルハンドルの標準ファイルハンドルへの強制複写
+0xff30,_VERNUM,%int,,,,,,,,,,,,,,,,,,,,,,,,,OS バージョン収得
+0xff31,_KEEPPR,!void,l,int,prglen,w,int,code,,,,,,,,,,,,,,,,,,,常駐終了
+0xff32,_GETDPB,int,w,int,drive,l,struct dos_dpbptr *,dpbptr,,,,,,,,,,,,,,,,,,,ドライブパラメータブロック複写
+0xff33,_BREAKCK,int,w,int,flg,,,,,,,,,,,,,,,,,,,,,,ブレークチェック設定
+0xff34,_DRVXCHG,void,w,int,olddrv,w,int,newdrv,,,,,,,,,,,,,,,,,,,ドライブ交換
+0xff35,_INTVCG,void *,w,int,intno,,,,,,,,,,,,,,,,,,,,,,ベクタ処理アドレス収得
+0xff36,_DSKFRE,int,w,int,drive,l,struct dos_freeinf *,buffer,,,,,,,,,,,,,,,,,,,ディスク残量収得
+0xff37,_NAMECK,int,l,const char *,file,l,struct dos_nameckbuf *,buffer,,,,,,,,,,,,,,,,,,,ファイル名展開
+0xff39,_MKDIR,int,l,const char *,file,,,,,,,,,,,,,,,,,,,,,,サブディレクトリ作成
+0xff3a,_RMDIR,int,l,const char *,file,,,,,,,,,,,,,,,,,,,,,,サブディレクトリ削除
+0xff3b,_CHDIR,int,l,const char *,file,,,,,,,,,,,,,,,,,,,,,,カレントディレクトリ変更
+0xff3c,_CREATE,int,l,const char *,file,w,dosmode_t,atr,,,,,,,,,,,,,,,,,,,ファイル作成
+0xff3d,_OPEN,int,l,const char *,file,w,int,mode,,,,,,,,,,,,,,,,,,,ファイルオープン
+0xff3e,_CLOSE,int,w,int,fileno,,,,,,,,,,,,,,,,,,,,,,ファイルクローズ
+0xff3f,_READ,int,w,int,fileno,l,char *,buffer,l,int,len,,,,,,,,,,,,,,,,ファイル入力
+0xff40,_WRITE,int,w,int,fileno,l,const char *,buffer,l,int,len,,,,,,,,,,,,,,,,ファイル出力
+0xff41,_DELETE,int,l,const char *,file,,,,,,,,,,,,,,,,,,,,,,ファイル削除
+0xff42,_SEEK,long,w,int,fileno,l,int,offset,w,int,mode,,,,,,,,,,,,,,,,ファイルポインタ移動
+0xff43,_CHMOD,dosmode_t,l,const char *,file,w,dosmode_t,atr,,,,,,,,,,,,,,,,,,,ファイル属性収得/設定
+0xff44,_IOCTRL,,,,,,,,,,,,,,,,,,,,,,,,,,デバイスドライバ ioctrl 直接入出力
+0xff44,#_IOCTRLGT,int,c,0,,w,int,fileno,,,,,,,,,,,,,,,,,,,ファイルの装置情報を調べる
+0xff44,#_IOCTRLST,int,c,1,,w,int,fileno,w,int,dt,,,,,,,,,,,,,,,,ファイルの装置情報を設定する
+0xff44,#_IOCTRLRH,int,c,2,,w,int,fileno,l,char *,ptr,l,int,len,,,,,,,,,,,,,ファイルからデータを読み込む
+0xff44,#_IOCTRLWH,int,c,3,,w,int,fileno,l,const char *,ptr,l,int,len,,,,,,,,,,,,,ファイルにデータを書き込む
+0xff44,#_IOCTRLRD,int,c,4,,w,int,drive,l,char *,ptr,l,int,len,,,,,,,,,,,,,ドライブからデータを読み込む
+0xff44,#_IOCTRLWD,int,c,5,,w,int,drive,l,const char *,ptr,l,int,len,,,,,,,,,,,,,ドライブにデータを書き込む
+0xff44,#_IOCTRLIS,int,c,6,,w,int,fileno,,,,,,,,,,,,,,,,,,,ファイルの入力ステータスを調べる
+0xff44,#_IOCTRLOS,int,c,7,,w,int,fileno,,,,,,,,,,,,,,,,,,,ファイルの出力ステータスを調べる
+0xff44,#_IOCTRLDVGT,int,c,9,,w,int,drive,,,,,,,,,,,,,,,,,,,ドライブがローカルかリモートかを調べる
+0xff44,#_IOCTRLFDGT,int,c,10,,w,int,fileno,,,,,,,,,,,,,,,,,,,ファイルがローカルかリモートかを調べる
+0xff44,#_IOCTRLRTSET,int,c,11,,w,int,count,w,int,time,,,,,,,,,,,,,,,,リトライ数と待機時間を設定する
+0xff44,#_IOCTRLDVCTL,int,c,12,,w,int,fileno,w,int,f_code,l,char *,ptr,,,,,,,,,,,,,ファイルの特殊コントロールを行う
+0xff44,#_IOCTRLFDCTL,int,c,13,,w,int,fileno,w,int,f_code,l,char *,ptr,,,,,,,,,,,,,ドライブの特殊コントロールを行う
+0xff45,_DUP,int,w,int,fileno,,,,,,,,,,,,,,,,,,,,,,ファイルハンドルの複写
+0xff46,_DUP2,int,w,int,fileno,w,int,newno,,,,,,,,,,,,,,,,,,,ファイルハンドルの強制複写
+0xff47,_CURDIR,int,w,int,drive,l,char *,buffer,,,,,,,,,,,,,,,,,,,カレントディレクトリ収得
+0xff48,_MALLOC,void *,l,int,len,,,,,,,,,,,,,,,,,,,,,,メモリ確保
+0xff49,_MFREE,int,l,void *,memptr,,,,,,,,,,,,,,,,,,,,,,メモリブロック解放
+0xff4a,_SETBLOCK,int,l,void *,memptr,l,int,len,,,,,,,,,,,,,,,,,,,メモリブロック変更
+0xff4b,_EXEC,,,,,,,,,,,,,,,,,,,,,,,,,,プログラムのロード/実行
+0xff4b,#_LOADEXEC,$int,c,0,,l,const char *,file,l,const struct dos_comline *,cmdline,l,const char *,envptr,,,,,,,,,,,,,ファイルをロード、実行する
+0xff4b,#_LOAD,$int,c,1,,l,const char *,file,l,const struct dos_comline *,cmdline,l,const char *,envptr,,,,,,,,,,,,,ファイルをロードする
+0xff4b,#_PATHCHK,int,c,2,,l,const char *,file,l,const struct dos_comline *,cmdline,l,const char *,envptr,,,,,,,,,,,,,パス検索を行う
+0xff4b,#_LOADONLY,int,c,3,,l,const char *,file,l,const void *,loadaddr,l,const void *,limit,,,,,,,,,,,,,アドレスを指定してファイルをロードする
+0xff4b,#_EXECONLY,$int,c,4,,l,void *,execadr,,,,,,,,,,,,,,,,,,,ロード済みプログラムを実行する
+0xff4b,#_BINDNO,int,c,5,,l,const char *,file,l,const char *,file2,,,,,,,,,,,,,,,,オーバーレイXファイルのモジュール番号を調べる
+0xff4b,#_EXEC2,$int,w,int,mode,l,const char *,arg1,l,const char *,arg2,l,const char *,arg3,,,,,,,,,,,,,プログラムのロード/実行
+0xff4c,_EXIT2,!void,w,int,code,,,,,,,,,,,,,,,,,,,,,,終了コード指定終了
+0xff4d,_WAIT,int,,,,,,,,,,,,,,,,,,,,,,,,,プロセス終了コード収得
+0xff4e,_FILES,int,l,struct dos_filbuf *,buffer,l,const char *,file,w,int,atr,,,,,,,,,,,,,,,,ファイル検索
+0xff4e,#_EXFILES,int,l|0x80000000,struct dos_exfilbuf *,buffer,l,const char *,file,w,int,atr,,,,,,,,,,,,,,,,ファイル検索
+0xff4f,_NFILES,int,l,struct dos_filbuf *,buffer,,,,,,,,,,,,,,,,,,,,,,ファイル次検索
+0xff4f,#_EXNFILES,int,l|0x80000000,struct dos_exfilbuf *,buffer,,,,,,,,,,,,,,,,,,,,,,ファイル次検索
+0xff80,_SETPDB,struct dos_psp *,l,struct dos_psp *,pdbadr,,,,,,,,,,,,,,,,,,,,,,管理プロセス変更
+0xff81,_GETPDB,struct dos_psp *,,,,,,,,,,,,,,,,,,,,,,,,,プロセス情報収得
+0xff82,_SETENV,int,l,const char *,envname,l,const char *,envptr,l,const char *,envval,,,,,,,,,,,,,,,,環境変数設定
+0xff83,_GETENV,int,l,const char *,envname,l,const char *,envptr,l,char *,buffer,,,,,,,,,,,,,,,,環境変数収得
+0xff84,_VERIFYG,int,,,,,,,,,,,,,,,,,,,,,,,,,ベリファイフラグ収得
+0xff85,_COMMON,,,,,,,,,,,,,,,,,,,,,,,,,,common領域の制御
+0xff85,#_COMMON_CK,int,c,0,,l,const char *,name,,,,,,,,,,,,,,,,,,,common領域のバイト数を得る
+0xff85,#_COMMON_RD,int,c,1,,l,const char *,name,l,int,pos,l,void *,buffer,l,int,len,,,,,,,,,,common領域からの読み出し
+0xff85,#_COMMON_WT,int,c,2,,l,const char *,name,l,int,pos,l,const void *,buffer,l,int,len,,,,,,,,,,common領域への書き込み
+0xff85,#_COMMON_LK,int,c,3,,l,const char *,name,l,int,pos,l,int,id_psp,l,int,len,,,,,,,,,,common領域のロック
+0xff85,#_COMMON_FRE,int,c,4,,l,const char *,name,l,int,pos,l,int,id_psp,l,int,len,,,,,,,,,,common領域のロック解除
+0xff85,#_COMMON_DEL,int,c,5,,l,const char *,name,,,,,,,,,,,,,,,,,,,common領域の削除
+0xff86,_RENAME,int,l,const char *,oldname,l,const char *,newname,,,,,,,,,,,,,,,,,,,ファイル名変更/移動
+0xff86,#_MOVE,int,l,const char *,oldname,l,const char *,newname,,,,,,,,,,,,,,,,,,,ファイル名変更/移動
+0xff87,_FILEDATE,int,w,int,fileno,l,int,datetime,,,,,,,,,,,,,,,,,,,ファイル変更日時収得/設定
+0xff88,_MALLOC2,void *,w,int,md,l,int,len,,,,,,,,,,,,,,,,,,,メモリ確保
+0xff88,#_MALLOC0,void *,w|0x8000,int,md,l,int,len,l,int,ptr,,,,,,,,,,,,,,,,指定の方法によるメモリ確保
+0xff8a,_MAKETMP,int,l,const char *,file,w,int,atr,,,,,,,,,,,,,,,,,,,テンポラリファイル作成
+0xff8b,_NEWFILE,int,l,const char *,file,w,dosmode_t,atr,,,,,,,,,,,,,,,,,,,ファイル作成
+0xff8c,_LOCK,int,c,0,,w,int,fileno,l,int,offset,l,int,len,,,,,,,,,,,,,ファイルロック
+0xff8c,#_UNLOCK,int,c,1,,w,int,fileno,l,int,offset,l,int,len,,,,,,,,,,,,,ファイルロック解除
+0xff8f,_ASSIGN,,,,,,,,,,,,,,,,,,,,,,,,,,仮想ドライブ/ディレクトリ割り当て収得/設定/解除
+0xff8f,#_GETASSIGN,int,c,0,,l,const char *,buffer1,l,char *,buffer2,,,,,,,,,,,,,,,,仮想ドライブ/ディレクトリの割り当ての収得
+0xff8f,#_MAKEASSIGN,int,c,1,,l,const char *,buffer1,l,const char *,buffer2,w,int,mode,,,,,,,,,,,,,仮想ドライブ/ディレクトリの割り当ての設定
+0xff8f,#_RASSIGN,int,c,4,,l,const char *,buffer1,,,,,,,,,,,,,,,,,,,仮想ドライブ/ディレクトリの割り当ての解除
+0xffaa,_FFLUSH_SET,int,w,int,mode,,,,,,,,,,,,,,,,,,,,,,FFLUSH モードの設定
+0xffab,_OS_PATCH,void *,w,int,patch_no,l,void *,patch_adr,,,,,,,,,,,,,,,,,,,OS 内部処理切り換え(システム専用コール)
+0xffac,_GET_FCB_ADR,union dos_fcb *,w,int,fileno,,,,,,,,,,,,,,,,,,,,,,FCB ポインタ収得
+0xffad,_S_MALLOC,void *,w,int,md,l,int,len,,,,,,,,,,,,,,,,,,,メインメモリ管理下メモリブロック確保
+0xffad,#_S_MALLOC0,void *,w|0x8000,int,md,l,int,len,l,void *,ptr,,,,,,,,,,,,,,,,メインメモリ管理下メモリブロック確保
+0xffae,_S_MFREE,int,l,void *,memptr,,,,,,,,,,,,,,,,,,,,,,メインメモリ管理下メモリブロック解放
+0xffaf,_S_PROCESS,int,w,int,id,l,int,start,l,int,length,l,int,i_len,,,,,,,,,,,,,サブメモリ管理設定
+0xfff0,_EXITVC,,,,,,,,,,,,,,,,,,,,,,,,,,(プログラム終了時の実行アドレス)
+0xfff0,#_RETSHELL,!void,,,,,,,,,,,,,,,,,,,,,,,,,プログラム終了
+0xfff1,_CTRLVC,,,,,,,,,,,,,,,,,,,,,,,,,,(CTRL+Cによるアボート時の実行アドレス)
+0xfff1,#_CTLABORT,!void,,,,,,,,,,,,,,,,,,,,,,,,,CTRL+Cによるアボート
+0xfff2,_ERRVC,,,,,,,,,,,,,,,,,,,,,,,,,,(エラーによるアボート時の実行アドレス)
+0xfff2,#_ERRABORT,!void,,,,,,,,,,,,,,,,,,,,,,,,,エラーによるアボート
+0xfff3,_DISKRED,void,l,void *,buffer,w,int,drive,w,int,sect,w,int,sectlen,,,,,,,,,,,,,ブロックデバイス直接入力
+0xfff3,#_DISKRED2,void,l|0x80000000,void *,buffer,w,int,drive,l,int,sect,l,int,sectlen,,,,,,,,,,,,,ブロックデバイス直接入力
+0xfff4,_DISKWRT,void,l,const void *,buffer,w,int,drive,w,int,sect,w,int,sectlen,,,,,,,,,,,,,ブロックデバイス直接出力
+0xfff4,#_DISKWRT2,void,l|0x80000000,const void *,buffer,w,int,drive,l,int,sect,l,int,sectlen,,,,,,,,,,,,,ブロックデバイス直接出力
+0xfff5,_INDOSFLG,struct dos_indos *,,,,,,,,,,,,,,,,,,,,,,,,,OS ワークポインタ収得
+0xfff6,_SUPER_JSR,void,l,void (*%)(void),jobadr,l,struct dos_dregs *,inregs,l,struct dos_dregs *,outregs,,,,,,,,,,,,,,,,サブルーチンコール
+0xfff7,_BUS_ERR,int,l,void *,s_adr,l,void *,d_adr,w,int,size,,,,,,,,,,,,,,,,バスエラー発生検査
+0xfff7,#_MEMCPY,int,l,void *,s_adr,l,void *,d_adr,w,int,size,,,,,,,,,,,,,,,,バスエラー発生検査
+0xfff8,_OPEN_PR,int,l,const char *,name,w,int,count,l,int,init_usp,l,int,init_ssp,w,int,init_sr,l,int,init_pc,l,struct dos_prcctrl *,buffer,l,long,sleep_time,バックグラウンドタスク登録
+0xfff9,_KILL_PR,int,,,,,,,,,,,,,,,,,,,,,,,,,自己プロセス削除
+0xfffa,_GET_PR,int,w,int,id,l,struct dos_prcptr *,buffer,,,,,,,,,,,,,,,,,,,スレッド管理情報収得
+0xfffb,_SUSPEND_PR,int,w,int,id,,,,,,,,,,,,,,,,,,,,,,スレッド強制スリープ
+0xfffc,_SLEEP_PR,int,l,long,time,,,,,,,,,,,,,,,,,,,,,,スリープ
+0xfffd,_SEND_PR,int,w,int,my_id,w,int,your_id,w,int,cmdno,l,char *,buffer,l,long,len,,,,,,,,,,スレッドコマンド/データ送信
+0xfffe,_TIME_PR,long,,,,,,,,,,,,,,,,,,,,,,,,,タイマカウンタ値収得
+0xffff,_CHANGE_PR,void,,,,,,,,,,,,,,,,,,,,,,,,,実行権放棄
