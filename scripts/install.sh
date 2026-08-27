@@ -52,23 +52,14 @@ cat src/x68k.specs >> ${INSTALL_DIR}/lib/gcc/m68k-elf/specs
 mv ${INSTALL_DIR}/lib/gcc/m68k-elf/specs ${INSTALL_DIR}/lib/gcc/m68k-elf/[0-9]*
 
 (cd src/libx68k; make) || exit 1
-cp src/libx68k/libx68k.a ${INSTALL_DIR}/m68k-elf/lib
-cp src/libx68k/libx68knodos.a ${INSTALL_DIR}/m68k-elf/lib
-cp src/libx68k/libiocs/libx68kiocs.a ${INSTALL_DIR}/m68k-elf/lib
-cp src/libx68k/libdos/libx68kdos.a ${INSTALL_DIR}/m68k-elf/lib
-cp src/libx68k/libsocket/libsocket.a ${INSTALL_DIR}/m68k-elf/lib
-cp src/libx68k/libpthread/libpthread.a ${INSTALL_DIR}/m68k-elf/lib
-cp src/libx68k/crt0.o ${INSTALL_DIR}/m68k-elf/lib/x68kcrt0.o
-cp src/libx68k/crt0hupair.o ${INSTALL_DIR}/m68k-elf/lib/x68kcrt0hupair.o
-cp src/libx68k/crt0nodos.o ${INSTALL_DIR}/m68k-elf/lib/x68kcrt0nodos.o
+cp src/lib/*.a ${INSTALL_DIR}/m68k-elf/lib
+cp src/lib/x68kcrt*.o ${INSTALL_DIR}/m68k-elf/lib
 
 mkdir -p ${INSTALL_DIR}/m68k-elf/include/x68k
-cp -r src/libx68k/x68k ${INSTALL_DIR}/m68k-elf/include
+cp src/include/x68k/*.h ${INSTALL_DIR}/m68k-elf/include/x68k
 
 mkdir -p ${INSTALL_DIR}/m68k-elf/sys-include/sys
-cp src/_default_fcntl.h ${INSTALL_DIR}/m68k-elf/sys-include/sys
-cp src/dirent.h ${INSTALL_DIR}/m68k-elf/sys-include/sys
-cp src/features.h ${INSTALL_DIR}/m68k-elf/sys-include/sys
+cp src/include/sys/*.h ${INSTALL_DIR}/m68k-elf/sys-include/sys
 cp -r src/libx68k/libsocket/include/* ${INSTALL_DIR}/m68k-elf/sys-include
 cp -r src/libx68k/libpthread/include/* ${INSTALL_DIR}/m68k-elf/sys-include
 
