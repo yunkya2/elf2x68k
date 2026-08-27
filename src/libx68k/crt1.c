@@ -24,8 +24,8 @@ int 	__argc;
 char **	__argv;
 struct iocs_time	__ontime;
 
-static void
-setup_environ (void)
+__attribute__((weak, noinline)) void
+__crt1_setup_environ (void)
 {
   int env_size;
   char *cp;
@@ -189,7 +189,7 @@ __crt1_startup (void)
 {
   __ontime = _iocs_ontime ();
 
-  setup_environ ();
+  __crt1_setup_environ ();
   setup_arguments ();
 
   void __dosinit(void);
