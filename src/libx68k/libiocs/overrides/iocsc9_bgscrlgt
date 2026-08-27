@@ -1,0 +1,42 @@
+[lib]
+/* 0xc9 _BGSCRLGT: バックグラウンドスクロールレジスタの読み出し */
+/* int _iocs_bgscrlgt(int bg_num, int *x, int *y); */
+
+	.text
+	.even
+	.global _iocs_bgscrlgt
+	.type _iocs_bgscrlgt, @function
+
+_iocs_bgscrlgt:
+@gcc 	move.l	%d2, %sp@-
+	move.l	%d3, %sp@-
+@gcc 	move.l	%sp@(12), %d1
+@xc 	move.l	%sp@(8), %d1
+	moveq	#0xffffffc9, %d0
+	trap	#15
+	tst.l	%d0
+	bnes	1f
+@gcc 	movem.l	%sp@(16), %a0/%a1
+@xc 	movem.l	%sp@(12), %a0/%a1
+	move.l	%d2, %a0@
+	move.l	%d3, %a1@
+1:
+	move.l	%sp@+, %d3
+@gcc 	move.l	%sp@+, %d2
+	rts
+
+[inline]
+/* 0xc9 _BGSCRLGT: バックグラウンドスクロールレジスタの読み出し */
+/* args: d1=bg_num, a1=x, a2=y */
+static __inline__ int _iocs_bgscrlgt(int bg_num, int *x, int *y) {
+    register int _d1 __asm__("d1") = (int)bg_num;
+    register int _d2 __asm__("d2");
+    register int _d3 __asm__("d3");
+    register int _d0 __asm__("d0") = -55;
+    __asm__ __volatile__ ("trap #15" : "+d"(_d0),"+d"(_d1),"+d"(_d2),"+d"(_d3) : : "cc","memory");
+    if (_d0 == 0) {
+        *x = _d2;
+        *y = _d3;
+    }
+    return (int)_d0;
+}

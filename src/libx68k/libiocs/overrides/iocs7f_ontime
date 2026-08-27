@@ -1,0 +1,8 @@
+[inline]
+/* 0x7f _ONTIME: 起動後の経過時間を調べる */
+static __inline__ struct iocs_time _iocs_ontime(void) {
+    register int _d1 __asm__("d1");
+    register int _d0 __asm__("d0") = 127;
+    __asm__ __volatile__ ("trap #15" : "+d"(_d0), "+d"(_d1) : : "cc","memory");
+    return (struct iocs_time){_d0, _d1};
+}

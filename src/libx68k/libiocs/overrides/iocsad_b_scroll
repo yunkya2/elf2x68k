@@ -1,0 +1,34 @@
+[lib]
+/* 0xad _B_SCROLL: スムース/ラスタコピー/ソフトコピースクロールの指定 */
+/* void _iocs_b_scroll(int mode); */
+
+	.text
+	.even
+	.global _iocs_b_scroll
+	.type _iocs_b_scroll, @function
+
+_iocs_b_scroll:
+@gcc 	move.l	%d2, %sp@-
+@gcc 	move.l	%sp@(8), %d2
+@xc 	move.l	%sp@(4), %d2
+	moveq	#16, %d1
+	cmp.l	%d1, %d2
+	bcss	1f
+	move.l	%d2, %d1
+1:
+	moveq	#-83, %d0
+	trap	#15
+@gcc 	move.l	%sp@+, %d2
+	rts
+
+[inline]
+/* 0xad _B_SCROLL: スムース/ラスタコピー/ソフトコピースクロールの指定 */
+/* args: d1=mode */
+static __inline__ void _iocs_b_scroll(int mode) {
+    register int _d2 __asm__("d2") = (int)mode;
+    register int _d1 __asm__("d1");
+    register int _d0 __asm__("d0") = -83;
+    _d1 = mode < 16 ? 16: mode;
+    __asm__ __volatile__ ("trap #15" : "+d"(_d0),"+d"(_d1),"+d"(_d2) : : "cc","memory");
+    return;
+}

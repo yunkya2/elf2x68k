@@ -1,0 +1,34 @@
+[lib]
+/* 0xad _B_CURPAT: カーソルパターン指定 */
+/* void _iocs_b_curpat(int pattern); */
+
+	.text
+	.even
+	.global _iocs_b_curpat
+	.type _iocs_b_curpat, @function
+
+_iocs_b_curpat:
+@gcc 	movel	%d2, %sp@-
+@gcc 	movel	%sp@(8), %d2
+@xc 	movel	%sp@(4), %d2
+	tst.w	%d2
+	beqs	1f
+	moveq	#2, %d1
+	moveq	#-83, %d0
+	trap	#15
+1:
+@gcc 	movel	%sp@+, %d2
+	rts
+
+[inline]
+/* 0xad _B_CURPAT: カーソルパターン指定 */
+/* args: d1=#2, d2=parttern */
+static __inline__ void _iocs_b_curpat(int parttern) {
+    register int _d2 __asm__("d2") = (int)parttern;
+    register int _d1 __asm__("d1") = 2;
+    register int _d0 __asm__("d0") = -83;
+    if (parttern != 0) {
+        __asm__ __volatile__ ("trap #15" : "+d"(_d0),"+d"(_d1),"+d"(_d2) : : "cc","memory");
+    }
+    return;
+}

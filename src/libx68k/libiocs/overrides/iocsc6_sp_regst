@@ -1,0 +1,35 @@
+[lib]
+/* 0xc6 _SP_REGST: スプライトレジスタの設定 */
+/* int _iocs_sp_regst(int spriteno, int mode, int x, int y, int code, int prw); */
+
+	.text
+	.even
+	.global _iocs_sp_regst
+	.type _iocs_sp_regst, @function
+
+_iocs_sp_regst:
+@gcc 	moveml	%d2/%d3/%d4/%d5, %sp@-
+@gcc 	moveml	%sp@(20), %d0/%d1/%d2/%d3/%d4/%d5
+@xc 	moveml	%d3/%d4/%d5, %sp@-
+@xc 	moveml	%sp@(16), %d0/%d1/%d2/%d3/%d4/%d5
+	and.l	#0x80000000, %d1
+	move.b	%d0, %d1
+	moveq	#-58, %d0
+	trap	#15
+@gcc 	moveml	%sp@+,%d2/%d3/%d4/%d5
+@xc 	moveml	%sp@+,%d3/%d4/%d5
+	rts
+
+[inline]
+/* 0xc6 _SP_REGST: スプライトレジスタの設定 */
+/* args: d0=spriteno, d1=mode, d2=x, d3=y, d4=code, d5=prw */
+static __inline__ int _iocs_sp_regst(int spriteno, int mode, int x, int y, int code, int prw) {
+    register int _d1 __asm__("d1") = ((int)spriteno | ((int)mode & 0x80000000));
+    register int _d2 __asm__("d2") = (int)x;
+    register int _d3 __asm__("d3") = (int)y;
+    register int _d4 __asm__("d4") = (int)code;
+    register int _d5 __asm__("d5") = (int)prw;
+    register int _d0 __asm__("d0") = -58;
+    __asm__ __volatile__ ("trap #15" : "+d"(_d0),"+d"(_d0),"+d"(_d1),"+d"(_d2),"+d"(_d3),"+d"(_d4),"+d"(_d5) : : "cc","memory");
+    return (int)_d0;
+}

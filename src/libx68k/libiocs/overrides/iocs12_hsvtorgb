@@ -1,0 +1,33 @@
+[lib]
+/* 0x12 _HSVTORGB: HSV→RGB 変換 */
+/* int _iocs_hsvtorgb(int h, int s, int v) __attribute__((const)); */
+
+	.text
+	.even
+	.global _iocs_hsvtorgb
+	.type _iocs_hsvtorgb, @function
+
+_iocs_hsvtorgb:
+	moveb	%sp@(7), %d1
+	swap	%d1
+	moveb	%sp@(11), %d1
+	lslw	#8, %d1
+	moveb	%sp@(15), %d1
+	andl	#0x00ff1f1f, %d1
+	moveq	#18, %d0
+	trap	#15
+	rts
+
+[inline]
+/* 0x12 _HSVTORGB: HSV→RGB 変換 */
+/* args: d1h=h, d1hb=s, d1b=v */
+__attribute__((const))
+static __inline__ int _iocs_hsvtorgb(int h, int s, int v) {
+    register int _d1 __asm__("d1") = 0;
+    _d1 |= (((int)h) & 0xff) << 16;
+    _d1 |= (((int)s) & 0x1f) << 8;
+    _d1 |= ((int)v) & 0x1f;
+    register int _d0 __asm__("d0") = 18;
+    __asm__ __volatile__ ("trap #15" : "+d"(_d0),"+d"(_d1) : : "cc","memory");
+    return (int)_d0;
+}

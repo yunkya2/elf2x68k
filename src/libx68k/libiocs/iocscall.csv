@@ -1,0 +1,282 @@
+﻿0xff,#_trap15,int,a1,struct iocs_regs *,inregs,a2,struct iocs_regs *,outregs,,,,,,,,,,,,,IOCS コール実行
+0x00,_B_KEYINP,int,,,,,,,,,,,,,,,,,,,キーデータの読み込み
+0x01,_B_KEYSNS,int,,,,,,,,,,,,,,,,,,,キーの入力検査
+0x02,_B_SFTSNS,int,,,,,,,,,,,,,,,,,,,シフトキー状態の収得
+0x03,_KEY_INIT,void,d1,int,led_mode,,,,,,,,,,,,,,,,入力関係の初期化
+0x04,_BITSNS,int,d1,int,group,,,,,,,,,,,,,,,,キー状態の収得
+0x05,_SKEYSET,void,d1,int,scancode,,,,,,,,,,,,,,,,キー入力の発生
+0x06,_LEDCTRL,void,d1,int,state,,,,,,,,,,,,,,,,キーボード LED の設定
+0x07,_LEDSET,void,,,,,,,,,,,,,,,,,,,キーボード LED をキー入力モードに合わせる
+0x08,_KEYDLY,void,d1,int,delay,,,,,,,,,,,,,,,,キーリピートの開始時間設定
+0x09,_KEYREP,void,d1,int,interval,,,,,,,,,,,,,,,,キーリピートの間隔設定
+#0x0a,_OPT2TVON,int,,,,,,,,,,,,,,,,,,,OPT.2 によるテレビコントロール許可
+#0x0b,_OPT2TVOFF,int,,,,,,,,,,,,,,,,,,,OPT.2 によるテレビコントロール禁止
+0x0c,_TVCTRL,void,d1,int,code,,,,,,,,,,,,,,,,テレビコントロール
+0x0d,_LEDMOD,void,d1,int,key_no,d2,int,on_off,,,,,,,,,,,,,LED モードの設定
+0x0e,_TGUSEMD,int,d1,int,screen,d2,int,mode,,,,,,,,,,,,,画面の使用状態の設定
+0x0f,_DEFCHR,int,d1h,int,size,d1l,int,code,a1,const void *,pat,,,,,,,,,,外字定義
+0x10,_CRTMOD,int,d1,int,mode,,,,,,,,,,,,,,,,CRT モード設定
+0x11,_CONTRAST,int,d1,int,level,,,,,,,,,,,,,,,,コントラスト設定
+0x12,_HSVTORGB,%int,d1h,int,h,d1hb,int,s,d1b,int,v,,,,,,,,,,HSV→RGB 変換
+0x13,_TPALET,int,d1,int,code,d2,int,color,,,,,,,,,,,,,テキストパレット設定
+0x14,_TPALET2,int,d1,int,code,d2,int,color,,,,,,,,,,,,,テキストパレット独立設定
+0x15,_TCOLOR,void,d1,int,plane,,,,,,,,,,,,,,,,テキストプレーン指定
+0x16,,int,d1,int,size_code,,,,,,,,,,,,,,,,フォントアドレスの収得
+0x17,_VRAMGET,void,d1,int,xbytes_1,d2,int,ydots_1,d3,int,stride,a1,void *,buf,a2,void *,vram,,,,テキスト VRAM のバイト単位読み込み
+0x18,_VRAMPUT,void,d1,int,xbytes_1,d2,int,ydots_1,d3,int,stride,a1,const void *,buf,a2,void *,vram,,,,テキスト VRAM のバイト単位書き込み
+0x19,_FNTGET,int,d1h,int,size,d1l,int,code,a1,struct iocs_fntbuf *,buf,,,,,,,,,,フォント読み込み
+0x1a,_TEXTGET,void,d1,int,x,d2,int,y,a1,struct iocs_fntbuf *,buf,,,,,,,,,,テキスト VRAM のドット単位読み込み
+0x1b,_TEXTPUT,void,d1,int,x,d2,int,y,a1,const struct iocs_fntbuf *,buf,,,,,,,,,,テキスト VRAM のドット単位書き込み
+0x1c,_CLIPPUT,void,d1,int,x,d2,int,y,a1,const struct iocs_fntbuf *,buf,a2,const struct iocs_clipxy *,clip,,,,,,,テキスト VRAM のドット単位書き込み(クリッピング処理あり)
+0x1d,_SCROLL,void,d1,int,mode,d2,int,x,d3,int,y,,,,,,,,,,表示座標の設定
+0x1e,_B_CURON,void,,,,,,,,,,,,,,,,,,,カーソル点滅の一時停止解除
+0x1f,_B_CUROFF,void,,,,,,,,,,,,,,,,,,,カーソル点滅の一時停止
+0x20,_B_PUTC,int,d1,int,ch,,,,,,,,,,,,,,,,文字表示
+0x21,_B_PRINT,int,a1,const char *,str,,,,,,,,,,,,,,,,文字列表示
+0x22,_B_COLOR,int,d1,int,attr,,,,,,,,,,,,,,,,表示色設定
+0x23,_B_LOCATE,int,d1,int,col,d2,int,row,,,,,,,,,,,,,カーソル移動
+0x24,_B_DOWN_S,void,,,,,,,,,,,,,,,,,,,カーソルを1行下に移動
+0x25,_B_UP_S,void,,,,,,,,,,,,,,,,,,,カーソルを1行上に移動
+0x26,_B_UP,void,d1,int,count,,,,,,,,,,,,,,,,カーソルを指定行数だけ上に移動
+0x27,_B_DOWN,void,d1,int,count,,,,,,,,,,,,,,,,カーソルを指定行数だけ下に移動
+0x28,_B_RIGHT,void,d1,int,count,,,,,,,,,,,,,,,,カーソルを指定桁数だけ右に移動
+0x29,_B_LEFT,void,d1,int,count,,,,,,,,,,,,,,,,カーソルを指定桁数だけ左に移動
+0x2a,#_B_CLR_ED,void,d1,0,,,,,,,,,,,,,,,,,画面の複数行消去(カーソル位置から最終行右端まで)
+0x2a,_B_CLR_ST,void,d1,1,,,,,,,,,,,,,,,,,画面の複数行消去(先頭行左端からカーソル位置まで)
+0x2a,#_B_CLR_AL,void,d1,2,,,,,,,,,,,,,,,,,画面の複数行消去(画面全体)
+0x2b,#_B_ERA_ED,void,d1,0,,,,,,,,,,,,,,,,,現在行の複数桁消去(カーソル位置から右端まで)
+0x2b,_B_ERA_ST,void,d1,1,,,,,,,,,,,,,,,,,現在行の複数桁消去(左端からカーソル位置まで)
+0x2b,#_B_ERA_AL,void,d1,2,,,,,,,,,,,,,,,,,現在行の複数桁消去(カーソル行全体)
+0x2c,_B_INS,void,d1,int,count,,,,,,,,,,,,,,,,複数行挿入
+0x2d,_B_DEL,void,d1,int,count,,,,,,,,,,,,,,,,複数行削除
+0x2e,_B_CONSOL,int=d2,d1h,int,x1,d1l,int,y1,d2h,int,x2,d2l,int,y2,,,,,,,表示範囲設定
+0x2f,_B_PUTMES,int=d2,d1,int,attr,d2,int,col,d3,int,row,d4,int,width,a1,const char *,str,,,,座標指定文字列表示
+0x30,_SET232C,int,d1,int,config,,,,,,,,,,,,,,,,RS-232C パラメータ設定
+0x31,_LOF232C,int,,,,,,,,,,,,,,,,,,,RS-232C 受信バッファのデータ数を求める
+0x32,_INP232C,int,,,,,,,,,,,,,,,,,,,RS-232C 受信データを得る
+0x33,_ISNS232C,int,,,,,,,,,,,,,,,,,,,RS-232C 受信データの検査
+0x34,_OSNS232C,int,,,,,,,,,,,,,,,,,,,RS-232C データが送信可能か検査する
+0x35,_OUT232C,void,d1,int,data,,,,,,,,,,,,,,,,RS-232C データ送信
+#0x36,_MS_VCS,int,d1,int,handler,d2,int,counter,,,,,,,,,,,,,マウスデータ受信時の処理アドレス設定
+#0x37,_EXESC,int,d1,int,handler,,,,,,,,,,,,,,,,ESC[> 系エスケープシーケンスの拡張処理アドレス設定
+0x38,_SETFNTADR,int,d1,int,addr,d2,int,group,,,,,,,,,,,,,外字フォントアドレス設定
+#0x39,_SETBEEP,int,d1,int,addr,d2,int,size,,,,,,,,,,,,,BEEP 音用 ADPCM のデータ設定
+#0x3a,_SETPRN,int,a1,const void *,params,,,,,,,,,,,,,,,,プリンターパラメータ設定
+0x3b,_JOYGET,int,d1,int,joy_num,,,,,,,,,,,,,,,,ジョイスティック入力
+0x3c,_INIT_PRN,int,d1hb,int,lines,d1b,int,cols,,,,,,,,,,,,,プリンター初期化
+0x3d,_SNSPRN,int,,,,,,,,,,,,,,,,,,,プリンターに出力可能か検査する
+0x3e,_OUTLPT,void,d1,int,data,,,,,,,,,,,,,,,,プリンター直接出力
+0x3f,_OUTPRN,void,d1,int,data,,,,,,,,,,,,,,,,プリンター出力
+0x40,_B_SEEK,int,d1,int,pda_mode,d2,int,position,,,,,,,,,,,,,ディスクのシーク
+0x41,_B_VERIFY,int,d1,int,pda_mode,d2,int,pos,d3,int,size,a1,const void *,data,,,,,,,ディスクのベリファイ
+0x42,_B_READDI,int,d1,int,pda_mode,d2,int,pos,d3,int,size,a1,void *,buf,,,,,,,ディスクの診断の為の読み出し
+0x43,_B_DSKINI,int,d1,int,pda,a1,const void *,specify,d2,int,motor_off,,,,,,,,,,ドライブの初期化
+0x44,_B_DRVSNS,int,d1,int,pda,,,,,,,,,,,,,,,,ドライブの状態検査
+0x45,_B_WRITE,int,d1,int,pda_mode,d2,int,pos,d3,int,size,a1,const void *,data,,,,,,,ディスクへの書き込み
+0x46,_B_READ,int,d1,int,pda_mode,d2,int,pos,d3,int,size,a1,void *,buf,,,,,,,ディスクからの読み込み
+0x47,_B_RECALI,int,d1,int,pda_mode,,,,,,,,,,,,,,,,ディスクのリキャリブレイト
+0x48,_B_ASSIGN,int,d1,int,pda,d2,int,record,d3,int,interleave,a1,const void *,alt,,,,,,,ハードディスクの代替トラック設定
+0x49,_B_WRITED,int,d1,int,pda_mode,d2,int,pos,d3,int,size,a1,const void *,data,,,,,,,2HD への破損データ書き込み
+0x4a,_B_READID,int,d1,int,pda_mode,d2,int,pos,=d2,void *,id_out,,,,,,,,,,2HD の ID 情報の読み出し
+0x4b,_B_BADFMT,int,d1,int,pda,d2,int,record,d3,int,interleave,,,,,,,,,,ハードディスクの破損トラックを使用不能にする
+0x4c,_B_READDL,int,d1,int,pda_mode,d2,int,pos,d3,int,size,a1,void *,buf,,,,,,,2HD からの破損データ読み込み
+0x4d,_B_FORMAT,int,d1,int,pda_mode,d2,int,pos,d3,int,id_size,a1,const void *,id_data,,,,,,,ディスクのフォーマット
+0x4e,_B_DRVCHK,int,d1,int,pda,d2,int,mode,,,,,,,,,,,,,2HD ドライブの状態設定
+0x4f,_B_EJECT,int,d1,int,pda,,,,,,,,,,,,,,,,ディスクのイジェクト/シッピング
+0x50,_DATEBCD,,,,,,,,,,,,,,,,,,,,日付データのバイナリ→BCD 変換
+0x50,#_BINDATEBCD,int,d1,int,date_bin,,,,,,,,,,,,,,,,日付データのバイナリ→BCD 変換
+0x51,_DATESET,,,,,,,,,,,,,,,,,,,,日付の設定
+0x51,#_BINDATESET,void,d1,int,date_bcd,,,,,,,,,,,,,,,,日付の設定
+0x52,_TIMEBCD,int,d1,int,time_bin,,,,,,,,,,,,,,,,時刻データのバイナリ→BCD 変換
+0x53,_TIMESET,void,d1,int,time_bcd,,,,,,,,,,,,,,,,時刻の設定
+0x54,_DATEGET,,,,,,,,,,,,,,,,,,,,日付の読み込み
+0x54,#_BINDATEGET,int,,,,,,,,,,,,,,,,,,,日付の読み込み
+0x55,_DATEBIN,int,d1,int,date_bcd,,,,,,,,,,,,,,,,日付データの BCD→バイナリ変換
+0x56,_TIMEGET,int,,,,,,,,,,,,,,,,,,,時刻の読み込み
+0x57,_TIMEBIN,int,d1,int,time_bcd,,,,,,,,,,,,,,,,時刻データの BCD→バイナリ変換
+0x58,_DATECNV,int,a1,const char *,str,,,,,,,,,,,,,,,,日付データの文字列→バイナリ変換
+0x59,_TIMECNV,int,a1,const char *,str,,,,,,,,,,,,,,,,時刻データの文字列→バイナリ変換
+0x5a,_DATEASC,int,d1,int,date_bin_fmt,a1,char *,buf,,,,,,,,,,,,,日付データのバイナリ→文字列変換
+0x5b,_TIMEASC,int,d1,int,time_bin,a1,char *,buf,,,,,,,,,,,,,時刻データのバイナリ→文字列変換
+0x5c,_DAYASC,void,d1,int,weekday,a1,char *,buf,,,,,,,,,,,,,曜日データのバイナリ→文字列変換
+0x5d,_ALARMMOD,int,d1,int,mode,,,,,,,,,,,,,,,,アラーム許可/禁止
+0x5e,_ALARMSET,int,d1,int,alarm_time,d2,int,power_off_time,a1,int,alarm_addr,,,,,,,,,,アラーム設定
+0x5f,_ALARMGET,int,=d1,int *,alarm_time,=d2,int *,power_off_time,=d0,int *,alarm_addr,,,,,,,,,,アラームの設定状態を収得
+0x60,_ADPCMOUT,void,a1,const void *,addr,d1,int,mode,d2,int,size,,,,,,,,,,ADPCM 出力
+0x61,_ADPCMINP,void,a1,void *,addr,d1,int,mode,d2,int,size,,,,,,,,,,ADPCM 入力
+0x62,_ADPCMAOT,void,a1,const struct iocs_chain *,tbl,d1,int,mode,d2,int,count,,,,,,,,,,ADPCM 出力(アレイチェーン)
+0x63,_ADPCMAIN,void,a1,const struct iocs_chain *,tbl,d1,int,mode,d2,int,count,,,,,,,,,,ADPCM 入力(アレイチェーン)
+0x64,_ADPCMLOT,void,a1,const struct iocs_chain2 *,chain,d1,int,mode,,,,,,,,,,,,,ADPCM 出力(リンクアレイチェーン)
+0x65,_ADPCMLIN,void,a1,const struct iocs_chain2 *,chain,d1,int,mode,,,,,,,,,,,,,ADPCM 入力(リンクアレイチェーン)
+0x66,_ADPCMSNS,int,,,,,,,,,,,,,,,,,,,ADPCM 状態検査
+0x67,_ADPCMMOD,void,d1,int,ctrl,,,,,,,,,,,,,,,,ADPCM 実行制御
+0x68,_OPMSET,void,d1,int,reg,d2,int,data,,,,,,,,,,,,,OPM レジスタ設定
+0x69,_OPMSNS,int,,,,,,,,,,,,,,,,,,,OPM 状態検査
+0x6a,_OPMINTST,int,a1,const void *,handler,,,,,,,,,,,,,,,,OPM 割り込み設定
+0x6b,_TIMERDST,int,a1,const void *,handler,d1hb,int,mode,d1b,int,val,,,,,,,,,,Timer-D 割り込み設定
+0x6c,_VDISPST,int,a1,const void *,handler,d1hb,int,mode,d1b,int,val,,,,,,,,,,垂直同期(Timer-A)割り込み設定
+0x6d,_CRTCRAS,int,a1,const void *,handler,d1,int,raster,,,,,,,,,,,,,ラスター割り込み設定
+0x6e,_HSYNCST,int,a1,const void *,handler,,,,,,,,,,,,,,,,水平同期割り込み設定
+0x6f,_PRNINTST,int,a1,const void *,handler,,,,,,,,,,,,,,,,プリンター割り込み設定
+0x70,_MS_INIT,void,,,,,,,,,,,,,,,,,,,マウス初期化
+0x71,_MS_CURON,void,,,,,,,,,,,,,,,,,,,マウスカーソル表示
+0x72,_MS_CUROF,void,,,,,,,,,,,,,,,,,,,マウスカーソル消去
+0x73,_MS_STAT,int,,,,,,,,,,,,,,,,,,,マウスカーソルの表示状態を調べる
+0x74,_MS_GETDT,int,,,,,,,,,,,,,,,,,,,マウス移動量/ボタン状態を調べる
+0x75,_MS_CURGT,int,,,,,,,,,,,,,,,,,,,マウスカーソルの座標収得
+0x76,_MS_CURST,int,d1h,int,x,d1l,int,y,,,,,,,,,,,,,マウスカーソルの座標設定
+0x77,_MS_LIMIT,int,d1h,int,x1,d1l,int,y1,d2h,int,x2,d2l,int,y2,,,,,,,マウスカーソルの移動範囲設定
+0x78,_MS_OFFTM,int,d1,int,button,d2,int,timeout,,,,,,,,,,,,,マウスのボタンを離すまでの時間を調べる
+0x79,_MS_ONTM,int,d1,int,button,d2,int,timeout,,,,,,,,,,,,,マウスのボタンを押すまでの時間を調べる
+0x7a,_MS_PATST,void,d1,int,cursor_num,a1,const struct iocs_patst *,pat,,,,,,,,,,,,,マウスカーソルのパターン定義
+0x7b,_MS_SEL,void,d1,int,cursor_num,,,,,,,,,,,,,,,,マウスカーソルのパターン選択
+0x7c,_MS_SEL2,void,a1,const short *,num_table,,,,,,,,,,,,,,,,マウスカーソルのアニメーション
+0x7d,_SKEY_MOD,int,d1,int,ctrl,d2h,int,x,d2l,int,y,,,,,,,,,,ソフトキーボード制御
+0x7e,_DENSNS,void,,,,,,,,,,,,,,,,,,,電卓制御
+0x7f,_ONTIME,struct iocs_time,,,,,,,,,,,,,,,,,,,起動後の経過時間を調べる
+0x80,_B_INTVCS,int,d1,int,vec_num,a1,void *,handler,,,,,,,,,,,,,ベクタ設定
+0x81,_B_SUPER,int,a1,int,ssp_or_zero,,,,,,,,,,,,,,,,スーパーバイザ/ユーザモードの切り換え
+0x82,_B_BPEEK,int,a1,const void *,addr,,,,,,,,,,,,,,,,指定アドレスから 1 バイト読み込み
+0x83,_B_WPEEK,int,a1,const void *,addr,,,,,,,,,,,,,,,,指定アドレスから 1 ワード読み込み
+0x84,_B_LPEEK,int,a1,const void *,addr,,,,,,,,,,,,,,,,指定アドレスから 1 ロングワード読み込み
+0x85,_B_MEMSTR,void,a1,const void *,src,a2,void *,dst,d1,int,count_1,,,,,,,,,,指定アドレスから複数バイト読み込み
+0x86,_B_BPOKE,void,a1,void *,addr,d1,int,data,,,,,,,,,,,,,指定アドレスヘ 1 バイト書き込み
+0x87,_B_WPOKE,void,a1,void *,addr,d1,int,data,,,,,,,,,,,,,指定アドレスヘ 1 ワード書き込み
+0x88,_B_LPOKE,void,a1,void *,addr,d1,int,data,,,,,,,,,,,,,指定アドレスヘ 1 ロングワード書き込み
+0x89,_B_MEMSET,void,a1,void *,dst,a2,const void *,src,d1,int,count_1,,,,,,,,,,指定アドレスヘ複数バイト書き込み
+0x8a,_DMAMOVE,void,a1,void *,src,a2,void *,dst,d1,int,mode,d2,int,size,,,,,,,DMA 転送
+0x8b,_DMAMOV_A,void,a1,const struct iocs_chain *,tbl,a2,void *,dst,d1,int,mode,d2,int,count,,,,,,,DMA 転送(アレイチェーン)
+0x8c,_DMAMOV_L,void,a1,const struct iocs_chain2 *,chain,a2,void *,dst,d1,int,mode,,,,,,,,,,DMA 転送(リンクアレイチェーン)
+0x8d,_DMAMODE,int,,,,,,,,,,,,,,,,,,,DMA 状態検査
+0x8e,_BOOTINF,%int,,,,,,,,,,,,,,,,,,,起動情報を得る
+0x8f,_ROMVER,%int,,,,,,,,,,,,,,,,,,,ROM バージョンを得る
+0x90,_G_CLR_ON,void,,,,,,,,,,,,,,,,,,,グラフィック画面の初期化及び表示モードの設定
+#0x91,_G_MOD,int,d1,int,mode,,,,,,,,,,,,,,,,グラフィック画面モードの設定
+#0x92,_PRIORITY,int,d1,int,prio,,,,,,,,,,,,,,,,プライオリティ設定
+#0x93,_CRTMOD2,int,d1,int,mode,,,,,,,,,,,,,,,,画面表示及び特殊モードの設定
+0x94,_GPALET,int,d1,int,code,d2,int,color,,,,,,,,,,,,,グラフィックパレット設定
+#0x95,_PENCOLOR,int,d1,int,code,,,,,,,,,,,,,,,,カラーコード設定
+#0x96,_SET_PAGE,int,d1,int,page,,,,,,,,,,,,,,,,アクセスページ設定
+#0x97,_GGET,int,d1,int,x,d2,int,y,a1,void *,buf,,,,,,,,,,グラフィック VRAM のドット単位読み込み
+#0x98,_MASK_GPUT,int,d1,int,x,d2,int,y,d3,int,mask_color,a1,void *,buf,,,,,,,グラフィック VRAM のドット単位書き込み(色マスクあり)
+#0x99,_GPUT,int,d1,int,x,d2,int,y,a1,void *,buf,,,,,,,,,,グラフィック VRAM のドット単位書き込み
+#0x9a,_GPTRN,int,d1,int,x,d2,int,y,a1,void *,buf,,,,,,,,,,グラフィック VRAM のビットパターン書き込み
+#0x9b,_BK_GPTRN,int,d1,int,x,d2,int,y,d3,int,back_color,a1,void *,buf,,,,,,,グラフィック VRAM のビットパターン書き込み(バックカラーあり)
+#0x9c,_X_GPTRN,int,d1,int,x,d2,int,y,d3,int,xscale,d4,int,yscale,a1,void *,buf,,,,グラフィック VRAM のビットパターン拡大書き込み
+0xa0,_SFTJIS,%int,d1,int,sjis,,,,,,,,,,,,,,,,S-JIS→JIS コード変換
+0xa1,_JISSFT,%int,d1,int,jis,,,,,,,,,,,,,,,,JIS→S-JIS コード変換
+0xa2,_AKCONV,%int,d1h,int,mode,d1l,int,code,,,,,,,,,,,,,ANK→S-JIS コード変換
+0xa3,_RMACNV,int,d1,int,alpha,a1,char *,work,a2,char *,result_ptr,,,,,,,,,,ローマ字→ANK カナ変換
+0xa4,_DAKJOB,int,a1,char *,str_ptr,,,,,,,,,,,,,,,,濁点処理
+0xa5,_HANJOB,int,a1,char *,str_ptr,,,,,,,,,,,,,,,,半濁点処理
+0xac,_SYS_STAT,,,,,,,,,,,,,,,,,,,,システム状態の設定
+0xad,_B_CONMOD,,,,,,,,,,,,,,,,,,,,カーソルおよびスクロールの設定
+0xae,_OS_CURON,void,,,,,,,,,,,,,,,,,,,カーソル点滅開始
+0xaf,_OS_CUROF,void,,,,,,,,,,,,,,,,,,,カーソル点滅終了
+0xb0,_DRAWMODE,int,d1,int,mode,,,,,,,,,,,,,,,,グラフィック描画モードの設定
+0xb1,_APAGE,int,d1,int,page,,,,,,,,,,,,,,,,グラフィック描画ページの設定
+0xb2,_VPAGE,int,d1,int,page_bits,,,,,,,,,,,,,,,,グラフィック画面表示ページの設定
+0xb3,_HOME,int,d1,int,page_bits,d2,int,x,d3,int,y,,,,,,,,,,グラフィック画面の表示位置設定
+0xb4,_WINDOW,int,d1,int,x0,d2,int,y0,d3,int,x1,d4,int,y1,,,,,,,グラフィック描画ウィンドウの設定
+0xb5,_WIPE,int,,,,,,,,,,,,,,,,,,,グラフィック画面のクリア
+0xb6,_PSET,int,a1,const struct iocs_psetptr *,p,,,,,,,,,,,,,,,,グラフィック画面のポイントセット
+0xb7,_POINT,int,a1,const struct iocs_pointptr *,p,,,,,,,,,,,,,,,,グラフィック画面のポイントゲット
+0xb8,_LINE,int,a1,const struct iocs_lineptr *,p,,,,,,,,,,,,,,,,グラフィック画面のライン
+0xb9,_BOX,int,a1,const struct iocs_boxptr *,p,,,,,,,,,,,,,,,,グラフィック画面のボックス
+0xba,_FILL,int,a1,const struct iocs_fillptr *,p,,,,,,,,,,,,,,,,グラフィック画面のボックスフィル
+0xbb,_CIRCLE,int,a1,const struct iocs_circleptr *,p,,,,,,,,,,,,,,,,グラフィック画面のサークル
+0xbc,_PAINT,int,a1,struct iocs_paintptr *,p,,,,,,,,,,,,,,,,グラフィック画面のペイント
+0xbd,_SYMBOL,int,a1,const struct iocs_symbolptr *,p,,,,,,,,,,,,,,,,グラフィック画面のシンボル
+0xbe,_GETGRM,int,a1,struct iocs_getptr *,p,,,,,,,,,,,,,,,,グラフィック画面のドット単位読み込み
+0xbf,_PUTGRM,int,a1,const struct iocs_putptr *,p,,,,,,,,,,,,,,,,グラフィック画面のドット単位書き込み
+0xc0,_SP_INIT,int,,,,,,,,,,,,,,,,,,,スプライト初期化
+0xc1,_SP_ON,int,,,,,,,,,,,,,,,,,,,スプライト表示
+0xc2,_SP_OFF,void,,,,,,,,,,,,,,,,,,,スプライト消去
+0xc3,_SP_CGCLR,int,d1,int,pattern_code,,,,,,,,,,,,,,,,スプライトパターンのクリア
+0xc4,_SP_DEFCG,int,d1,int,code,d2,int,size,a1,const void *,data,,,,,,,,,,スプライトパターンの定義
+0xc5,_SP_GTPCG,int,d1,int,code,d2,int,size,a1,void *,buf,,,,,,,,,,スプライトパターンの読み込み
+0xc6,_SP_REGST,int,d0,int,spriteno,d1,int,mode,d2,int,x,d3,int,y,d4,int,code,d5,int,prw,スプライトレジスタの設定
+0xc7,_SP_REGGT,int,d1,int,spriteno,=d2,int *,x,=d3,int *,y,=d4,int *,code,=d5,int *,prw,,,,スプライトレジスタの読み出し
+0xc8,_BGSCRLST,int,d1,int,vblank_bg,d2,int,x,d3,int,y,,,,,,,,,,バックグラウンドスクロールレジスタの設定
+0xc9,_BGSCRLGT,int,d1,int,bg_num,=d2,int *,x,=d3,int *,y,,,,,,,,,,バックグラウンドスクロールレジスタの読み出し
+0xca,_BGCTRLST,int,d1,int,bg,d2,int,text_page,d3,int,show,,,,,,,,,,バックグラウンドコントロールレジスタの設定
+0xcb,_BGCTRLGT,int,d1,int,bg,,,,,,,,,,,,,,,,バックグラウンドコントロールレジスタの読み出し
+0xcc,_BGTEXTCL,int,d1,int,text_page,d2,int,pattern_code,,,,,,,,,,,,,バックグラウンドテキストのクリア
+0xcd,_BGTEXTST,int,d1,int,text_page,d2,int,x,d3,int,y,d4,int,pattern,,,,,,,バックグラウンドテキストの設定
+0xce,_BGTEXTGT,int,d1,int,text_page,d2,int,x,d3,int,y,,,,,,,,,,バックグラウンドテキストの読み出し
+0xcf,_SPALET,int,d1,int,vblank_pal,d2,int,block,d3,int,color,,,,,,,,,,スプライトパレットの設定
+#0xd0,_MACS_CALL,,,,,,,,,,,,,,,,,,,,(ユーザ拡張) MACS 制御
+#0xd1,_MOON,,,,,,,,,,,,,,,,,,,,(ユーザ拡張) MOON 制御
+0xd3,_TXXLINE,void,a1,const struct iocs_xlineptr *,p,,,,,,,,,,,,,,,,テキスト画面の水平ライン
+0xd4,_TXYLINE,void,a1,const struct iocs_ylineptr *,p,,,,,,,,,,,,,,,,テキスト画面の垂直ライン
+0xd5,_TXLINE,void,a1,const struct iocs_tlineptr *,p,,,,,,,,,,,,,,,,テキスト画面のライン
+0xd6,_TXBOX,void,a1,const struct iocs_tboxptr *,p,,,,,,,,,,,,,,,,テキスト画面のボックス
+0xd7,_TXFILL,void,a1,const struct iocs_txfillptr *,p,,,,,,,,,,,,,,,,テキスト画面のボックスフィル
+0xd8,_TXREV,void,a1,const struct iocs_trevptr *,p,,,,,,,,,,,,,,,,テキスト画面の反転
+0xdf,_TXRASCPY,void,d1,int,src_dst_packed,d2,int,count,d3,int,dir_planes,,,,,,,,,,テキスト画面のラスターコピー
+0xf0,_OPMDRV,,,,,,,,,,,,,,,,,,,,OPMDRV 制御
+0xf1,_RSDRV,,,,,,,,,,,,,,,,,,,,拡張 RS-232C 制御
+0xf2,_A_JOY,int,d1,int,func,d2,int,param,a1,void *,buf,,,,,,,,,,アナログジョイスティック制御
+#0xf3,_MUSICDRV,,,,,,,,,,,,,,,,,,,,MUSICDRV 制御
+#0xf4,,,,,,,,,,,,,,,,,,,,,(ユーザ拡張) Mercury Driver 制御
+0xf5,_SCSIDRV,,,,,,,,,,,,,,,,,,,,SCSI IOCS
+#0xf8,,,,,,,,,,,,,,,,,,,,,(ユーザ拡張) TS-6BE16 ハイメモリ制御
+#0xf9,,,,,,,,,,,,,,,,,,,,,(ユーザ拡張) TS-6BGA グラフィック制御
+0xfd,_ABORTRST,void,,,,,,,,,,,,,,,,,,,アボートする為に環境を再設定する
+0xfe,_IPLERR,!void,,,,,,,,,,,,,,,,,,,再起動する
+0xff,_ABORTJOB,!void,,,,,,,,,,,,,,,,,,,アボート
+,,,,,,,,,,,,,,,,,,,,,
+0xf5,%_S_RESET,void,d1,0x00,,,,,,,,,,,,,,,,,SPC のリセット及び SCSI バスのリセット
+0xf5,%_S_SELECT,int,d1,0x01,,d4,int,target,,,,,,,,,,,,,アービトレーションフェーズとセレクションフェーズの実行
+0xf5,%_S_SELECTA,int,d1,0x02,,d4,int,target,,,,,,,,,,,,,アービトレーションフェーズとセレクションフェーズの実行
+0xf5,%_S_CMDOUT,int,d1,0x03,,d3,int,command_size,a1,const void *,cdb,,,,,,,,,,コマンドアウトフェーズの実行
+0xf5,%_S_DATAIN,int,d1,0x04,,d3,int,read_size,a1,void *,buf,,,,,,,,,,データインフェーズの実行
+0xf5,%_S_DATAOUT,int,d1,0x05,,d3,int,write_size,a1,const void *,data,,,,,,,,,,データアウトフェーズの実行
+0xf5,%_S_STSIN,int,d1,0x06,,a1,void *,buf,,,,,,,,,,,,,ステータスインフェーズの実行
+0xf5,%_S_MSGIN,int,d1,0x07,,a1,void *,buf,,,,,,,,,,,,,メッセージインフェーズの実行
+0xf5,%_S_MSGOUT,int,d1,0x08,,a1,const void *,data,,,,,,,,,,,,,メッセージアウトフェーズの実行
+0xf5,%_S_PHASE,int,d1,0x09,,,,,,,,,,,,,,,,,フェーズセンス
+0xf5,%_S_LEVEL,int,d1,0x0a,,,,,,,,,,,,,,,,,SCSI IOCS のバージョンを調べる
+0xf5,%_S_DATAINI,int,d1,0x0b,,d3,int,read_size,a1,void *,buf,,,,,,,,,,データインフェーズの実行
+0xf5,%_S_DATAOUTI,int,d1,0x0c,,d3,int,write_size,a1,const void *,data,,,,,,,,,,データアウトフェーズの実行
+0xf5,%_S_MSGOUTEXT,int,d1,0x0d,,a1,const void *,data,,,,,,,,,,,,,メッセージアウトフェーズの実行(拡張メッセージ)
+0xf5,%_S_INQUIRY,int,d1,0x20,,d3,int,read_size,d4,int,target,a1,struct iocs_inquiry *,buf,,,,,,,INQUIRY データの要求
+0xf5,%_S_READ,int,d1,0x21,,d2,int,lba,d3,int,block_count,d4,int,target,d5,int,block_size_code,a1,void *,buf,SCSI 装置よりデータの読み込み
+0xf5,%_S_WRITE,int,d1,0x22,,d2,int,lba,d3,int,block_count,d4,int,target,d5,int,block_size_code,a1,const void *,data,SCSI 装置へのデータの書き込み
+0xf5,%_S_FORMAT,int,d1,0x23,,d3,int,interleave,d4,int,target,,,,,,,,,,SCSI 装置のフォーマット
+0xf5,%_S_TESTUNIT,int,d1,0x24,,d4,int,target,,,,,,,,,,,,,SCSI 装置が動作可能であるか調べる
+0xf5,%_S_READCAP,int,d1,0x25,,d4,int,target,a1,struct iocs_readcap *,buf,,,,,,,,,,SCSI 装置の容量に関する情報を調べる
+0xf5,%_S_READEXT,int,d1,0x26,,d2,int,lba,d3,int,block_count,d4,int,target,d5,int,block_size_code,a1,void *,buf,拡張 READ コマンド
+0xf5,%_S_WRITEEXT,int,d1,0x27,,d2,int,lba,d3,int,block_count,d4,int,target,d5,int,block_size_code,a1,const void *,data,拡張 WRITE コマンド
+0xf5,%_S_VERIFYEXT,int,d1,0x28,,d2,int,lba,d3,int,block_count,d4,int,target,d5,int,block_size_code,a1,const void *,data,拡張 VERIFY コマンド
+0xf5,%_S_MODESENSE,int,d1,0x29,,d2,int,page_code,d3,int,read_size,d4,int,target,a1,void *,buf,,,,MODE SENSE データの要求
+0xf5,%_S_MODESELECT,int,d1,0x2a,,d2,int,cdb_byte2,d3,int,unknown,d4,int,target,,,,,,,MODE SELECT コマンド
+0xf5,%_S_REZEROUNIT,int,d1,0x2b,,d4,int,target,,,,,,,,,,,,,SCSI 装置を指定の状態にセット
+0xf5,%_S_REQUEST,int,d1,0x2c,,d3,int,read_size,d4,int,target,a1,void *,buf,,,,,,,SCSI 装置のセンスデータを調べる
+0xf5,%_S_SEEK,int,d1,0x2d,,d2,int,lba,d4,int,target,,,,,,,,,,SCSI 装置の論理ブロックアドレスへシークする
+0xf5,%_S_READI,int,d1,0x2e,,d2,int,lba,d3,int,block_count,d4,int,target,d5,int,block_size_code,a1,void *,buf,SCSI 装置よりデータの読み込み
+0xf5,%_S_STARTSTOP,int,d1,0x2f,,d3,int,start_mode,d4,int,target,,,,,,,,,,SCSI 装置に対して以降の操作を可能・不可能にすることを要求
+0xf5,%_S_EJECT6MO1,int,d1,0x30,,d3,int,unknown,d4,int,target,,,,,,,,,,CZ-6MO1 に挿入されているメディアを排出
+0xf5,%_S_REASSIGN,int,d1,0x31,,d3,int,write_size,d4,int,target,a1,const void *,data,,,,,,,欠陥ブロックの再割り当て
+0xf5,%_S_PAMEDIUM,int,d1,0x32,,d3,int,eject_mode,d4,int,target,,,,,,,,,,メディアのイジェクトの禁止・許可を設定
+,,,,,,,,,,,,,,,,,,,,,
+0xad,#_B_CURMOD,void,d1,int,mode,,,,,,,,,,,,,,,,カーソル点滅許可・禁止
+0xad,#_B_CURPAT,void,d1,2,,d2,int,parttern,,,,,,,,,,,,,カーソルパターン指定
+0xad,#_B_CURPAT1,void,d1,2,,d2,0,,,,,,,,,,,,,,カーソルパターン指定(定義済みパターン)
+0xad,#_B_CURDEF,void,d1,3,,d2,void *,patbuf,,,,,,,,,,,,,カーソルパターン定義
+0xad,#_B_SCROLL,void,d1,int,mode,,,,,,,,,,,,,,,,スムース/ラスタコピー/ソフトコピースクロールの指定
+,,,,,,,,,,,,,,,,,,,,,
+0xac,#_MPU_STAT,int,d1,0,,,,,,,,,,,,,,,,,MPU 状態の取得
+0xac,#_CACHE_ST,int,d1,1,,,,,,,,,,,,,,,,,キャッシュ状態の取得
+0xac,#_CACHE_MD,int,d1,2,,d2,int,mode,,,,,,,,,,,,,キャッシュの設定・消去
+,,,,,,,,,,,,,,,,,,,,,
+0xf1,%_E_SET232C,int,d2hb,int,auxno,d2b,0x30,,d1,int,config,,,,,,,,,,RS-232C パラメータ設定
+0xf1,%_E_LOF232C,int,d2hb,int,auxno,d2b,0x31,,,,,,,,,,,,,,RS-232C 受信バッファのデータ数を求める
+0xf1,%_E_INP232C,int,d2hb,int,auxno,d2b,0x32,,,,,,,,,,,,,,RS-232C 受信データを得る
+0xf1,%_E_ISNS232C,int,d2hb,int,auxno,d2b,0x33,,,,,,,,,,,,,,RS-232C 受信データの検査
+0xf1,%_E_OSNS232C,int,d2hb,int,auxno,d2b,0x34,,,,,,,,,,,,,,RS-232C データが送信可能か検査する
+0xf1,%_E_OUT232C,void,d2hb,int,auxno,d2b,0x35,,d1,int,data,,,,,,,,,,RS-232C データ送信
+0xf1,%_E_BUF232C,int,d2hb,int,auxno,d2b,0x36,,d1,int,size,a1,void *,buf,,,,,,,RS-232C 受信バッファを設定する
+0xf1,%_E_VER232C,int,d2,0x37,,,,,,,,,,,,,,,,,RSDRV.SYS のバージョンを取得する
+0xf1,%_E_PINP232C,int,d2hb,int,auxno,d2b,0x38,,,,,,,,,,,,,,RS-232C ポートの状態取得
+0xf1,%_E_PSET232C,int,d2hb,int,auxno,d2b,0x39,,d1,int,data,,,,,,,,,,RS-232C ポートの状態設定

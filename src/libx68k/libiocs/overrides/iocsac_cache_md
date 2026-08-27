@@ -1,0 +1,51 @@
+[lib]
+/* 0xac _CACHE_MD: キャッシュの設定・消去 */
+/* int _iocs_cache_md(int mode); */
+
+	.text
+	.even
+	.global _iocs_cache_md
+	.type _iocs_cache_md, @function
+
+_iocs_cache_md:
+@gcc 	move.l	%d2, %sp@-
+@gcc 	move.l	%sp@(8), %d2		| mode
+@xc 	move.l	%sp@(4), %d2		| mode
+	move.l	%d2, %d0
+
+	moveq	#3, %d1			| キャッシュ消去
+	addq.l	#1, %d0
+	beqs	1f			| mode=-1 キャッシュ消去
+
+	moveq	#2, %d1			| キャッシュをSRAMの設定値にする
+	addq.l	#1, %d0
+	beqs	1f			| mode=-2 キャッシュをSRAMの設定値にする
+
+	moveq	#4, %d1			| キャッシュの設定
+1:
+	moveq	#-84, %d0
+	trap	#15
+@gcc 	move.l	%sp@+, %d2
+	rts
+
+[inline]
+/* 0xac _CACHE_MD: キャッシュの設定・消去 */
+/* args: d1=#2, d2=mode */
+static __inline__ int _iocs_cache_md(int mode) {
+    register int _d2 __asm__("d2") = (int)mode;
+    register int _d1 __asm__("d1");
+    switch (mode) {
+        case -1:
+            _d1 = 3; // キャッシュ消去
+            break;
+        case -2:
+            _d1 = 2; // キャッシュをSRAMの設定値にする
+            break;
+        default:
+            _d1 = 4; // キャッシュの設定
+            break;
+    }
+    register int _d0 __asm__("d0") = -84;
+    __asm__ __volatile__ ("trap #15" : "+d"(_d0),"+d"(_d1),"+d"(_d2) : : "cc","memory");
+    return (int)_d0;
+}

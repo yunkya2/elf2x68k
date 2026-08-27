@@ -1,0 +1,50 @@
+[lib]
+/* 0xc7 _SP_REGGT: スプライトレジスタの読み出し */
+/* int _iocs_sp_reggt(int spriteno, int *x, int *y, int *code, int *prw); */
+
+	.text
+	.even
+	.global _iocs_sp_reggt
+	.type _iocs_sp_reggt, @function
+
+_iocs_sp_reggt:
+@gcc 	moveml	%d2/%d3/%d4/%d5, %sp@-
+@gcc 	movel	%sp@(20), %d1
+@xc 	moveml	%d3/%d4/%d5, %sp@-
+@xc 	movel	%sp@(16), %d1
+	moveq	#-57, %d0
+	trap	#15
+	tst.l	%d0
+	bnes	1f
+@gcc 	moveml	%sp@(24), %a0/%a1
+@xc 	moveml	%sp@(20), %a0/%a1
+	movel	%d2,%a0@
+	movel	%d3,%a1@
+@gcc 	moveml	%sp@(32), %a0/%a1
+@xc 	moveml	%sp@(28), %a0/%a1
+	movel	%d4,%a0@
+	movel	%d5,%a1@
+1:
+@gcc 	moveml	%sp@+,%d2/%d3/%d4/%d5
+@xc 	moveml	%sp@+,%d3/%d4/%d5
+	rts
+
+[inline]
+/* 0xc7 _SP_REGGT: スプライトレジスタの読み出し */
+/* args: d1=spriteno, d2=x, d3=y, d4=code, d5=prw */
+static __inline__ int _iocs_sp_reggt(int spriteno, int *x, int *y, int *code, int *prw) {
+    register int _d1 __asm__("d1") = (int)spriteno;
+    register int _d2 __asm__("d2");
+    register int _d3 __asm__("d3");
+    register int _d4 __asm__("d4");
+    register int _d5 __asm__("d5");
+    register int _d0 __asm__("d0") = -57;
+    __asm__ __volatile__ ("trap #15" : "+d"(_d0),"+d"(_d1),"+d"(_d2),"+d"(_d3),"+d"(_d4),"+d"(_d5) : : "cc","memory");
+    if (_d0 == 0) {
+        *x = _d2;
+        *y = _d3;
+        *code = _d4;
+        *prw = _d5;
+    }
+    return (int)_d0;
+}

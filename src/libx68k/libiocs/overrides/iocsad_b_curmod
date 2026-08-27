@@ -1,0 +1,30 @@
+[lib]
+/* 0xad _B_CURMOD: カーソル点滅許可・禁止 */
+/* void _iocs_b_curmod(int mode); */
+
+	.text
+	.even
+	.global _iocs_b_curmod
+	.type _iocs_b_curmod, @function
+
+_iocs_b_curmod:
+	movel	%sp@(4), %d1
+	moveq	#1, %d0
+	cmp.l	%d1, %d0
+	bcss	1f			| mode=0 or 1のみ有効
+	moveq	#-83, %d0
+	trap	#15
+1:
+	rts
+
+[inline]
+/* 0xad _B_CURMOD: カーソル点滅許可・禁止 */
+/* args: d1=mode */
+static __inline__ void _iocs_b_curmod(int mode) {
+    register int _d1 __asm__("d1") = (int)mode;
+    register int _d0 __asm__("d0") = -83;
+    if (mode <= 1) {
+        __asm__ __volatile__ ("trap #15" : "+d"(_d0),"+d"(_d1) : : "cc","memory");
+    }
+    return;
+}

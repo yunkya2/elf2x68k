@@ -1,0 +1,34 @@
+[lib]
+/* _trap15: IOCS コール実行 */
+/* int _iocs_trap15(struct iocs_regs *inregs, struct iocs_regs *outregs); */
+
+	.text
+	.even
+	.global _iocs_trap15
+	.type _iocs_trap15, @function
+
+_iocs_trap15:
+	movem.l	%d2-%d7/%a2-%a6, %sp@-
+	movea.l	%sp@(48), %a0			| inregs
+	movem.l	%a0@, %d0-%d7/%a1-%a6
+	trap	#15
+	movea.l	%sp@(52), %a0			| outregs
+	movem.l	%d0-%d7/%a1-%a6,%a0@
+	movem.l	%sp@+, %d2-%d7/%a2-%a6
+	rts
+
+[inline]
+/* _trap15: IOCS コール実行 */
+static __inline__ int _iocs_trap15(struct iocs_regs *inregs, struct iocs_regs *outregs) {
+    register int _d0 __asm__("d0");
+    __asm__ __volatile__ (
+        "movem.l %%d2-%%d7/%%a2-%%a6,%%sp@-\n\t"
+        "move.l %[inregs],%%a0\n\t"
+        "movem.l %%a0@,%%d0-%%d7/%%a1-%%a6\n\t"
+        "trap #15\n\t"
+        "move.l %[outregs],%%a0\n\t"
+        "movem.l %%d0-%%d7/%%a1-%%a6,%%a0@\n\t"
+        "movem.l %%sp@+,%%d2-%%d7/%%a2-%%a6\n\t"
+        : "+d"(_d0) : [inregs]"g"(inregs),[outregs]"g"(outregs) : "d1","cc","memory");
+    return (int)_d0;
+}

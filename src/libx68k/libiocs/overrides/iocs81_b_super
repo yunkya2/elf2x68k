@@ -1,0 +1,34 @@
+[lib]
+/* 0x81 _B_SUPER: スーパーバイザ/ユーザモードの切り換え */
+/* int _iocs_b_super(int ssp_or_zero); */
+
+	.text
+	.even
+	.global _iocs_b_super
+	.type _iocs_b_super, @function
+
+_iocs_b_super:
+	moveal	%sp@+, %a0
+	move.l	%sp@, %d0
+	beq		1f
+	move.l	%sp, %usp
+1:
+	movea.l	%d0, %a1
+	moveq	#-127, %d0
+	trap	#15
+	jmp	%a0@
+
+[inline]
+/* 0x81 _B_SUPER: スーパーバイザ/ユーザモードの切り換え */
+/* args: a1=ssp_or_zero */
+static __inline__ int _iocs_b_super(int ssp_or_zero) {
+    register void *_a1 __asm__("a1") = (void *)ssp_or_zero;
+    register int _d0 __asm__("d0");
+    __asm__ __volatile__ (
+        "movea.l %%sp, %%a0\n\t"
+        "moveq.l #-127,%%d0\n\t"
+        "trap #15\n\t"
+        "movea.l %%a0, %%sp\n\t"
+        : "+d"(_d0),"+a"(_a1) : : "a0", "cc","memory");
+    return (int)_d0;
+}
