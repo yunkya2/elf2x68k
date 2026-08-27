@@ -5,7 +5,16 @@ ENTRY(_start)
 SECTIONS
 {
   .text : {
+    _stext = .;
     KEEP (*(.header))
+    KEEP (*(SORT(.header.*)))
+    _tsr_header_end = .;
+    KEEP (*(.tsr.text .tsr.rodata))
+    KEEP (*(.tsr.data))
+    KEEP (*(.tsr.bss))
+    _tsr_end = .;
+
+    . = ALIGN(0x4);
     *(.text .text.*)
 
     . = ALIGN(0x4);
