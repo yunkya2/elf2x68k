@@ -27,7 +27,7 @@ extern fdent __fd_list[];
 #define __fd_filename(fd)	(__fd_list[fd].filename)
 #define __fd_flags(fd)		(__fd_list[fd].flags)
 
-#include "../dirent.h"
+#include "sys/dirent.h"
 
 typedef struct DIR DIR;
 

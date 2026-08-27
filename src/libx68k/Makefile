@@ -1,10 +1,13 @@
-TARGET =  libx68k.a libx68knodos.a
-TARGET += libiocs/libx68kiocs.a
-TARGET += libdos/libx68kdos.a
-TARGET += libsocket/libsocket.a
-TARGET += libpthread/libpthread.a
+RELPATH = .
+include $(RELPATH)/Common.mk
 
-include Common.mk
+TARGET = $(LIBDIR)/libx68k.a $(LIBDIR)/libx68knodos.a
+TARGET += $(LIBDIR)/libx68kiocs.a
+TARGET += $(LIBDIR)/libx68kdos.a
+TARGET += $(LIBDIR)/libsocket.a
+TARGET += $(LIBDIR)/libpthread.a
+
+INC += -I$(INCLUDEDIR) -I.
 
 # object files needed
 OBJS += chown.o close.o creat.o execve.o fcntl.o fork.o fstat.o \
@@ -16,55 +19,68 @@ OBJS += chown.o close.o creat.o execve.o fcntl.o fork.o fstat.o \
 	sleep.o poll.o dup.o dup2.o
 OBJS += crt1.o crt1hupair.o _sflags.o fds.o _doserror.o _at_exit.o _dosinit.o
 OBJS += _stacksize.o _heapsize.o _crt0vars.o _crt0vars1.o
+OBJS := $(addprefix $(O)/,$(OBJS))
 
 OBJS_NODOS += write-nodos.o sbrk-nodos.o _nodosfnc.o
 OBJS_NODOS += _stacksize.o _heapsize.o _crt0vars-nodos.o
+OBJS_NODOS := $(addprefix $(O)/,$(OBJS_NODOS))
 
-CRT0OBJS += crt0.o crt0nodos.o crt0hupair.o
+CRT0OBJS = $(addprefix $(O)/,crt0.o crt0nodos.o crt0hupair.o)
+CRT0TARGETS = $(addprefix $(LIBDIR)/x68k,crt0.o crt0nodos.o crt0hupair.o)
+HEADERS = $(patsubst sys/%,$(INCLUDEDIR)/sys/%,$(wildcard sys/*.h))
 
-all: $(TARGET) $(CRT0OBJS)
+all: install
 
-libiocs/libx68kiocs.a:
-	make -C libiocs all
+install: $(TARGET) $(CRT0OBJS) $(CRT0TARGETS) $(HEADERS)
 
-libdos/libx68kdos.a:
-	make -C libdos all
+$(O) $(LIBDIR) $(INCLUDEDIR)/sys:
+	@mkdir -p $@
 
-libsocket/libsocket.a:
-	make -C libsocket all
+$(LIBDIR)/libx68kiocs.a:
+	$(MAKE) -C libiocs install
 
-libpthread/libpthread.a:
-	make -C libpthread all
+$(LIBDIR)/libx68kdos.a:
+	$(MAKE) -C libdos install
 
-libx68k.a: $(OBJS)
+$(LIBDIR)/libsocket.a:
+	$(MAKE) -C libsocket install
+
+$(LIBDIR)/libpthread.a:
+	$(MAKE) -C libpthread install
+
+$(LIBDIR)/libx68k.a: $(OBJS) | $(LIBDIR)
 	$(AR) $(ARFLAGS) $@ $^
 	$(RANLIB) $@
 
-libx68knodos.a: $(OBJS_NODOS)
+$(LIBDIR)/libx68knodos.a: $(OBJS_NODOS) | $(LIBDIR)
 	$(AR) $(ARFLAGS) $@ $^
 	$(RANLIB) $@
 
-%.o: %.c
-	$(CC) $(CFLAGS) -c $<
+$(O)/%.o: %.c $(LIBDIR)/libx68kiocs.a $(LIBDIR)/libx68kdos.a | $(O)
+	$(CC) $(CFLAGS) -o $@ -c $<
 
-%.o: %.S
-	$(AS) $(ASFLAGS) -c $<
+$(O)/%.o: %.S | $(O)
+	$(AS) $(ASFLAGS) -o $@ -c $<
 
-%hupair.o: %.c
+$(O)/%hupair.o: %.c | $(O)
 	$(CC) $(CFLAGS) -o $@ -DSUPPORT_HUPAIR -c $<
 
-%hupair.o: %.S
+$(O)/%hupair.o: %.S | $(O)
 	$(AS) $(ASFLAGS) -o $@ -DSUPPORT_HUPAIR -c $<
 
-clean:
-	make -C libiocs clean
-	make -C libdos clean
-	make -C libsocket clean
-	make -C libpthread clean
-	-rm -f *.o $(TARGET)
+$(LIBDIR)/x68kcrt%.o: $(O)/crt%.o | $(LIBDIR)
+	cp -p $< $@
 
-.PHONY: all clean
-.PHONY: libiocs/libx68kiocs.a
-.PHONY: libdos/libx68kdos.a
-.PHONY: libsocket/libsocket.a
-.PHONY: libpthread/libpthread.a
+$(INCLUDEDIR)/sys/%.h: sys/%.h | $(INCLUDEDIR)/sys
+	cp -p $< $@
+
+.SECONDARY: $(CRT0OBJS)
+
+clean:
+	$(MAKE) -C libiocs allclean
+	$(MAKE) -C libdos allclean
+	$(MAKE) -C libsocket clean
+	$(MAKE) -C libpthread clean
+	-rm -rf $(O) $(LIBDIR) $(INCLUDEDIR)
+
+.PHONY: all install clean
