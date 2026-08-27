@@ -1,4 +1,5 @@
 tcppack/
+build/
 gethostnamadr.c
 network.h
 search_ti_entry.c

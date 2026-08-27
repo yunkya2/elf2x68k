@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <errno.h>
-#include "../../features.h"
+#include "sys/features.h"
 #include <pthread.h>
 #include <sys/types.h>
 #include <x68k/dos.h>

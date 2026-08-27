@@ -1,8 +1,8 @@
-TARGET = libpthread.a
+RELPATH = ..
+include $(RELPATH)/Common.mk
+TARGET = $(LIBDIR)/libpthread.a
 
-include ../Common.mk
-
-CFLAGS += -I.. -Iinclude -g
+INC += -I$(INCLUDEDIR) -I. -I.. -Iinclude
 
 LIB_SOURCES = \
 	pthread.c \
@@ -62,18 +62,29 @@ LIB_SOURCES = \
 	pthread_rwlock_unlock.c \
 	pthread_rwlockattr_init.c \
 
-OBJ = $(LIB_SOURCES:.c=.o)
+OBJ = $(addprefix $(O)/,$(LIB_SOURCES:.c=.o))
+HEADERS = $(patsubst include/%,$(INCLUDEDIR)/%,$(shell find include -type f))
 
-all: $(TARGET)
+all: $(TARGET) $(HEADERS)
 
-$(TARGET): $(OBJ)
+$(O) $(LIBDIR):
+	@mkdir -p $@
+
+$(TARGET): $(OBJ) | $(LIBDIR)
 	$(AR) $(ARFLAGS) $@ $^
 	$(RANLIB) $@
 
-%.o: %.c
-	$(CC) $(CFLAGS) -c $<
+$(O)/%.o: %.c | $(O)
+	$(CC) $(CFLAGS) -o $@ -c $<
+
+$(HEADERS): $(INCLUDEDIR)/%: include/%
+	@mkdir -p $(@D)
+	cp -p $< $@
+
+install: all
 
 clean:
-	-rm -f *.o $(TARGET)
+	-rm -rf $(O)
+	-rm -f $(TARGET) $(HEADERS)
 
-.PHONY: all clean
+.PHONY: all clean install

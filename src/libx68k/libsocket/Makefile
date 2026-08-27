@@ -1,10 +1,11 @@
-TARGET = libsocket.a
-
-include ../Common.mk
+RELPATH = ..
+include $(RELPATH)/Common.mk
+TARGET = $(LIBDIR)/libsocket.a
 
 vpath %.c ..
 
-CFLAGS += -I.. -Iinclude -DLIBSOCKET
+CFLAGS += -DLIBSOCKET
+INC += -I$(INCLUDEDIR) -I. -I.. -Iinclude
 
 TCPPACK_SOURCES = \
     search_ti_entry.c \
@@ -41,14 +42,18 @@ LIB_SOURCES = \
     getaddrinfo.c \
     poll.c \
 
-OBJ = $(LIB_SOURCES:.c=.o)
+OBJ = $(addprefix $(O)/,$(LIB_SOURCES:.c=.o))
+HEADERS = $(patsubst include/%,$(INCLUDEDIR)/%,$(shell find include -type f))
 
-all: $(TARGET)
+all: $(TARGET) $(HEADERS)
+
+$(O) $(LIBDIR):
+	@mkdir -p $@
 
 tcppack: TCPPACKB.LZH
 	-rm -rf $@
 	-mkdir $@
-	(cd $@; ../../../../unlha/unlha.py x ../$<)
+	(cd $@; unlha.py x ../$<)
 	$(MAKE) patch
 
 tcppack-copy: tcppack
@@ -75,15 +80,22 @@ update-patch: tcppack
 	git branch -D libpsocket-temp
 	$(MAKE) patch
 
-$(TARGET): $(OBJ)
+$(TARGET): $(OBJ) | $(LIBDIR)
 	$(AR) $(ARFLAGS) $@ $^
 	$(RANLIB) $@
 
-%.o: %.c $(TCPPACK_HEADERS)
-	$(CC) $(CFLAGS) -c $<
+$(O)/%.o: %.c $(TCPPACK_HEADERS) | $(O)
+	$(CC) $(CFLAGS) -o $@ -c $<
+
+$(HEADERS): $(INCLUDEDIR)/%: include/%
+	@mkdir -p $(@D)
+	cp -p $< $@
+
+install: all
 
 clean:
-	-rm -f *.o $(TARGET)
+	-rm -rf $(O)
+	-rm -f $(TARGET) $(HEADERS)
 	-rm -fr tcppack $(TCPPACK_SOURCES) $(TCPPACK_HEADERS)
 
-.PHONY: all clean patch tcppack-copy update-patch
+.PHONY: all clean install patch tcppack-copy update-patch
