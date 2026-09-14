@@ -30,6 +30,6 @@ static __inline__ int _iocs_sp_regst(int spriteno, int mode, int x, int y, int c
     register int _d4 __asm__("d4") = (int)code;
     register int _d5 __asm__("d5") = (int)prw;
     register int _d0 __asm__("d0") = -58;
-    __asm__ __volatile__ ("trap #15" : "+d"(_d0),"+d"(_d0),"+d"(_d1),"+d"(_d2),"+d"(_d3),"+d"(_d4),"+d"(_d5) : : "cc","memory");
+    __asm__ __volatile__ ("trap #15" : "+d"(_d0),"+d"(_d1),"+d"(_d2),"+d"(_d3),"+d"(_d4),"+d"(_d5) : : "cc","memory");
     return (int)_d0;
 }
