@@ -89,8 +89,8 @@ if [ "${SIMPLE}" = "" ]; then
     done
 fi
 
-# 通常版 newlib をビルド、インストールする
-newlib_build "" ""
+# 通常版 newlib もサイズ優先 (-Os) でビルド、インストールする
+newlib_build "" "--enable-target-optspace"
 
 cd ${ROOT_DIR}
 
