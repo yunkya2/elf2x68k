@@ -8,15 +8,11 @@
 	.type _iocs_b_super, @function
 
 _iocs_b_super:
-	moveal	%sp@+, %a0
-	move.l	%sp@, %d0
-	beq		1f
-	move.l	%sp, %usp
-1:
-	movea.l	%d0, %a1
+	move.l	%sp, %a0
 	moveq	#-127, %d0
 	trap	#15
-	jmp	%a0@
+	move.l	%a0, %sp
+	rts
 
 [inline]
 /* 0x81 _B_SUPER: スーパーバイザ/ユーザモードの切り換え */
