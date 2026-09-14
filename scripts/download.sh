@@ -54,16 +54,35 @@ fi
 # gcc ビルドに必要なライブラリのダウンロード
 # gcc ソースコード内にあるダウンロード用スクリプトのみを抽出して実行する
 
-if ! [ -f gmp-* -a -f mpfr-* -a -f mpc-* -a -f isl-* ]; then
+rm -rf ${GCC_DIR}
+if [ -d "${SRC_DIR}/${GCC_DIR}/contrib" ]; then
+	mkdir -p ${GCC_DIR}/gcc
+	ln -s "${SRC_DIR}/${GCC_DIR}/contrib" ${GCC_DIR}/contrib
+	ln -s "${SRC_DIR}/${GCC_DIR}/gcc/BASE-VER" ${GCC_DIR}/gcc/BASE-VER
+else
 	tar xvf ${GCC_ARCHIVE} ${GCC_DIR}/contrib/download_prerequisites \
 			       ${GCC_DIR}/contrib/prerequisites.md5 \
 			       ${GCC_DIR}/contrib/prerequisites.sha512 \
 			       ${GCC_DIR}/gcc/BASE-VER
-	echo "Download prerequisites"
-	(cd gcc-${GCC_VERSION}; contrib/download_prerequisites) || exit 1
-	mv ${GCC_DIR}/*.tar.* .
-	rm -rf ${GCC_DIR}
 fi
+
+download_prerequisites=false
+while read -r checksum archive; do
+	if [ ! -f "${archive}" ]; then
+		download_prerequisites=true
+	else
+		cp "${archive}" ${GCC_DIR}
+	fi
+done < ${GCC_DIR}/contrib/prerequisites.sha512
+
+if ${download_prerequisites}; then
+	echo "Download prerequisites"
+	(cd ${GCC_DIR}; contrib/download_prerequisites) || exit 1
+	while read -r checksum archive; do
+		mv "${GCC_DIR}/${archive}" .
+	done < ${GCC_DIR}/contrib/prerequisites.sha512
+fi
+rm -rf ${GCC_DIR}
 
 #-----------------------------------------------------------------------------
 # newlib のダウンロード
