@@ -1,0 +1,6 @@
+diff --git a/libgloss/m68k/io.h b/libgloss/m68k/io.h
+--- a/libgloss/m68k/io.h
++++ b/libgloss/m68k/io.h
+@@ -40 +40 @@
+-extern int __io_hosted (int func, void *args);
++extern void __hosted (int func, void *args);

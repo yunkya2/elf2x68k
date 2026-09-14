@@ -38,15 +38,19 @@ tar zxvf ${NEWLIB_ARCHIVE} -C ${SRC_DIR}
 
 #	timezoneのデフォルトをJST-9にするためのパッチ
 cd ${SRC_DIR}/${NEWLIB_DIR}
-patch -p1 -N < ${PATCH_DIR}/newlib-tz-jst.patch
+patch --fuzz=0 -p1 -N < ${PATCH_DIR}/newlib-tz-jst.patch
 
 #	68000でのmemcpyの不具合を修正するためのパッチ
 cd ${SRC_DIR}/${NEWLIB_DIR}
-patch -p1 -N < ${PATCH_DIR}/newlib-memcpy-fix.patch
+patch --fuzz=0 -p1 -N < ${PATCH_DIR}/newlib-memcpy-fix.patch
 
 #	libcに_mpu_type, _fpu_typeを追加するためのパッチ
 cd ${SRC_DIR}/${NEWLIB_DIR}
-patch -p1 -N < ${PATCH_DIR}/newlib-mputype.patch
+patch --fuzz=0 -p1 -N < ${PATCH_DIR}/newlib-mputype.patch
+
+# GCC 16でデフォルトがC23に変わったことによるエラー修正パッチ
+cd ${SRC_DIR}/${NEWLIB_DIR}
+patch --fuzz=0 -p1 -N < ${PATCH_DIR}/newlib-m68k-hosted.patch
 
 newlib_build () {
     mkdir -p ${BUILD_DIR}/${NEWLIB_DIR}$1

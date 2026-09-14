@@ -38,7 +38,7 @@ tar xvf ${GDB_ARCHIVE} -C ${SRC_DIR}
 
 #	逆アセンブルでX68000のIOCS/DOSコール命令を表示させるためのパッチ
 cd ${SRC_DIR}/${GDB_DIR}
-patch -p1 -N < ${PATCH_DIR}/binutils-x68k.patch
+patch --fuzz=0 -p1 -N < ${PATCH_DIR}/binutils-x68k.patch
 
 cd ${BUILD_DIR}/${GDB_DIR}
 ${SRC_DIR}/${GDB_DIR}/configure \

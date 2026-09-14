@@ -138,8 +138,7 @@ index d65b5482e8b..9fb1872b94a 100644
    bool is_absolute = root_path.second.type == _Type::_Root_dir;
    bool has_root_name = root_path.first.type == _Type::_Root_name;
    if (is_absolute || (has_root_name && root_path.first.str != root_name()))
-@@ -866,7 +888,7 @@ path::operator+=(const path& p)
-       return *this;
+@@ -934,6 +956,6 @@ path::operator+=(const path& p)
      }
  
 -#if _GLIBCXX_FILESYSTEM_IS_WINDOWS

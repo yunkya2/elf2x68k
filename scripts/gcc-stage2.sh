@@ -38,7 +38,7 @@
 #-----------------------------------------------------------------------------
 
 cd ${SRC_DIR}/${GCC_DIR}
-patch -p1 -N < ${PATCH_DIR}/gcc-x68k.patch
+patch --fuzz=0 -p1 -N < ${PATCH_DIR}/gcc-x68k.patch
 
 gcc_build () {
     # 必要ならコンパイルオプションを追加
