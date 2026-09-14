@@ -28,7 +28,7 @@ static __inline__ void _iocs_b_scroll(int mode) {
     register int _d2 __asm__("d2") = (int)mode;
     register int _d1 __asm__("d1");
     register int _d0 __asm__("d0") = -83;
-    _d1 = mode < 16 ? 16: mode;
+    _d1 = (unsigned int)mode < 16 ? 16: mode;
     __asm__ __volatile__ ("trap #15" : "+d"(_d0),"+d"(_d1),"+d"(_d2) : : "cc","memory");
     return;
 }

@@ -23,7 +23,7 @@ _iocs_b_curmod:
 static __inline__ void _iocs_b_curmod(int mode) {
     register int _d1 __asm__("d1") = (int)mode;
     register int _d0 __asm__("d0") = -83;
-    if (mode <= 1) {
+    if ((unsigned int)mode <= 1) {
         __asm__ __volatile__ ("trap #15" : "+d"(_d0),"+d"(_d1) : : "cc","memory");
     }
     return;
