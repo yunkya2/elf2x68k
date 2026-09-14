@@ -84,7 +84,7 @@ static void socket_at_exit(int type)
 
 /* プロセス終了時に実行するハンドラを登録する処理 */
 /* (空の関数で上書きすることで、プロセス終了時にもソケットが開いたままになる) */
-__attribute__((weak)) void __socket_register_at_exit(void)
+__attribute__((__weak__)) void __socket_register_at_exit(void)
 {
     __at_exit(socket_at_exit);
 }

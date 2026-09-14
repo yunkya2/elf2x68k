@@ -89,7 +89,7 @@ static void pthread_at_exit(int type)
 
 /* プロセス終了時に実行するハンドラを登録する処理 */
 /* (空の関数で上書きすることで、プロセス終了時にもスレッドが残ったままになる) */
-__attribute__((weak)) void __pthread_register_at_exit(void)
+__attribute__((__weak__)) void __pthread_register_at_exit(void)
 {
     __at_exit(pthread_at_exit);
 }
@@ -152,8 +152,8 @@ pthread_internal_t *__pthread_tid_internal(pthread_t thread)
 }
 
 /* 機能を使用しない場合に呼ばれるクリーンアップハンドラ */
-__attribute__((weak)) void __pthread_key_call_destructors(pthread_internal_t *pi) {}
-__attribute__((weak)) void __pthread_call_all_cleanup(pthread_internal_t *pi) {}
+__attribute__((__weak__)) void __pthread_key_call_destructors(pthread_internal_t *pi) {}
+__attribute__((__weak__)) void __pthread_call_all_cleanup(pthread_internal_t *pi) {}
 
 //****************************************************************************
 // External functions

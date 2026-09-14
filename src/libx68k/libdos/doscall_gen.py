@@ -129,9 +129,9 @@ def function_attribute(is_noreturn: bool, is_const: bool) -> str:
     """関数宣言へ付加するGNU属性を返す。"""
     attrs = []
     if is_noreturn:
-        attrs.append("noreturn")
+        attrs.append("__noreturn__")
     if is_const:
-        attrs.append("const")
+        attrs.append("__const__")
     return f"__attribute__(({', '.join(attrs)}))" if attrs else ""
 
 

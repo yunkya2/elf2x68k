@@ -24,7 +24,7 @@ int 	__argc;
 char **	__argv;
 struct iocs_time	__ontime;
 
-__attribute__((weak, noinline)) void
+__attribute__((__weak__, __noinline__)) void
 __crt1_setup_environ (void)
 {
   int env_size;
@@ -178,7 +178,7 @@ setup_arguments (void)
 void __INIT_SECTION__(void);
 void __FINI_SECTION__(void);
 
-__attribute__((weak)) void __at_exit_init (void) {}
+__attribute__((__weak__)) void __at_exit_init (void) {}
 
 void
 #ifdef SUPPORT_HUPAIR

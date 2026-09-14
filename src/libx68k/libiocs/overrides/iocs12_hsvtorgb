@@ -1,6 +1,6 @@
 [lib]
 /* 0x12 _HSVTORGB: HSV→RGB 変換 */
-/* int _iocs_hsvtorgb(int h, int s, int v) __attribute__((const)); */
+/* int _iocs_hsvtorgb(int h, int s, int v) __attribute__((__const__)); */
 
 	.text
 	.even
@@ -21,7 +21,7 @@ _iocs_hsvtorgb:
 [inline]
 /* 0x12 _HSVTORGB: HSV→RGB 変換 */
 /* args: d1h=h, d1hb=s, d1b=v */
-__attribute__((const))
+__attribute__((__const__))
 static __inline__ int _iocs_hsvtorgb(int h, int s, int v) {
     register int _d1 __asm__("d1") = 0;
     _d1 |= (((int)h) & 0xff) << 16;
