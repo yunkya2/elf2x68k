@@ -429,8 +429,20 @@ def proto_from_args(args):
 
 def asm_inputs(args):
     """引数情報からGCCインラインasmの入力オペランド一覧を生成する。"""
+    def input_expr(arg):
+        # GCC ABIではint引数は32bitで渡される。m68kはビッグエンディアンなので、
+        # そのまま"g"制約へ渡してmove.w/move.bすると、非inline時にスタック上の
+        # 上位ワード/バイトを参照してしまう。asmが扱う幅へ明示的に変換する。
+        if arg["argw"] == "w":
+            return f"(unsigned short)({arg['name']})"
+        if arg["argw"] in ("hb", "b"):
+            return f"(unsigned char)({arg['name']})"
+        return arg["name"]
+
     return ", ".join(
-        f"[{arg['name']}]\"g\"({arg['name']})" for arg in args if arg["argw"] != "c"
+        f"[{arg['name']}]\"g\"({input_expr(arg)})"
+        for arg in args
+        if arg["argw"] != "c"
     )
 
 
