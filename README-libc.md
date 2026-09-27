@@ -85,7 +85,7 @@ elf2x68k の Newlib 環境では、Newlib の標準 C ライブラリ関数に�
   * struct dirent \***readdir**(DIR \**dirp*);
     * ディレクトリストリーム dirp で次のディレクトリエントリを表す dirent 構造体へのポインタを返します
     *  ディレクトリの末尾に達した場合やエラーが発生した場合は NULL を返します
-      ```
+      ```c
       struct dirent {
           ino_t d_ino;             // inode番号 (常に0になります)
           off_t d_off;             // ディレクトリストリームの先頭からのオフセット
@@ -106,7 +106,7 @@ elf2x68k の Newlib 環境では、Newlib の標準 C ライブラリ関数に�
   * int **poll**(struct pollfd \**fds*, nfds_t *nfds*, int *timeout*);
     * fds 引数で指定するディスクリプタのいずれかが利用可能(読み書き可能)になるのを待ちます
     * fds 引数は struct pollfd 型構造体の配列です
-      ```
+      ```c
       struct pollfd {
           int fd;         // チェックするファイルディスクリプタ
           short events;   // チェックするイベント (POLLIN, POLLOUT のビットマスク)
@@ -157,6 +157,44 @@ X680x0 の IOCS コールをサポートします。
 Human68k v2.0 以降で追加されたバックグラウンドプロセス機能を用いて、POSIX スレッド APIによるスレッド処理を行うことができます。
 詳しくは、[POSIX スレッドライブラリについて](README-pthread.md) を参照してください。
 
+
+### DOS/IOCSコールのインライン呼び出し機能
+
+ヘッダファイル `x68k/dos.h` と `x68k/iocs.h` は DOS/IOCS コールラッパー関数のプロトタイプを宣言していますが、`__DOS_INLINE__` や `__IOCS_INLINE__` を定義してからこれらのヘッダファイルをインクルードすると、関数が呼び出し元にインライン展開されるようになります。
+
+`x68k/dos_inline.h` や `x68k/iocs_inline.h` を直接インクルードしても、それぞれのインライン版が有効になります。逆に `x68k/dos_proto.h` や `x68k/iocs_proto.h`をインクルードすると、従来どおりライブラリ内のラッパー関数が使われます。
+
+#### 使用例
+
+ソースファイル内で有効にする例を次に示します。マクロは、対応するヘッダを最初にインクルードするより前に定義してください。
+
+```c
+#define __DOS_INLINE__
+#define __IOCS_INLINE__
+#include <x68k/dos.h>
+#include <x68k/iocs.h>
+
+int main(void)
+{
+        _dos_print("Hello from DOS\r\n");
+        _iocs_b_print("Hello from IOCS\r\n");
+
+        int key = _iocs_b_keyinp();
+        _dos_putchar(key & 0xff);
+
+        _dos_exit();
+}
+```
+
+複数のソースファイルで一括して有効にする場合は、ビルドオプションで定義します。
+
+```make
+CFLAGS += -Os -D__DOS_INLINE__ -D__IOCS_INLINE__
+```
+
+インライン版は呼び出し箇所ごとに命令が展開されるため、同じコールを多数の場所から使用するとコードサイズが増える場合があります。その場合は、対象のマクロを定義せずライブラリ版を使用してください。
+
+
 ### XC 追加ライブラリ
 
 elf2x68k のインストール時に `install-xclib.sh` で XC 環境をインストールすると、XC に含まれる以下のライブラリやヘッダファイルが Newlib 環境でも利用できるようになります。
@@ -189,7 +227,7 @@ Newlib 環境でビルドされた実行ファイルは、スタックサイズ 
 
 これらの値を変更したい場合は、ソースコード中で `_stack_size` , `_heap_size` というグローバル変数にそれぞれ以下のように値を設定してください。
 
-```
+```c
 int _stack_size = 128 * 1024;   // 128KB stack
 int _heap_size = 256 * 1024;    // 256KB heap
 ```
@@ -247,7 +285,7 @@ XC 環境でビルドされた実行ファイルは、スタックサイズ 64KB
 
 以下は、C言語のソースコード中にインラインアセンブラで値を定義する例です。
 
-```
+```c
   __asm__ (
     ".global STACK_SIZE\n"
     ".equ STACK_SIZE, 128 * 1024\n"   // 128KB stack

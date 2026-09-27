@@ -24,7 +24,7 @@ elf2x68k はシャープ X680x0 用実行ファイル(X 形式)を PC の Unix/L
 ### Linux/MinGW 向け
 
 以下の環境向けバイナリを配布しています
-* x86_64 Linux (Windows 11 の WSL2 にインストールした Ubuntu-20.04 で動作確認)
+* x86_64 Linux (Windows 11 の WSL2 にインストールした Ubuntu-24.04 で動作確認)
 * MSYS2 MinGW 64bit
 
 [Release](https://github.com/yunkya2/elf2x68k/releases) から利用する環境のアーカイブをダウンロードし、任意のディレクトリに展開してください。
@@ -38,7 +38,7 @@ elf2x68k はシャープ X680x0 用実行ファイル(X 形式)を PC の Unix/L
 
 ### macOS 向け
 
-macOS 向けは Homebrew からインストールできます (M3 Macbook Air / macOS 15.6.1 (Sequoia) で動作確認)。
+macOS 向けは Homebrew からインストールできます (M3 Macbook Air / macOS 26.6 (Tahoe) で動作確認)。
 Homebrew がインストールされている環境でコマンドラインから
 
 ```
