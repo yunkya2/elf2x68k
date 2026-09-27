@@ -26,6 +26,12 @@ ABI_INLINE_EXTRA_CLOBBERS_FOR_ALL_REGS = {
     ABI_XC: ["d2", "a2", "a0", "a1"],
 }
 
+
+def write_text(path: Path, text: str):
+    """テキストを LF 改行で書き込む。"""
+    with path.open("w", encoding="utf-8", newline="\n") as file:
+        file.write(text)
+
 def callee_saved_regs_for_abi(abi: str) -> str:
     """指定ABIのcallee-savedレジスタをアセンブリのレジスタリストにする。"""
     regs = ABI_CALLEE_SAVED[abi]
@@ -606,7 +612,7 @@ def emit_inline_header(rows, out_path: Path, abi: str = ABI_GCC, override_index=
         "",
         "#endif /* _DOS_INLINE_H_ */",
     ]
-    out_path.write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
+    write_text(out_path, "\n".join(lines) + "\n")
 
 
 def emit_proto_header(rows, out_path: Path):
@@ -650,7 +656,7 @@ def emit_proto_header(rows, out_path: Path):
         "",
         "#endif /* _DOS_PROTO_H_ */",
     ]
-    out_path.write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
+    write_text(out_path, "\n".join(lines) + "\n")
 
 
 def emit_call_number_header(rows, out_path: Path):
@@ -685,7 +691,7 @@ def emit_call_number_header(rows, out_path: Path):
             lines.append(f"#define {macro:15} {code}")
         seen.add(macro)
     lines += ["", "#endif"]
-    out_path.write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
+    write_text(out_path, "\n".join(lines) + "\n")
 
 
 def emit_lib_source(
@@ -726,7 +732,7 @@ def emit_lib_source(
         sections = resolve_override_sections(override_index, call_name)
         if sections is not None and "lib" in sections:
             lib_text = filter_override_abi_lines(sections["lib"], abi)
-            out_path.write_text(lib_text + "\n", encoding="utf-8", newline="\n")
+            write_text(out_path, lib_text + "\n")
             continue
 
         lines = []
@@ -924,7 +930,7 @@ def emit_lib_source(
                 lines.append(f"\tmovem.l\t%sp@+, {callee_saved_regs}")
             lines.append("\trts")
 
-        out_path.write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
+        write_text(out_path, "\n".join(lines) + "\n")
 
 
 def main():

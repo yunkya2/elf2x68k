@@ -24,6 +24,12 @@ ABI_CALLEE_SAVED = {
 }
 
 
+def write_text(path: Path, text: str):
+    """テキストを LF 改行で書き込む。"""
+    with path.open("w", encoding="utf-8", newline="\n") as file:
+        file.write(text)
+
+
 def ident_from_call_name(name: str) -> str:
     """IOCSコール名を検証し、先頭のアンダースコアを除いた識別子を返す。"""
     if re.match(r"^_[A-Za-z0-9_]+$", name):
@@ -724,7 +730,7 @@ def emit_inline_header(rows, out_path: Path, override_index=None):
         "",
         "#endif /* _IOCS_INLINE_H_ */",
     ]
-    out_path.write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
+    write_text(out_path, "\n".join(lines) + "\n")
 
 
 def emit_proto_header(rows, out_path: Path):
@@ -771,7 +777,7 @@ def emit_proto_header(rows, out_path: Path):
         "",
         "#endif /* _IOCS_PROTO_H_ */",
     ]
-    out_path.write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
+    write_text(out_path, "\n".join(lines) + "\n")
 
 
 def emit_call_number_header(rows, out_path: Path):
@@ -813,7 +819,7 @@ def emit_call_number_header(rows, out_path: Path):
             lines.append(f"#define {macro:15} {literal}")
         seen.add(macro)
     lines += ["", "#endif"]
-    out_path.write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
+    write_text(out_path, "\n".join(lines) + "\n")
 
 def emit_lib_source(
     rows,
@@ -846,7 +852,7 @@ def emit_lib_source(
         if lib_text is not None:
             # ABI固有の個別実装があれば自動生成より優先する。
             lib_text = filter_override_abi_lines(lib_text, abi)
-            out_path.write_text(lib_text + "\n", encoding="utf-8", newline="\n")
+            write_text(out_path, lib_text + "\n")
             continue
         lines = []
 
@@ -1087,7 +1093,7 @@ def emit_lib_source(
                     lines.append(f"\tmoveml\t%sp@+,{reglist_operand(saved_regs)}")
             lines.append("\trts")
 
-        out_path.write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
+        write_text(out_path, "\n".join(lines) + "\n")
 
 
 def main():
