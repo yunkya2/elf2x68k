@@ -9,6 +9,7 @@ elfbase="0"
 
 objs=""
 param=("$@")
+
 j=0
 newparam=()
 for ((i=0; i<${#param[@]}; i++)); do
@@ -50,5 +51,5 @@ esac
 
 #set -x
 
-m68k-xelf-ld.bfd -Ttext=${elfbase} -o "${outfile}" -q ${newparam[@]}
+m68k-xelf-ld.bfd -Ttext=${elfbase} -o "${outfile}" -q "${newparam[@]}"
 elf2x68k.py -o "${xoutfile}" ${xbaseopt} ${xstripopt} "${outfile}"
