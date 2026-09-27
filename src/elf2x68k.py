@@ -37,6 +37,7 @@ class SectionHeader:
          self.size, self.link, self.info, self.addralign, self.entsize) = unpack(">10L", data)
         self.name = ""
         self.relidx = None
+        self.segtype = None
 
     def __repr__(self):
         return "0x%02x 0x%02x 0x%08x 0x%06x 0x%06x %02d 0x%02x 0x%02x 0x%02x" % \
@@ -90,7 +91,7 @@ class X68kSymbol:
 
 # Convert ELF to X68k execute file (fixed load address)
 
-def elf2x68k(fh, xbase=0, strip=False):
+def elf2x68k(fh, xbase=0, strip=False, force_reloc_syms=()):
     # Read ELF header
     eh = ElfHeader(fh)
 
@@ -113,6 +114,28 @@ def elf2x68k(fh, xbase=0, strip=False):
         elif sh.type == 4:              # SHT_RELA
             sh_rela.append(sh)
         shlist.append(sh)
+
+    # Read Section names from the section header string table
+    sh_shstrtab = shlist[eh.shstrndx]
+    fh.seek(sh_shstrtab.offset)
+    shstrtab = fh.read(sh_shstrtab.size)
+    for sh in shlist:
+        sh.name = shstrtab[sh.nameidx:shstrtab.index(b'\0', sh.nameidx)].decode()
+
+    # Determine text/data/bss segment for each loaded (SHF_ALLOC) section.
+    # Sections are treated as text until the first writable (SHF_WRITE)
+    # section is reached; that section and every section after it are treated
+    # as data. SHT_NOBITS sections remain bss regardless of the boundary.
+    in_data = False
+    for sh in shlist:
+        sh.segtype = None
+        if sh.flags & 2:                # SHF_ALLOC
+            if sh.flags & 1:            # SHF_WRITE
+                in_data = True
+            if sh.type == 8:            # SHT_NOBITS
+                sh.segtype = 2
+            else:                       # has file content (PROGBITS, NOTE, etc.)
+                sh.segtype = 1 if in_data else 0
 
     # Read Relocation table
     rellist = []
@@ -151,16 +174,13 @@ def elf2x68k(fh, xbase=0, strip=False):
             if prevtype >= 0:
                 contents[prevtype] += b'\0' * (sh.addr - curaddr)
 
-            if sh.type == 1:            # SHT_PROGBITS
-                fh.seek(sh.offset)
-                if not sh.flags & 1:        # !SHF_WRITE    ... .text
-                    prevtype = 0
-                else:                       #               ... .data
-                    prevtype = 1
-                contents[prevtype] += fh.read(sh.size)
-            elif sh.type == 8:           # SHT_NOBITS       ... .bss
+            if sh.type == 8:           # SHT_NOBITS       ... .bss
                 prevtype = 2
                 contents[prevtype] += b'\0' * sh.size
+            else:                      # any ALLOC section with file content
+                fh.seek(sh.offset)
+                prevtype = sh.segtype
+                contents[prevtype] += fh.read(sh.size)
 
             curaddr = sh.addr + sh.size
     body = bytearray(contents[0] + contents[1])
@@ -171,10 +191,14 @@ def elf2x68k(fh, xbase=0, strip=False):
     prevoffset = 0
     oprevoffset = 0
     for r in rellist:
-        if symlist[r.sym].shndx !=0 and symlist[r.sym].shndx != 0xfff1 and r.type < 4:
+        sym = symlist[r.sym]
+        force = sym.name in force_reloc_syms
+        if (force or (sym.shndx != 0 and sym.shndx != 0xfff1)) and r.type < 4:
             assert r.type == 1          # R_68K_32
             off = r.offset - baseaddr
-            val = unpack(">L",body[off:off + 4])[0] - baseaddr + xbase
+            # Use the symbol value + explicit addend (SHT_RELA), rather than
+            # the in-place bytes (which may be left as 0 by the linker).
+            val = (sym.value + r.addend - baseaddr + xbase) & 0xffffffff
             body[off:off + 4] = pack(">L", val)
 
             if (r.offset & 1) == 0:     # normal relocation information
@@ -220,12 +244,11 @@ def elf2x68k(fh, xbase=0, strip=False):
             sh = shlist[sym.shndx] if sym.shndx < 0xff00 else None
             if sh and sh.flags & 2:         # SHF_ALLOC
                 symtype = 0
-                if sh.type == 1:            # SHT_PROGBITS
-                    if not sh.flags & 1:        # !SHF_WRITE    ... .text
-                        symtype = 0x0201
-                    else:                       #               ... .data
-                        symtype = 0x0202
-                elif sh.type == 8:          # SHT_NOBITS        ... .bss
+                if sh.segtype == 0:         # ... .text
+                    symtype = 0x0201
+                elif sh.segtype == 1:       # ... .data
+                    symtype = 0x0202
+                elif sh.segtype == 2:       # ... .bss
                     symtype = 0x0203
 
                 if symtype:
@@ -242,6 +265,9 @@ if __name__ == '__main__':
     parser.add_argument('-o', '--output', help='Output X68k exec file')
     parser.add_argument('-b', '--base', help='Set base address', type=lambda x: int(x, 0))
     parser.add_argument('-s', '--strip', help='Strip symbol table', action='store_true')
+    parser.add_argument('-r', '--force-reloc-symbol', metavar='SYMBOL', action='append', default=[],
+                        help='Force relocation of SYMBOL even when it is defined as SHN_ABS '
+                             '(may be specified multiple times)')
     args = parser.parse_args()
 
     base = args.base        if args.base else 0
@@ -249,4 +275,4 @@ if __name__ == '__main__':
 
     with open(args.file, 'rb') as fi:
         with open(outfile, 'wb') as fo:
-            fo.write(elf2x68k(fi, base, args.strip))
+            fo.write(elf2x68k(fi, base, args.strip, set(args.force_reloc_symbol)))
