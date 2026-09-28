@@ -44,6 +44,10 @@ patch --fuzz=0 -p1 -N < ${PATCH_DIR}/newlib-tz-jst.patch
 cd ${SRC_DIR}/${NEWLIB_DIR}
 patch --fuzz=0 -p1 -N < ${PATCH_DIR}/newlib-memcpy-fix.patch
 
+# _REENT_SMALLでの終了処理時のNULLポインタ参照を修正するためのパッチ
+cd ${SRC_DIR}/${NEWLIB_DIR}
+patch -p1 -N < ${PATCH_DIR}/newlib-call-exitprocs-null-args.patch
+
 #	libcに_mpu_type, _fpu_typeを追加するためのパッチ
 cd ${SRC_DIR}/${NEWLIB_DIR}
 patch --fuzz=0 -p1 -N < ${PATCH_DIR}/newlib-mputype.patch

@@ -1,0 +1,25 @@
+diff --git a/newlib/libc/stdlib/__call_atexit.c b/newlib/libc/stdlib/__call_atexit.c
+--- a/newlib/libc/stdlib/__call_atexit.c
++++ b/newlib/libc/stdlib/__call_atexit.c
+@@ -116,9 +116,18 @@ __call_exitprocs (int code, void *d)
+ 
+ 	  ind = p->_ind;
+ 
+-	  fntypes = args->_fntypes;
+-	  is_cxa = args->_is_cxa;
+-	  fnarg = args->_fnargs[n];
++	  if (args)
++	    {
++	      fntypes = args->_fntypes;
++	      is_cxa = args->_is_cxa;
++	      fnarg = args->_fnargs[n];
++	    }
++	  else
++	    {
++	      fntypes = 0;
++	      is_cxa = 0;
++	      fnarg = NULL;
++	    }
+ 
+ #ifndef __SINGLE_THREAD__
+ 	  /* Unlock __atexit_recursive_mutex; otherwise, the function fn() may
