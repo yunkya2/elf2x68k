@@ -127,11 +127,11 @@ export CFLAGS_FOR_TARGET="-g -O2 -fcall-used-d2 -fcall-used-a2"
 export CXXFLAGS_FOR_TARGET=${CFLAGS_FOR_TARGET}
 
 # ライブラリビルド用のパスを設定
-# (クロスビルドの場合はm68k-xelfツールチェインを使用する)
+# (クロスビルドの場合は同じ版のLinux用ツールチェインを使用する)
 if [ "${HOST_OPTION}" = "" ]; then
 	export PATH=${INSTALL_DIR}/bin:${PATH}
 else
-	export PATH=${ROOT_DIR}/${GCC_BUILD_DIR}/m68k-xelf/bin:${PATH}
+	export PATH=${ROOT_DIR}/${GCC_BUILD_DIR}/m68k-xelf-gcc16/bin:${PATH}
 fi
 
 export LC_ALL="C"

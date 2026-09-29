@@ -40,6 +40,7 @@ TARGETS = binutils gcc-stage1 newlib gcc-stage2 gdb
 TARGETS_SIMPLE = $(addsuffix -simple,$(filter-out gdb,$(TARGETS)))
 TARGETS_MINGW = $(addsuffix -mingw,$(TARGETS))
 TARGETS_MINGW_SIMPLE = $(addsuffix -mingw-simple,$(filter-out gdb,$(TARGETS)))
+MINGW_BUILD_TOOLCHAIN = build_gcc/m68k-xelf-gcc16
 
 m68k-xelf-gcc16:              $(TARGETS)
 m68k-xelf-gcc16-simple:       $(TARGETS_SIMPLE)
@@ -55,14 +56,14 @@ $(TARGETS_SIMPLE) install-simple uninstall-simple: download
 	SIMPLE=1 \
 	scripts/$(patsubst %-simple,%,$@).sh
 
-$(TARGETS_MINGW) install-mingw uninstall-mingw: download build_gcc/m68k-xelf
+$(TARGETS_MINGW) install-mingw uninstall-mingw: download $(MINGW_BUILD_TOOLCHAIN)
 	BUILD_SUFFIX="-gcc16-mingw" \
 	HOST_OPTION="--host=x86_64-w64-mingw32" \
 	CC=x86_64-w64-mingw32-gcc-posix \
 	CXX=x86_64-w64-mingw32-g++-posix \
 	scripts/$(patsubst %-mingw,%,$@).sh
 
-$(TARGETS_MINGW_SIMPLE) install-mingw-simple uninstall-mingw-simple: download  build_gcc/m68k-xelf
+$(TARGETS_MINGW_SIMPLE) install-mingw-simple uninstall-mingw-simple: download $(MINGW_BUILD_TOOLCHAIN)
 	BUILD_SUFFIX="-gcc16-mingw-simple" \
 	SIMPLE=1 \
 	HOST_OPTION="--host=x86_64-w64-mingw32" \
@@ -70,13 +71,9 @@ $(TARGETS_MINGW_SIMPLE) install-mingw-simple uninstall-mingw-simple: download  b
 	CXX=x86_64-w64-mingw32-g++-posix \
 	scripts/$(patsubst %-mingw-simple,%,$@).sh
 
-build_gcc/m68k-xelf:
-	if [ -d m68k-xelf/bin ]; then \
-		$(MAKE) uninstall; \
-	else \
-		$(MAKE) m68k-xelf; \
-	fi
-	cp -pr m68k-xelf build_gcc
+$(MINGW_BUILD_TOOLCHAIN):
+	$(MAKE) m68k-xelf-gcc16
+	cp -pr m68k-xelf-gcc16 $@
 
 download:
 	scripts/download.sh
