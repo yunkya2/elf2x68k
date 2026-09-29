@@ -41,7 +41,7 @@ mkdir -p ${BUILD_DIR}/${GCC_DIR}_stage1
 tar xvf ${GCC_ARCHIVE} -C ${SRC_DIR}
 
 # 事前にダウンロードしておいたライブラリをコピー
-cp {gmp,mpfr,mpc,isl}-* ${SRC_DIR}/${GCC_DIR}
+cp {gmp,mpfr,mpc,isl,gettext}-* ${SRC_DIR}/${GCC_DIR}
 
 cd ${SRC_DIR}/${GCC_DIR}
 ./contrib/download_prerequisites

@@ -11,7 +11,7 @@
 
   - binutils, gcc, newlib のバージョンを現時点での最新版に更新した
      - binutils 2.46.0
-     - gcc 13.5.0
+     - gcc 16.2.0
      - newlib 4.6.0-20260123
      - gdb 17.2
   - binutils, gcc, newlib の各ビルドを別々のスクリプトに分割した
