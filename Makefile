@@ -31,38 +31,39 @@ help:
 	@echo "make pristine     - Remove artifacts including downloaded archives"
 	@echo "make help         - Show this message"
 
-all:          m68k-xelf              install
-simple:       m68k-xelf-simple       install-simple
-mingw:        m68k-xelf-mingw        install-mingw
-mingw-simple: m68k-xelf-mingw-simple install-mingw-simple
+all:          m68k-xelf-gcc16              install
+simple:       m68k-xelf-gcc16-simple       install-simple
+mingw:        m68k-xelf-gcc16-mingw        install-mingw
+mingw-simple: m68k-xelf-gcc16-mingw-simple install-mingw-simple
 
 TARGETS = binutils gcc-stage1 newlib gcc-stage2 gdb
 TARGETS_SIMPLE = $(addsuffix -simple,$(filter-out gdb,$(TARGETS)))
 TARGETS_MINGW = $(addsuffix -mingw,$(TARGETS))
 TARGETS_MINGW_SIMPLE = $(addsuffix -mingw-simple,$(filter-out gdb,$(TARGETS)))
 
-m68k-xelf:              $(TARGETS)
-m68k-xelf-simple:       $(TARGETS_SIMPLE)
-m68k-xelf-mingw:        $(TARGETS_MINGW)
-m68k-xelf-mingw-simple: $(TARGETS_MINGW_SIMPLE)
+m68k-xelf-gcc16:              $(TARGETS)
+m68k-xelf-gcc16-simple:       $(TARGETS_SIMPLE)
+m68k-xelf-gcc16-mingw:        $(TARGETS_MINGW)
+m68k-xelf-gcc16-mingw-simple: $(TARGETS_MINGW_SIMPLE)
 
 $(TARGETS) install uninstall: download
+	BUILD_SUFFIX="-gcc16" \
 	scripts/$@.sh
 
 $(TARGETS_SIMPLE) install-simple uninstall-simple: download
-	BUILD_SUFFIX="-simple" \
+	BUILD_SUFFIX="-gcc16-simple" \
 	SIMPLE=1 \
 	scripts/$(patsubst %-simple,%,$@).sh
 
 $(TARGETS_MINGW) install-mingw uninstall-mingw: download build_gcc/m68k-xelf
-	BUILD_SUFFIX="-mingw" \
+	BUILD_SUFFIX="-gcc16-mingw" \
 	HOST_OPTION="--host=x86_64-w64-mingw32" \
 	CC=x86_64-w64-mingw32-gcc-posix \
 	CXX=x86_64-w64-mingw32-g++-posix \
 	scripts/$(patsubst %-mingw,%,$@).sh
 
 $(TARGETS_MINGW_SIMPLE) install-mingw-simple uninstall-mingw-simple: download  build_gcc/m68k-xelf
-	BUILD_SUFFIX="-mingw-simple" \
+	BUILD_SUFFIX="-gcc16-mingw-simple" \
 	SIMPLE=1 \
 	HOST_OPTION="--host=x86_64-w64-mingw32" \
 	CC=x86_64-w64-mingw32-gcc-posix \
@@ -82,8 +83,7 @@ download:
 
 clean: libclean
 	-rm -rf build_gcc
-	-rm -rf m68k-xelf
-	-rm -rf $(foreach s, -simple -mingw -mingw-simple,$(addsuffix $s, m68k-xelf))
+	-rm -rf $(foreach s, -gcc16 -gcc16-simple -gcc16-mingw -gcc16-mingw-simple,$(addsuffix $s, m68k-xelf))
 
 libclean:
 	make clean -C src/libx68k
@@ -103,16 +103,16 @@ GID=gid
 endif
 
 release: uninstall libclean install
-	tar -c -v -j -f ${ARCHIVE}.tar.bz2 --${UID}=0 --${GID}=0 m68k-xelf
+	tar -c -v -j -f ${ARCHIVE}.tar.bz2 --${UID}=0 --${GID}=0 m68k-xelf-gcc16
 
 release-mingw: uninstall-mingw libclean install-mingw
-	-mv m68k-xelf m68k-xelf-full
-	-mv m68k-xelf-mingw m68k-xelf
-	tar -c -v -j -f ${ARCHIVE_MINGW}.tar.bz2 --${UID}=0 --${GID}=0 m68k-xelf
-	-mv m68k-xelf m68k-xelf-mingw
-	-mv m68k-xelf-full m68k-xelf
+	-mv m68k-xelf-gcc16 m68k-xelf-gcc16-full
+	-mv m68k-xelf-gcc16-mingw m68k-xelf-gcc16
+	tar -c -v -j -f ${ARCHIVE_MINGW}.tar.bz2 --${UID}=0 --${GID}=0 m68k-xelf-gcc16
+	-mv m68k-xelf-gcc16 m68k-xelf-gcc16-mingw
+	-mv m68k-xelf-gcc16-full m68k-xelf-gcc16
 
 .PHONY:	all help
 .PHONY:	download clean pristine libclean release release-mingw
 .PHONY:	m68k-xelf $(TARGETS) install uninstall
-.PHONY:	$(foreach s, -simple -mingw -mingw-simple,$(addsuffix $s, m68k-xelf $(TARGETS) install uninstall))
+.PHONY:	$(foreach s, -gcc16 -gcc16-simple -gcc16-mingw -gcc16-mingw-simple,$(addsuffix $s, m68k-xelf $(TARGETS) install uninstall))
