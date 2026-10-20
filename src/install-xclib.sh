@@ -33,7 +33,7 @@
 # エラーが起きたらそこで終了させる。
 set -e
 
-ROOT_DIR="${PWD}"
+ROOT_DIR="$(cd $(dirname $0); pwd)"
 INSTALLER_TEMP_DIR="${ROOT_DIR}/installer_temp"
 INSTALL_DIR="${ROOT_DIR}/xc-elf"
 DOWNLOAD_DIR="${ROOT_DIR}/download"
