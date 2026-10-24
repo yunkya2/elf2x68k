@@ -24,6 +24,6 @@ static __inline__ int _dos_super(int stack) {
         ".short 0xff20\n\t"
         "move.l %%a1,%%sp\n\t"
         "addq.l #4,%%sp\n\t"
-        : [ret]"=r"(_ret) : [stack]"g"(stack) : "cc","memory");
+        : [ret]"=r"(_ret) : [stack]"g"(stack) : "a1", "cc","memory");
     return (int)_ret;
 }
