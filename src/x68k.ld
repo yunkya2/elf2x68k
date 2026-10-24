@@ -9,9 +9,9 @@ SECTIONS
     KEEP (*(.header))
     KEEP (*(SORT(.header.*)))
     _tsr_header_end = .;
-    KEEP (*(.tsr.text .tsr.rodata))
-    KEEP (*(.tsr.data))
-    KEEP (*(.tsr.bss))
+    KEEP (*(.tsr.text .tsr.text.* .tsr.rodata .tsr.rodata.*))
+    KEEP (*(.tsr.data .tsr.data.*))
+    KEEP (*(.tsr.bss .tsr.bss.*))
     _tsr_end = .;
 
     . = ALIGN(0x4);

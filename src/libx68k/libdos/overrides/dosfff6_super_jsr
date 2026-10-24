@@ -23,17 +23,24 @@ _dos_super_jsr:
 [inline]
 /* 0xfff6 _SUPER_JSR: サブルーチンコール */
 static __inline__ void _dos_super_jsr(void (*jobadr)(void), struct dos_dregs *inregs, struct dos_dregs *outregs) {
+    register void (*job)(void) __asm__("a1") = jobadr;
+    register struct dos_dregs *in __asm__("a0") = inregs;
+    register struct dos_dregs *out __asm__("a2") = outregs;
     __asm__ __volatile__ (
-        "movem.l %%d2-%%d7/%%a2-%%a6,%%sp@-\n\t"
-        "move.l %[jobadr],%%sp@-\n\t"
-        "move.l %[inregs],%%a0\n\t"
-        "movem.l %%a0@,%%d0-%%d7/%%a0-%%a6\n\t"
+        "move.l %%a6,%%sp@-\n\t"
+        "move.l %[out],%%sp@-\n\t"
+        "move.l %[job],%%sp@-\n\t"
+        "movem.l %%a0@,%%d0-%%d7/%%a0-%%a6\n\t"     // inregs
         ".short 0xfff6\n\t"
         "move.l %%a6,%%sp@\n\t"
-        "move.l %[outregs],%%a6\n\t"
-        "move.l %%sp@+,%%a6@(4*14)\n\t"
-        "movem.l %%d0-%%d7/%%a0-%%a5,%%a6@\n\t"
-        "movem.l %%sp@+,%%d2-%%d7/%%a2-%%a6\n\t"
-        : : [jobadr]"g"(jobadr), [inregs]"g"(inregs), [outregs]"g"(outregs) : "d0","d1","cc","memory");
+        "move.l %%sp@(4),%%a6\n\t"
+        "move.l %%sp@+,%%a6@(56)\n\t"
+        "movem.l %%d0-%%d7/%%a0-%%a5,%%a6@\n\t"     // outregs
+        "addq.l #4,%%sp\n\t"
+        "move.l %%sp@+,%%a6\n\t"
+        : [in]"+a"(in), [job]"+a"(job), [out]"+a"(out)
+        :
+        : "d0","d1","d2","d3","d4","d5","d6","d7",
+          "a3","a4","a5","cc","memory");
     return;
 }
